@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Data.Entitites
+namespace ApplicationService.DTOs
 {
-    public class Category : BaseEntity
+    public class CategoryDTO
     {
+        public int Id { get; set; }
+
         public string Title { get; set; }
 
         public string Description { get; set; }
-
-        public virtual ICollection<Game> Games { get; set; }
     }
 }
