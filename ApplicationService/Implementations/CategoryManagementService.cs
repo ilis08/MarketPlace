@@ -1,6 +1,7 @@
 ﻿using ApplicationService.DTOs;
 using Data.Context;
 using Data.Entitites;
+using Repository.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,34 +11,56 @@ namespace ApplicationService.Implementations
 {
     public class CategoryManagementService
     {
-        private GameStoreDBContext ctx = new GameStoreDBContext();
-        public List<CategoryDTO> Get()
+        public List<CategoryDTO> Get(string query)
         {
             List<CategoryDTO> categoriesDto = new List<CategoryDTO>();
 
-            foreach (var item in ctx.Categories.ToList())
+            using (UnitOfWork unitOfWork = new UnitOfWork())
             {
-                categoriesDto.Add(new CategoryDTO
+                if (query == null)
                 {
-                    Id = item.Id,
-                    Title = item.Title,
-                    Description = item.Description
-                });
-
+                    foreach (var item in unitOfWork.CategoryRepository.Get())
+                    {
+                        categoriesDto.Add(new CategoryDTO
+                        {
+                            Id = item.Id,
+                            Title = item.Title,
+                            Description = item.Description
+                        });
+                    }
+                }
+                else
+                {
+                    foreach (var item in unitOfWork.CategoryRepository.GetByQuery().Where(c => c.Description.Contains(query)).ToList())
+                    {
+                        categoriesDto.Add(new CategoryDTO
+                        {
+                            Id = item.Id,
+                            Title = item.Title,
+                            Description = item.Description
+                        });
+                    }
+                }
             }
-
             return categoriesDto;
         }
 
-        public CategoryDTO GetById(int id)
+        public CategoryDTO GetById(long id)
         {
             CategoryDTO categoryDTO = new CategoryDTO();
 
-            Category category = ctx.Categories.Find(id);
-            if (category != null)
+            using (UnitOfWork unitOfWork = new UnitOfWork())
             {
-                categoryDTO.Id = category.Id;
-                categoryDTO.Title = category.Title;
+                Category category = unitOfWork.CategoryRepository.GetByID(id);
+                if (category != null)
+                {
+                    categoryDTO = new CategoryDTO
+                    {
+                        Id = category.Id,
+                        Title = category.Title,
+                        Description = category.Description
+                    };
+                }
             }
             return categoryDTO;
         }
@@ -46,15 +69,25 @@ namespace ApplicationService.Implementations
         {
             Category Category = new Category()
             {
+                Id = categoryDTO.Id,
                 Title = categoryDTO.Title,
                 Description = categoryDTO.Description
             };
 
             try
             {
-                Console.WriteLine(Category);
-                ctx.Categories.Add(Category);
-                ctx.SaveChanges();
+                using (UnitOfWork unitOfWork = new UnitOfWork())
+                {
+                    if (categoryDTO.Id == 0)
+                    {
+                        unitOfWork.CategoryRepository.Insert(Category);
+                    }
+                    else
+                    {
+                        unitOfWork.CategoryRepository.Update(Category);
+                    }
+                    unitOfWork.Save();
+                }
                 return true;
             }
             catch
@@ -66,13 +99,16 @@ namespace ApplicationService.Implementations
 
 
 
-        public bool Delete(int id)
+        public bool Delete(long id)
         {
             try
             {
-                Category category = ctx.Categories.Find(id);
-                ctx.Categories.Remove(category);
-                ctx.SaveChanges();
+                using (UnitOfWork unitOfWork = new UnitOfWork())
+                {
+                    Category category = unitOfWork.CategoryRepository.GetByID(id);
+                    unitOfWork.CategoryRepository.Delete(category);
+                    unitOfWork.Save();
+                }
 
                 return true;
             }

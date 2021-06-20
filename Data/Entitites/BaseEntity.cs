@@ -8,7 +8,7 @@ namespace Data.Entitites
     public class BaseEntity
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public int CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
