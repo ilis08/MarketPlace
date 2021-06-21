@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Data.Entitites
 {
-    public class Phone : BaseEntity
+    public class Product : BaseEntity
     {
         [Required]
-        public string PhoneName { get; set; }
+        public string ProductName { get; set; }
         public string Description { get; set; }
         public DateTime? Release { get; set; }
         public double Price { get; set; }

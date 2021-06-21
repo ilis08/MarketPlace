@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.OpenApi.Models;
+using System.IO;
 
 namespace WebAPI
 {
@@ -34,11 +36,16 @@ namespace WebAPI
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
-           /* #region Swagger
+            #region Swagger
             services.AddSwaggerGen(c =>
             {
-                c.IncludeXmlComments(string.Format)
-            })*/
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IlisStoreAPI", Version = "v1" });
+
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, "WebAPI.xml");
+                c.IncludeXmlComments(filePath);
+            });
+
+            #endregion
 
             services.AddHealthChecks()
                  .AddSqlServer(Configuration.GetConnectionString("IlisStoreDB"),
@@ -54,6 +61,13 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "IlisStore V1");
+            });
 
             app.UseRouting();
 

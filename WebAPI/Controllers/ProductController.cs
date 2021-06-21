@@ -10,21 +10,17 @@ using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
-    /// <summary>
-    /// Controller to work with Categories
-    /// </summary>
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : HomeController
+    public class ProductController : HomeController
     {
-        private readonly CategoryManagementService _service = null;
+        private readonly ProductManagementService _service;
 
-        public CategoryController()
+        public ProductController()
         {
-            _service = new CategoryManagementService();
+            _service = new ProductManagementService();
         }
-
 
         /// <summary>
         /// Returns all Categories if query==null, or if query!=null return Categories which contains 'query' 
@@ -46,24 +42,24 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public JsonResult Save([FromBody]CategoryDTO categoryDto)
+        public JsonResult Save([FromBody] ProductDTO productDto)
         {
-            if (categoryDto.Title == null && categoryDto.Description == null)
+            if (productDto.ProductName == null && productDto.Description == null)
             {
                 return Json(new ResponseMessage { Code = 500, Error = "Data is not valid" });
             }
 
             ResponseMessage responseMessage = new ResponseMessage();
 
-            if (_service.Save(categoryDto))
+            if (_service.Save(productDto))
             {
                 responseMessage.Code = 201;
-                responseMessage.Body = "Category was saved";
+                responseMessage.Body = "Product was saved";
             }
             else
             {
                 responseMessage.Code = 202;
-                responseMessage.Body = "Category was not saved";
+                responseMessage.Body = "Product was not saved";
             }
 
             return Json(responseMessage);

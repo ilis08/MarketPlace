@@ -12,6 +12,6 @@ namespace Data.Entitites
 
         public string Description { get; set; }
 
-        public virtual ICollection<Phone> Phones { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

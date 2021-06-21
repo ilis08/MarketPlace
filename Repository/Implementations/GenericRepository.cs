@@ -12,10 +12,10 @@ namespace Repository.Implementations
 {
     public class GenericRepository<T>  where T : class 
     {
-        internal StoreDBContext context;
+        internal Store1DBContext context;
         internal DbSet<T> dbSet;
 
-        public GenericRepository(StoreDBContext context)
+        public GenericRepository(Store1DBContext context)
         {
             this.context = context;
             this.dbSet = context.Set<T>();

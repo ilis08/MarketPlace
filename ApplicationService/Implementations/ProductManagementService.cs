@@ -9,22 +9,22 @@ using System.Text;
 
 namespace ApplicationService.Implementations
 {
-    public class PhoneManagementService
+    public class ProductManagementService
     {
-        public List<PhoneDTO> Get(string query)
+        public List<ProductDTO> Get(string query)
         {
-            List<PhoneDTO> phonesDto = new List<PhoneDTO>();
+            List<ProductDTO> productDto = new List<ProductDTO>();
 
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
                 if (query == null)
                 {
-                    foreach (var item in unitOfWork.PhoneRepository.Get())
+                    foreach (var item in unitOfWork.ProductRepository.Get())
                     {
-                        phonesDto.Add(new PhoneDTO
+                        productDto.Add(new ProductDTO
                         {
                             Id = item.Id,
-                            PhoneName = item.PhoneName,
+                            ProductName = item.ProductName,
                             Description = item.Description,
                             Release = item.Release,
                             Price = item.Price,
@@ -40,12 +40,12 @@ namespace ApplicationService.Implementations
                 }
                 else
                 {
-                    foreach (var item in unitOfWork.PhoneRepository.GetByQuery().Where(c => c.PhoneName.Contains(query)).ToList())
+                    foreach (var item in unitOfWork.ProductRepository.GetByQuery().Where(c => c.ProductName.Contains(query)).ToList())
                     {
-                        phonesDto.Add(new PhoneDTO
+                        productDto.Add(new ProductDTO
                         {
                             Id = item.Id,
-                            PhoneName = item.PhoneName,
+                            ProductName = item.ProductName,
                             Description = item.Description,
                             Release = item.Release,
                             Price = item.Price,
@@ -60,60 +60,60 @@ namespace ApplicationService.Implementations
                     }
                 }
             }
-            return phonesDto;
+            return productDto;
         }
 
-        public PhoneDTO GetById(long id)
+        public ProductDTO GetById(long id)
         {
-            PhoneDTO phoneDto = new PhoneDTO();
+            ProductDTO productDto = new ProductDTO();
 
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
-                Phone phone = unitOfWork.PhoneRepository.GetByID(id);
-               
-                phoneDto = new PhoneDTO
+                Product product = unitOfWork.ProductRepository.GetByID(id);
+
+                productDto = new ProductDTO
                 {
-                    Id = phone.Id,
-                    PhoneName = phone.PhoneName,
-                    Description = phone.Description,
-                    Release = phone.Release,
-                    Price = phone.Price,
-                    Image = phone.Image,
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    Description = product.Description,
+                    Release = product.Release,
+                    Price = product.Price,
+                    Image = product.Image,
                     Category = new CategoryDTO
                     {
-                        Id = phone.Category.Id,
-                        Title = phone.Category.Title,
-                        Description = phone.Category.Description
+                        Id = product.Category.Id,
+                        Title = product.Category.Title,
+                        Description = product.Category.Description
                     }
                 };
             }
-            return phoneDto;
+            return productDto;
         }
 
-        public bool Save(PhoneDTO phoneDto)
+        public bool Save(ProductDTO productDto)
         {
-            Phone phone = new Phone()
+            Product product = new Product
             {
-                Id = phoneDto.Id,
-                PhoneName = phoneDto.PhoneName,
-                Description = phoneDto.Description,
-                Release = phoneDto.Release,
-                Price = phoneDto.Price,
-                Image = phoneDto.Image,
-                CategoryId = phoneDto.Category.Id
+                Id = productDto.Id,
+                ProductName = productDto.ProductName,
+                Description = productDto.Description,
+                Release = productDto.Release,
+                Price = productDto.Price,
+                Image = productDto.Image,
+                CategoryId = productDto.Category.Id
             };
 
             try
             {
                 using (UnitOfWork unitOfWork = new UnitOfWork())
                 {
-                    if (phoneDto.Id == 0)
+                    if (productDto.Id == 0)
                     {
-                        unitOfWork.PhoneRepository.Insert(phone);
+                        unitOfWork.ProductRepository.Insert(product);
                     }
                     else
                     {
-                        unitOfWork.PhoneRepository.Update(phone);
+                        unitOfWork.ProductRepository.Update(product);
                     }
                     unitOfWork.Save();
                 }
@@ -121,7 +121,7 @@ namespace ApplicationService.Implementations
             }
             catch
             {
-                System.Console.WriteLine(phone);
+                System.Console.WriteLine(product);
                 return false;
             }
         }
@@ -134,8 +134,8 @@ namespace ApplicationService.Implementations
             {
                 using (UnitOfWork unitOfWork = new UnitOfWork())
                 {
-                    Phone phone = unitOfWork.PhoneRepository.GetByID(id);
-                    unitOfWork.PhoneRepository.Delete(phone);
+                    Product product = unitOfWork.ProductRepository.GetByID(id);
+                    unitOfWork.ProductRepository.Delete(product);
                     unitOfWork.Save();
                 }
 

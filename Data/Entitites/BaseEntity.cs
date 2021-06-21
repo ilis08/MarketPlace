@@ -11,6 +11,7 @@ namespace Data.Entitites
         public long Id { get; set; }
 
         public int CreatedBy { get; set; }
+        
         public DateTime? CreatedOn { get; set; }
 
         public int UpdatedBy { get; set; }

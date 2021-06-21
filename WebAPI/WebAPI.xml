@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebAPI</name>
+    </assembly>
+    <members>
+        <member name="T:WebAPI.Controllers.CategoryController">
+            <summary>
+            Controller to work with Categories
+            </summary>
+        </member>
+        <member name="M:WebAPI.Controllers.CategoryController.Get(System.String)">
+            <summary>
+            Returns all Categories if query==null, or if query!=null return Categories which contains 'query' 
+            </summary>
+            <param name="query"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPI.Controllers.ProductController.Get(System.String)">
+            <summary>
+            Returns all Categories if query==null, or if query!=null return Categories which contains 'query' 
+            </summary>
+            <param name="query"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

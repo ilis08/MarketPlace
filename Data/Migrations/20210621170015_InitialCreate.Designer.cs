@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
-    [DbContext(typeof(StoreDBContext))]
-    [Migration("20210620152503_InitialCreate")]
+    [DbContext(typeof(Store1DBContext))]
+    [Migration("20210621170015_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,7 +52,7 @@ namespace Data.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Data.Entitites.Phone", b =>
+            modelBuilder.Entity("Data.Entitites.Product", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,12 +74,12 @@ namespace Data.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Price")
                         .HasColumnType("float");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Release")
                         .HasColumnType("datetime2");
@@ -94,13 +94,13 @@ namespace Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Phones");
+                    b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Data.Entitites.Phone", b =>
+            modelBuilder.Entity("Data.Entitites.Product", b =>
                 {
                     b.HasOne("Data.Entitites.Category", "Category")
-                        .WithMany("Games")
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -110,7 +110,7 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entitites.Category", b =>
                 {
-                    b.Navigation("Games");
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

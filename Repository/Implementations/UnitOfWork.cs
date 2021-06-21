@@ -10,20 +10,20 @@ namespace Repository.Implementations
 {
     public class UnitOfWork : IDisposable
     {
-        private StoreDBContext context = new StoreDBContext();
+        private Store1DBContext context = new Store1DBContext();
 
-        private GenericRepository<Phone> phoneRepository;
+        private GenericRepository<Product> productRepository;
         private GenericRepository<Category> categoryRepository;
 
-        public GenericRepository<Phone> PhoneRepository
+        public GenericRepository<Product> ProductRepository
         {
             get
             {
-                if (this.phoneRepository == null)
+                if (this.productRepository == null)
                 {
-                    this.phoneRepository = new GenericRepository<Phone>(context);
+                    this.productRepository = new GenericRepository<Product>(context);
                 }
-                return phoneRepository;
+                return productRepository;
             }
         }
 
