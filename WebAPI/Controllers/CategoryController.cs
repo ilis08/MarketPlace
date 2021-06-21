@@ -10,6 +10,7 @@ using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : HomeController
@@ -28,16 +29,15 @@ namespace WebAPI.Controllers
             return Json(_service.Get(query));
         }
 
-        [HttpGet]
-        [Route("[action]/id")]
+        [HttpGet("[action]/{id:long}")]
         public JsonResult GetById(long id)
         {
             return Json(_service.GetById(id));
         }
 
-        [HttpGet]
         [Route("[action]")]
-        public JsonResult Save(CategoryDTO categoryDto)
+        [HttpPost]
+        public JsonResult Save([FromBody]CategoryDTO categoryDto)
         {
             if (categoryDto.Title == null && categoryDto.Description == null)
             {
@@ -58,6 +58,13 @@ namespace WebAPI.Controllers
             }
 
             return Json(responseMessage);
+        }
+
+        [Route("[action]/{id:long}")]
+        [HttpDelete]
+        public JsonResult Delete(long id)
+        {
+            return Json(_service.Delete(id));
         }
     }
 }
