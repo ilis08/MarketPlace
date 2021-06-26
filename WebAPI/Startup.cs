@@ -52,6 +52,7 @@ namespace WebAPI
                     name: "ilisDb-check",
                     failureStatus: HealthStatus.Unhealthy,
                     tags: new string[] { "api", "SqlDb" });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

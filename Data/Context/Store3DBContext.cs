@@ -6,17 +6,16 @@ using System.Text;
 
 namespace Data.Context
 {
-    public class Store1DBContext : DbContext
+    public class Store3DBContext : DbContext
     {
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
 
-        public Store1DBContext()
+        public Store3DBContext()
         {
-
         }
-        public Store1DBContext(DbContextOptions<Store1DBContext> options)
+        public Store3DBContext(DbContextOptions<Store3DBContext> options)
             : base(options)
         {
         }

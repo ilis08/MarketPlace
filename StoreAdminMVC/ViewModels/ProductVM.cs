@@ -11,7 +11,7 @@ namespace StoreAdminMVC.ViewModels
     public class ProductVM
     {
         [Key]
-        public long Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string ProductName { get; set; }
         public string Description { get; set; }
@@ -25,7 +25,7 @@ namespace StoreAdminMVC.ViewModels
         public long CategoryId { get; set; }
         public CategoryVM Category { get; set; }
 
-        public SelectList CategorySelectList { get; set; }
+        public SelectList CategoryList { get; set; }
 
         public ProductVM()
         {

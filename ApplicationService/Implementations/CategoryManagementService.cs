@@ -13,7 +13,7 @@ namespace ApplicationService.Implementations
     {
         public List<CategoryDTO> Get(string query)
         {
-            List<CategoryDTO> categoriesDto = new List<CategoryDTO>();
+            List<CategoryDTO> categoriesDto = new();
 
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
@@ -29,9 +29,9 @@ namespace ApplicationService.Implementations
                         });
                     }
                 }
-                else
+                /*else
                 {
-                    foreach (var item in unitOfWork.CategoryRepository.GetByQuery().Where(c => c.Description.Contains(query)).ToList())
+                    foreach (var item in unitOfWork.CategoryRepository.Find())
                     {
                         categoriesDto.Add(new CategoryDTO
                         {
@@ -40,18 +40,18 @@ namespace ApplicationService.Implementations
                             Description = item.Description
                         });
                     }
-                }
+                }*/
             }
             return categoriesDto;
         }
 
-        public CategoryDTO GetById(long id)
+        public CategoryDTO GetById(int id)
         {
             CategoryDTO categoryDTO = new CategoryDTO();
 
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
-                Category category = unitOfWork.CategoryRepository.GetByID(id);
+                Category category = unitOfWork.CategoryRepository.GetById(id);
                 if (category != null)
                 {
                     categoryDTO = new CategoryDTO
@@ -80,7 +80,7 @@ namespace ApplicationService.Implementations
                 {
                     if (categoryDTO.Id == 0)
                     {
-                        unitOfWork.CategoryRepository.Insert(Category);
+                        unitOfWork.CategoryRepository.Create(Category);
                     }
                     else
                     {
@@ -99,13 +99,13 @@ namespace ApplicationService.Implementations
 
 
 
-        public bool Delete(long id)
+        public bool Delete(int id)
         {
             try
             {
                 using (UnitOfWork unitOfWork = new UnitOfWork())
                 {
-                    Category category = unitOfWork.CategoryRepository.GetByID(id);
+                    Category category = unitOfWork.CategoryRepository.GetById(id);
                     unitOfWork.CategoryRepository.Delete(category);
                     unitOfWork.Save();
                 }

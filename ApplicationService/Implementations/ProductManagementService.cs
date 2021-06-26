@@ -19,7 +19,7 @@ namespace ApplicationService.Implementations
             {
                 if (query == null)
                 {
-                    foreach (var item in unitOfWork.ProductRepository.Get())
+                    foreach (var item in unitOfWork.ProductRepository.GetProducts())
                     {
                         productDto.Add(new ProductDTO
                         {
@@ -38,7 +38,7 @@ namespace ApplicationService.Implementations
                         });
                     }
                 }
-                else
+               /* else
                 {
                     foreach (var item in unitOfWork.ProductRepository.GetByQuery().Where(c => c.ProductName.Contains(query)).ToList())
                     {
@@ -58,35 +58,39 @@ namespace ApplicationService.Implementations
                             }
                         });
                     }
-                }
+                }*/
             }
             return productDto;
         }
 
-        public ProductDTO GetById(long id)
+        public ProductDTO GetById(int id)
         {
             ProductDTO productDto = new ProductDTO();
 
-            using (UnitOfWork unitOfWork = new UnitOfWork())
-            {
-                Product product = unitOfWork.ProductRepository.GetByID(id);
-
-                productDto = new ProductDTO
+                using (UnitOfWork unitOfWork = new UnitOfWork())
                 {
-                    Id = product.Id,
-                    ProductName = product.ProductName,
-                    Description = product.Description,
-                    Release = product.Release,
-                    Price = product.Price,
-                    Image = product.Image,
-                    Category = new CategoryDTO
+                    Product product = unitOfWork.ProductRepository.GetProductById(id);
+
+                if (product != null)
+                {
+                    productDto = new ProductDTO
                     {
-                        Id = product.Category.Id,
-                        Title = product.Category.Title,
-                        Description = product.Category.Description
-                    }
-                };
-            }
+                        Id = product.Id,
+                        ProductName = product.ProductName,
+                        Description = product.Description,
+                        Release = product.Release,
+                        Price = product.Price,
+                        Image = product.Image,
+                        Category = new CategoryDTO
+                        {
+                            Id = product.Category.Id,
+                            Title = product.Category.Title,
+                            Description = product.Category.Description
+                        }
+                    };
+                }                   
+                }
+
             return productDto;
         }
 
@@ -109,7 +113,7 @@ namespace ApplicationService.Implementations
                 {
                     if (productDto.Id == 0)
                     {
-                        unitOfWork.ProductRepository.Insert(product);
+                        unitOfWork.ProductRepository.Create(product);
                     }
                     else
                     {
@@ -121,20 +125,19 @@ namespace ApplicationService.Implementations
             }
             catch
             {
-                System.Console.WriteLine(product);
                 return false;
             }
         }
 
 
 
-        public bool Delete(long id)
+        public bool Delete(int id)
         {
             try
             {
                 using (UnitOfWork unitOfWork = new UnitOfWork())
                 {
-                    Product product = unitOfWork.ProductRepository.GetByID(id);
+                    Product product = unitOfWork.ProductRepository.GetById(id);
                     unitOfWork.ProductRepository.Delete(product);
                     unitOfWork.Save();
                 }

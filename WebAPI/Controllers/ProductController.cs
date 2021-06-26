@@ -1,5 +1,6 @@
 ﻿using ApplicationService.DTOs;
 using ApplicationService.Implementations;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,11 +16,13 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ProductController : HomeController
     {
-        private readonly ProductManagementService _service;
+        private readonly ProductManagementService _service = null;
+        private IWebHostEnvironment webHostEnvironment;
 
-        public ProductController()
+        public ProductController(IWebHostEnvironment webHostEnvironment)
         {
             _service = new ProductManagementService();
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -27,24 +30,26 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
+        /// 
+        
         [HttpGet]
         [Route("[action]")]
-        public JsonResult Get(string query)
+        public IActionResult Get(string query)
         {
             return Json(_service.Get(query));
         }
 
-        [HttpGet("[action]/{id:long}")]
-        public JsonResult GetById(long id)
+        [HttpGet("[action]/{id:int}")]
+        public JsonResult GetById(int id)
         {
             return Json(_service.GetById(id));
         }
 
         [Route("[action]")]
         [HttpPost]
-        public JsonResult Save([FromBody] ProductDTO productDto)
+        public JsonResult Save([FromBody]ProductDTO productDto)
         {
-            if (productDto.ProductName == null && productDto.Description == null)
+            if (productDto.ProductName == null)
             {
                 return Json(new ResponseMessage { Code = 500, Error = "Data is not valid" });
             }
@@ -65,9 +70,9 @@ namespace WebAPI.Controllers
             return Json(responseMessage);
         }
 
-        [Route("[action]/{id:long}")]
+        [Route("[action]/{id:int}")]
         [HttpDelete]
-        public JsonResult Delete(long id)
+        public JsonResult Delete(int id)
         {
             return Json(_service.Delete(id));
         }

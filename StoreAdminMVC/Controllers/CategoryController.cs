@@ -130,7 +130,7 @@ namespace StoreAdminMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Delete(long id)
+        public async Task<ActionResult> Delete(int id)
         {
             using (var client = new HttpClient())
             {
@@ -149,7 +149,7 @@ namespace StoreAdminMVC.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(long id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
             try
             {

@@ -38,8 +38,8 @@ namespace WebAPI.Controllers
             return Json(_service.Get(query));
         }
 
-        [HttpGet("[action]/{id:long}")]
-        public JsonResult GetById(long id)
+        [HttpGet("[action]/{id:int}")]
+        public JsonResult GetById(int id)
         {
             return Json(_service.GetById(id));
         }
@@ -69,9 +69,9 @@ namespace WebAPI.Controllers
             return Json(responseMessage);
         }
 
-        [Route("[action]/{id:long}")]
+        [Route("[action]/{id:int}")]
         [HttpDelete]
-        public JsonResult Delete(long id)
+        public JsonResult Delete(int id)
         {
             return Json(_service.Delete(id));
         }

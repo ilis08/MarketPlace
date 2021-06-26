@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{9EBC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebAPI's", "WebAPI's", "{2BCEF04D-31FA-4B6E-97E5-3E5E275499C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreAdminMVC", "StoreAdminMVC\StoreAdminMVC.csproj", "{AD930A42-FDD9-4806-A976-1ED5E43AA79A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreAdminMVC", "StoreAdminMVC\StoreAdminMVC.csproj", "{AD930A42-FDD9-4806-A976-1ED5E43AA79A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

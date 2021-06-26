@@ -13,7 +13,7 @@ namespace StoreAdminMVC.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly Uri uri = new Uri("http://localhost:41486/api/Product/");
+        private readonly Uri uri = new Uri("http://localhost:41486/api");
 
         public async Task<ActionResult> Index(string query)
         {
@@ -23,7 +23,7 @@ namespace StoreAdminMVC.Controllers
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage response = await client.GetAsync("Get");
+                HttpResponseMessage response = await client.GetAsync("api/Product/Get/");
 
                 string jsonString = await response.Content.ReadAsStringAsync();
                 var responseData = JsonConvert.DeserializeObject<List<ProductVM>>(jsonString);
@@ -43,14 +43,16 @@ namespace StoreAdminMVC.Controllers
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage responseMessage = await client.GetAsync("api/category/get?+" + query);
+                HttpResponseMessage responseMessage = await client.GetAsync("api/Category/Get" + query);
                 string jsonString = await responseMessage.Content.ReadAsStringAsync();
 
                 List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(jsonString);
-                productVM.CategorySelectList = new SelectList(
+
+                productVM.CategoryList = new SelectList(
                     categories,
                     "Id",
-                    "Title");
+                    "Title"
+                    );
 
                 return View(productVM);
             }
@@ -74,7 +76,7 @@ namespace StoreAdminMVC.Controllers
 
                     byteContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
-                    HttpResponseMessage responseMessage = await client.PostAsync("Save", byteContent);
+                    HttpResponseMessage responseMessage = await client.PostAsync("api/Product/Save", byteContent);
                 
                     string jsonString = await responseMessage.Content.ReadAsStringAsync();
                     var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
@@ -96,10 +98,10 @@ namespace StoreAdminMVC.Controllers
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage responseMessage = await client.GetAsync("GetById/" + id);
+                HttpResponseMessage responseMessage = await client.GetAsync("api/Product/GetById/" + id);
 
                 string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<CategoryVM>(jsonString);
+                var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
 
                 return View(responseData);
             }
@@ -107,7 +109,7 @@ namespace StoreAdminMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(CategoryVM categoryVM)
+        public async Task<ActionResult> Edit(ProductVM productVM)
         {
             try
             {
@@ -117,13 +119,13 @@ namespace StoreAdminMVC.Controllers
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                    var content = JsonConvert.SerializeObject(categoryVM);
+                    var content = JsonConvert.SerializeObject(productVM);
                     var buffer = System.Text.Encoding.UTF8.GetBytes(content);
                     var byteContent = new ByteArrayContent(buffer);
 
                     byteContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
-                    HttpResponseMessage responseMessage = await client.PostAsync("Save", byteContent);
+                    HttpResponseMessage responseMessage = await client.PostAsync("api/Product/Save", byteContent);
                 }
                 return RedirectToAction("Index");
             }
@@ -141,17 +143,17 @@ namespace StoreAdminMVC.Controllers
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage responseMessage = await client.GetAsync("GetById/" + id);
+                HttpResponseMessage responseMessage = await client.GetAsync("api/Product/GetById/" + id);
 
                 string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<CategoryVM>(jsonString);
+                var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
 
                 return View(responseData);
             }
         }
 
         [HttpGet]
-        public async Task<ActionResult> Delete(long id)
+        public async Task<ActionResult> Delete(int id)
         {
             using (var client = new HttpClient())
             {
@@ -159,10 +161,10 @@ namespace StoreAdminMVC.Controllers
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage responseMessage = await client.GetAsync("GetById/" + id);
+                HttpResponseMessage responseMessage = await client.GetAsync("api/Product/GetById/" + id);
 
                 string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<CategoryVM>(jsonString);
+                var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
 
                 return View(responseData);
             }
@@ -170,7 +172,7 @@ namespace StoreAdminMVC.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(long id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
             try
             {
@@ -180,7 +182,7 @@ namespace StoreAdminMVC.Controllers
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                    HttpResponseMessage responseMessage = await client.DeleteAsync("Delete/" + id);
+                    HttpResponseMessage responseMessage = await client.DeleteAsync("api/Product/Delete/" + id);
                 }
                 return RedirectToAction("Index");
             }

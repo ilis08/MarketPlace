@@ -7,7 +7,6 @@ namespace Data.Entitites
 {
     public class Category : BaseEntity
     {
-        [Required]
         public string Title { get; set; }
 
         public string Description { get; set; }

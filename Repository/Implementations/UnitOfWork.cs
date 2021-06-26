@@ -10,7 +10,7 @@ namespace Repository.Implementations
 {
     public class UnitOfWork : IDisposable
     {
-        private Store1DBContext context = new Store1DBContext();
+        private Store3DBContext context = new Store3DBContext();
 
         private GenericRepository<Product> productRepository;
         private GenericRepository<Category> categoryRepository;
@@ -44,25 +44,9 @@ namespace Repository.Implementations
             context.SaveChanges();
         }
 
-        //Dispose
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    context.Dispose();
-                }
-            }
-            this.disposed = true;
-        }
-
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            context.Dispose();
         }
     }
 }
