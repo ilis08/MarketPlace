@@ -1,8 +1,12 @@
 ﻿using Data.Context;
 using Data.Entitites;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -14,11 +18,13 @@ namespace Repository.Implementations
     {
         internal Store3DBContext context;
         internal DbSet<T> dbSet;
+        private readonly IWebHostEnvironment _environment;
 
-        public GenericRepository(Store3DBContext context)
+        public GenericRepository(Store3DBContext context, IWebHostEnvironment environment)
         {
             this.context = context;
             this.dbSet = context.Set<T>();
+            this._environment = environment;
         }
 
         public virtual void Create(T entity)
@@ -59,6 +65,21 @@ namespace Repository.Implementations
         public virtual void Update(T entity)
         {
             context.Set<T>().Update(entity);
+        }
+        
+        public string SaveImageAsync(IFormFile imageFile)
+        {
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
+
+            var imagePath = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/","Images/", imageName);
+
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+               imageFile.CopyTo(fileStream);
+            }
+            return imageName;
         }
     }
 }

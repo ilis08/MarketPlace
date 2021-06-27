@@ -25,9 +25,6 @@
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
             <th></th>
@@ -37,7 +34,11 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
+                <img src="~/Images/@item.Image"
+                     class="rounded-circle"
+                     height="40" width="50"
+                     asp-append-version="true"/>
+                @item.ProductName
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
@@ -47,9 +48,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Title)

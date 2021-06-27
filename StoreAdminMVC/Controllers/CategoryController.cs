@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using StoreAdminMVC.Filters;
 using StoreAdminMVC.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ using System.Threading.Tasks;
 
 namespace StoreAdminMVC.Controllers
 {
+    [ResourceFilter]
     public class CategoryController : Controller
     {
         private readonly Uri uri = new Uri("http://localhost:41486/api/Category/");
 
+       
         public async Task<ActionResult> Index(string query)
         {
             using (var client = new HttpClient())

@@ -17,12 +17,12 @@ namespace WebAPI.Controllers
     public class ProductController : HomeController
     {
         private readonly ProductManagementService _service = null;
-        private IWebHostEnvironment webHostEnvironment;
+        public static IWebHostEnvironment _environment;
 
-        public ProductController(IWebHostEnvironment webHostEnvironment)
+        public ProductController(IWebHostEnvironment environment)
         {
             _service = new ProductManagementService();
-            this.webHostEnvironment = webHostEnvironment;
+            _environment = environment;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public JsonResult Save([FromBody]ProductDTO productDto)
+        public JsonResult Save([FromForm]ProductDTO productDto)
         {
             if (productDto.ProductName == null)
             {

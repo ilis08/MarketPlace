@@ -1,5 +1,6 @@
 ﻿using Data.Context;
 using Data.Entitites;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace Repository.Implementations
     {
         private Store3DBContext context = new Store3DBContext();
 
+        private IWebHostEnvironment environment;
+
         private GenericRepository<Product> productRepository;
         private GenericRepository<Category> categoryRepository;
 
@@ -21,7 +24,7 @@ namespace Repository.Implementations
             {
                 if (this.productRepository == null)
                 {
-                    this.productRepository = new GenericRepository<Product>(context);
+                    this.productRepository = new GenericRepository<Product>(context, environment);
                 }
                 return productRepository;
             }
@@ -33,7 +36,7 @@ namespace Repository.Implementations
             {
                 if (this.categoryRepository == null)
                 {
-                    this.categoryRepository = new GenericRepository<Category>(context);
+                    this.categoryRepository = new GenericRepository<Category>(context, environment);
                 }
                 return categoryRepository;
             }

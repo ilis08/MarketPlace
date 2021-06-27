@@ -1,7 +1,9 @@
 ﻿using Data.Entitites;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace ApplicationService.DTOs
@@ -15,6 +17,10 @@ namespace ApplicationService.DTOs
         public DateTime? Release { get; set; }
         public double Price { get; set; }
         public string Image { get; set; }
+
+        [NotMapped]
+        public IFormFile ImageFile { get; set; } 
+
         public virtual CategoryDTO Category { get; set; }
     }
 }

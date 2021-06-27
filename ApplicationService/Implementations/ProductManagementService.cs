@@ -1,11 +1,14 @@
 ﻿using ApplicationService.DTOs;
 using Data.Context;
 using Data.Entitites;
+using Microsoft.AspNetCore.Http;
 using Repository.Implementations;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ApplicationService.Implementations
 {
@@ -95,22 +98,24 @@ namespace ApplicationService.Implementations
         }
 
         public bool Save(ProductDTO productDto)
-        {
-            Product product = new Product
-            {
-                Id = productDto.Id,
-                ProductName = productDto.ProductName,
-                Description = productDto.Description,
-                Release = productDto.Release,
-                Price = productDto.Price,
-                Image = productDto.Image,
-                CategoryId = productDto.Category.Id
-            };
-
+        { 
             try
             {
                 using (UnitOfWork unitOfWork = new UnitOfWork())
                 {
+                    productDto.Image = unitOfWork.ProductRepository.SaveImageAsync(productDto.ImageFile);
+
+                    Product product = new Product
+                    {
+                        Id = productDto.Id,
+                        ProductName = productDto.ProductName,
+                        Description = productDto.Description,
+                        Release = productDto.Release,
+                        Price = productDto.Price,
+                        Image = productDto.Image,
+                        CategoryId = productDto.Category.Id
+                    };
+
                     if (productDto.Id == 0)
                     {
                         unitOfWork.ProductRepository.Create(product);

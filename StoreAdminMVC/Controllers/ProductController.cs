@@ -101,9 +101,21 @@ namespace StoreAdminMVC.Controllers
                 HttpResponseMessage responseMessage = await client.GetAsync("api/Product/GetById/" + id);
 
                 string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
+                var productVM = JsonConvert.DeserializeObject<ProductVM>(jsonString);
 
-                return View(responseData);
+                responseMessage = await client.GetAsync("api/Category/Get/");
+
+                jsonString = await responseMessage.Content.ReadAsStringAsync();
+
+                List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(jsonString);
+
+                productVM.CategoryList = new SelectList(
+                    categories,
+                    "Id",
+                    "Title"
+                    );
+
+                return View(productVM);
             }
         }
 
@@ -126,6 +138,9 @@ namespace StoreAdminMVC.Controllers
                     byteContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
                     HttpResponseMessage responseMessage = await client.PostAsync("api/Product/Save", byteContent);
+
+                    string jsonString = await responseMessage.Content.ReadAsStringAsync();
+                    var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
                 }
                 return RedirectToAction("Index");
             }

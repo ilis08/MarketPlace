@@ -1,4 +1,5 @@
 ﻿using ApplicationService.DTOs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,10 @@ namespace StoreAdminMVC.ViewModels
         public double Price { get; set; }
         public string Image { get; set; }
 
+        public IFormFile ImageFile { get; set; }
+
         [Display(Name = "Category")]
-        public long CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public CategoryVM Category { get; set; }
 
         public SelectList CategoryList { get; set; }
