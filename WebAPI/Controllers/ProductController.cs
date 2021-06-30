@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
                 return Json(new ResponseMessage { Code = 500, Error = "Data is not valid" });
             }
 
-            ResponseMessage responseMessage = new ResponseMessage();
+            ResponseMessage responseMessage = new();
 
             if (_service.Save(productDto))
             {

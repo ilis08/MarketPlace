@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="post" asp-action="Create" enctype="multipart/form-data">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="ProductName" class="control-label"></label>
@@ -35,10 +35,9 @@
             <div class="form-group">
                 <label asp-for="Image" class="control-label"></label>
                 <div class="custom-file">
-                    <input asp-for="ImageFile" class="custom-file-input" id="customFile">
-                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <input type="file" asp-for="ImageFile" class="custom-file-input" />
+                    <label class="custom-file-label">Choose File...</label>
                 </div>
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
@@ -46,24 +45,25 @@
             </div>
             <hr />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-outline-primary" />
+
+                <input type="reset" value="Reset" class="btn btn-outline-success" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-outline-info">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
     <script type="text/javascript">
 
         $(".custom-file-input").on("change", function () {
             var fileName = $(this).val().split("\\").pop();
-            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            $(this).next(".custom-file-label").html(fileName);
         });
     </script>
 }
+

@@ -4,60 +4,25 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-outline-info">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Release)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <img src="~/Images/@item.Image"
-                     class="rounded-circle"
-                     height="40" width="50"
-                     asp-append-version="true"/>
-                @item.ProductName
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Release)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Title)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="card-deck">
+    @foreach (var product in Model)
+    {
+        <div class="card m-3" style="min-width: 18rem; max-width:30.5%;">
+            <div class="card-header">
+                <h3>@product.ProductName</h3>
+            </div>
+
+            <img  class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true"/>
+
+            <div class="card-footer text-center">
+                <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary m-1">Details</a>
+                <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-success m-1">Edit</a>
+                <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger m-1">Delete</a>
+            </div>
+        </div>
+    }
+</div>
