@@ -113,7 +113,7 @@ namespace ApplicationService.Implementations
                         Release = productDto.Release,
                         Price = productDto.Price,
                         Image = productDto.Image,
-                        CategoryId = productDto.Category.Id
+                        CategoryId = productDto.CategoryId
                     };
 
                     if (productDto.Id == 0)

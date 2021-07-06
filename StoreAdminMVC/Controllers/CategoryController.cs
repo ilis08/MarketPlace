@@ -57,7 +57,7 @@ namespace StoreAdminMVC.Controllers
                     var buffer = System.Text.Encoding.UTF8.GetBytes(content);
                     var byteContent = new ByteArrayContent(buffer);
 
-                    byteContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    byteContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json");
 
                     HttpResponseMessage responseMessage = await client.PostAsync("Save", byteContent);
                 }
