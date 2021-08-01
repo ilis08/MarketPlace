@@ -70,9 +70,9 @@ namespace ApplicationService.Implementations
         {
             ProductDTO productDto = new ProductDTO();
 
-                using (UnitOfWork unitOfWork = new UnitOfWork())
+                using(UnitOfWork unitOfWork = new UnitOfWork())
                 {
-                    Product product = unitOfWork.ProductRepository.GetProductById(id);
+                Product product = unitOfWork.ProductRepository.GetProductById(id);
 
                 if (product != null)
                 {

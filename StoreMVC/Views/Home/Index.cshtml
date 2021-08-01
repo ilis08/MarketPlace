@@ -1,0 +1,23 @@
+﻿@using StoreMVC.Controllers;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="card-deck">
+    @foreach (var product in Model)
+    {
+        <div class="card m-3" style="min-width: 18rem; max-width:30.5%;">
+            <div class="card-header">
+                <h3>@product.ProductName</h3>
+            </div>
+
+            <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
+
+            <div class="card-footer text-center">
+                <a asp-action="AddToCart" asp-route-id="@product.Id" class="btn btn-primary m-1">Buy</a>
+                <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary m-1">Details</a>
+            </div>
+        </div>
+    }
+</div>

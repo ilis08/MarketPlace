@@ -23,7 +23,6 @@ namespace StoreAdminMVC.Controllers
     public class ProductController : Controller
     {
         private readonly IHttpClientFactory _clientFactory;
-        private readonly HttpClient _httpClient;
         public IEnumerable<ProductVM> Products { get; private set; }
 
         public bool GetPullRequestsError { get; private set; }
@@ -32,7 +31,6 @@ namespace StoreAdminMVC.Controllers
         public ProductController(IHttpClientFactory clientFactory, HttpClient httpClient)
         {
             _clientFactory = clientFactory;
-            _httpClient = httpClient;
         }
 
         private readonly Uri uri = new Uri("http://localhost:41486/api");

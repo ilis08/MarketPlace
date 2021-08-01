@@ -2,6 +2,7 @@
 using Data.Entitites;
 using Microsoft.AspNetCore.Hosting;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Implementations
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IDisposable, IEnumerable
     {
         private Store3DBContext context = new Store3DBContext();
 
@@ -50,6 +51,11 @@ namespace Repository.Implementations
         public void Dispose()
         {
             context.Dispose();
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            yield return new NotImplementedException();
         }
     }
 }

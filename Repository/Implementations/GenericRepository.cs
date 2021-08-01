@@ -75,10 +75,20 @@ namespace Repository.Implementations
 
             var imagePath = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/","Images/", imageName);
 
+            var imagePathStore = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/", "Images/", imageName);
+
+
             using (var fileStream = new FileStream(imagePath, FileMode.Create))
             {
                imageFile.CopyTo(fileStream);
             }
+
+            using (var fileStream = new FileStream(imagePathStore, FileMode.Create))
+            {
+                imageFile.CopyTo(fileStream);
+            }
+
+
             return imageName;
         }
     }
