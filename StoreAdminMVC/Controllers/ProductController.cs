@@ -105,7 +105,9 @@ namespace StoreAdminMVC.Controllers
 
                     using var form = new MultipartFormDataContent();
                     using var fileContent = new ByteArrayContent(memoryStream.ToArray());
+
                     fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+
                     form.Add(fileContent, nameof(productVM.ImageFile), productVM.ImageFile.FileName);
                     form.Add(new StringContent(productVM.ProductName), nameof(productVM.ProductName));
                     form.Add(new StringContent(productVM.Description), nameof(productVM.Description));
@@ -120,7 +122,7 @@ namespace StoreAdminMVC.Controllers
 
                 }
 
-                return RedirectToAction("Details" + "/" + productVM.Id);
+                return RedirectToAction("Index");
             }
             catch (Exception)
             {
