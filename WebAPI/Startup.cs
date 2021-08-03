@@ -15,6 +15,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
 using System.IO;
+using ApplicationService.Implementations;
+using Repository.Implementations;
 
 namespace WebAPI
 {
@@ -30,11 +32,8 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                });
+            services.AddControllers().AddNewtonsoftJson(x => 
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             #region Swagger
             services.AddSwaggerGen(c =>
@@ -53,6 +52,7 @@ namespace WebAPI
                     failureStatus: HealthStatus.Unhealthy,
                     tags: new string[] { "api", "SqlDb" });
 
+            services.AddTransient<OrderManagementService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

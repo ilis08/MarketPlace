@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(Store3DBContext))]
-    [Migration("20210801122016_Initial")]
+    [Migration("20210803125731_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,9 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("OrderDetailUserId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("OrderTime")
                         .HasColumnType("datetime2");
 
@@ -65,6 +68,8 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderDetailUserId");
 
                     b.ToTable("Orders");
                 });
@@ -105,20 +110,15 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
 
                     b.ToTable("OrderDetailUsers");
                 });
@@ -168,34 +168,30 @@ namespace Data.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Data.Entitites.Order", b =>
+                {
+                    b.HasOne("Data.Entitites.OrderDetailUser", "OrderDetailUser")
+                        .WithMany()
+                        .HasForeignKey("OrderDetailUserId");
+
+                    b.Navigation("OrderDetailUser");
+                });
+
             modelBuilder.Entity("Data.Entitites.OrderDetailProduct", b =>
                 {
-                    b.HasOne("Data.Entitites.Order", "Order")
+                    b.HasOne("Data.Entitites.Order", null)
                         .WithMany("OrderDetailProduct")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Data.Entitites.Product", "Product")
-                        .WithMany()
+                        .WithMany("OrderDetailProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
-
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Data.Entitites.OrderDetailUser", b =>
-                {
-                    b.HasOne("Data.Entitites.Order", "Order")
-                        .WithOne("OrderDetailUser")
-                        .HasForeignKey("Data.Entitites.OrderDetailUser", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Data.Entitites.Product", b =>
@@ -217,8 +213,11 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entitites.Order", b =>
                 {
                     b.Navigation("OrderDetailProduct");
+                });
 
-                    b.Navigation("OrderDetailUser");
+            modelBuilder.Entity("Data.Entitites.Product", b =>
+                {
+                    b.Navigation("OrderDetailProducts");
                 });
 #pragma warning restore 612, 618
         }

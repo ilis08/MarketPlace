@@ -17,5 +17,7 @@ namespace Data.Entitites
 
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
+
+        public virtual ICollection<OrderDetailProduct> OrderDetailProducts { get; set; }
     }
 }

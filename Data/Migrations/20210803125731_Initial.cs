@@ -26,17 +26,18 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "OrderDetailUsers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PaymentType = table.Column<int>(type: "int", nullable: false),
-                    OrderTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_OrderDetailUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,25 +69,24 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderDetailUsers",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: false)
+                    PaymentType = table.Column<int>(type: "int", nullable: false),
+                    OrderTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OrderDetailUserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderDetailUsers", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderDetailUsers_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
+                        name: "FK_Orders_OrderDetailUsers_OrderDetailUserId",
+                        column: x => x.OrderDetailUserId,
+                        principalTable: "OrderDetailUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,10 +127,9 @@ namespace Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetailUsers_OrderId",
-                table: "OrderDetailUsers",
-                column: "OrderId",
-                unique: true);
+                name: "IX_Orders_OrderDetailUserId",
+                table: "Orders",
+                column: "OrderDetailUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
@@ -144,13 +143,13 @@ namespace Data.Migrations
                 name: "OrderDetailProducts");
 
             migrationBuilder.DropTable(
-                name: "OrderDetailUsers");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "OrderDetailUsers");
 
             migrationBuilder.DropTable(
                 name: "Categories");

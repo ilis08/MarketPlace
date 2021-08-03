@@ -18,6 +18,9 @@ namespace Repository.Implementations
 
         private GenericRepository<Product> productRepository;
         private GenericRepository<Category> categoryRepository;
+        private GenericRepository<Order> orderRepository;
+        private GenericRepository<OrderDetailProduct> orderDetailProductRepository;
+        private GenericRepository<OrderDetailUser> orderDetailUserRepository;
 
         public GenericRepository<Product> ProductRepository
         {
@@ -40,6 +43,40 @@ namespace Repository.Implementations
                     this.categoryRepository = new GenericRepository<Category>(context, environment);
                 }
                 return categoryRepository;
+            }
+        }
+
+        public GenericRepository<Order> OrderRepository
+        {
+            get
+            {
+                if (this.orderRepository == null)
+                {
+                    this.orderRepository = new GenericRepository<Order>(context, environment);
+                }
+                return orderRepository;
+            }
+        }
+        public GenericRepository<OrderDetailProduct> OrderDetailProductRepository
+        {
+            get
+            {
+                if (this.orderDetailProductRepository == null)
+                {
+                    this.orderDetailProductRepository = new GenericRepository<OrderDetailProduct>(context, environment);
+                }
+                return orderDetailProductRepository;
+            }
+        }
+        public GenericRepository<OrderDetailUser> OrderDetailUserRepository
+        {
+            get
+            {
+                if (this.orderDetailUserRepository == null)
+                {
+                    this.orderDetailUserRepository = new GenericRepository<OrderDetailUser>(context, environment);
+                }
+                return orderDetailUserRepository;
             }
         }
 

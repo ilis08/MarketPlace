@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entitites
 {
     public class OrderDetailUser
     {
-        [BindNever]
+        [Key]
         public int Id { get; set; }
         [Required]
         public string Surname { get; set; }
@@ -14,10 +15,6 @@ namespace Data.Entitites
 
         [DataType(DataType.PhoneNumber)]
         [Required]
-        public int PhoneNumber { get; set; }
-
-        public int OrderId { get; set; }
-
-        public virtual Order Order { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

@@ -32,6 +32,16 @@ namespace Repository.Implementations
             context.Add(entity);
         }
 
+        public virtual void CreateRangeOrder(Order order)
+        {
+            context.AttachRange(order.OrderDetailProduct.Select(c => c));
+        }
+
+        public virtual void CreateUserOrder(Order order)
+        {
+            context.Attach(order.OrderDetailUser).State = EntityState.Added;
+        }
+
         public virtual void Delete(T entity)
         {
             context.Set<T>().Remove(entity);
@@ -60,6 +70,21 @@ namespace Repository.Implementations
         public IEnumerable<Product> GetProducts()
         {
             return context.Products.Include(x => x.Category).ToList();
+        }
+
+        public IEnumerable<Order> GetOrders()
+        {
+            return context.Orders.ToList();
+        }
+
+        public Order GetOrder(int id)
+        {
+            return context.Orders.Where(p => p.Id == id).Include(x => x.OrderDetailUser).Include(o => o.OrderDetailProduct).ThenInclude(p => p.Product).FirstOrDefault();
+        }
+        
+        public List<OrderDetailProduct> GetOrderDetailProducts(int id)
+        {
+            return context.OrderDetailProducts.Where(p => p.OrderId == id).ToList();
         }
 
         public virtual void Update(T entity)

@@ -1,20 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Data.Entitites
+namespace ApplicationService.DTOs.OrderManagementDTOs
 {
-    public class OrderDetailProduct
-    {
-        [Key]
+    public class OrderDetailProductsDTO
+    { 
         public int Id { get; set; }
         [Required]
         public int Count { get; set; }
 
         public int ProductId { get; set; }
-
-        public Product Product { get; set; }
-
-        public int OrderId { get; set; }
     }
 }
