@@ -16,5 +16,7 @@ namespace Data.Entitites
         public Product Product { get; set; }
 
         public int OrderId { get; set; }
+
+        public double Price { get; set; }
     }
 }

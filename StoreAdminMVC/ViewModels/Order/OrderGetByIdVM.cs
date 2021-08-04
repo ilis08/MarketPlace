@@ -13,6 +13,10 @@ namespace StoreAdminMVC.ViewModels.Order
 
         public PaymentType PaymentType { get; set; }
 
+        public bool IsCompleted { get; set; }
+
+        public double TotalPrice { get; set; }
+
         public string FullName { get; set; }
 
         public string Phone { get; set; }

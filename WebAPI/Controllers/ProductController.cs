@@ -34,15 +34,15 @@ namespace WebAPI.Controllers
         
         [HttpGet]
         [Route("[action]")]
-        public IActionResult Get(string query)
+        public async Task<IActionResult> Get(string query)
         {
-            return Json(_service.Get(query));
+            return Json(await _service.Get(query));
         }
 
         [HttpGet("[action]/{id:int}")]
-        public JsonResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            return Json(_service.GetById(id));
+            return Json(await _service.GetById(id));
         }
 
         [Route("[action]")]

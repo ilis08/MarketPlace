@@ -1,6 +1,8 @@
 ﻿using Data.Context;
 using Data.Entitites;
 using Microsoft.AspNetCore.Hosting;
+using Repository.Implementations.OrderRepo;
+using Repository.Implementations.ProductRepo;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,19 +18,17 @@ namespace Repository.Implementations
 
         private IWebHostEnvironment environment;
 
-        private GenericRepository<Product> productRepository;
+        private ProductRepository productRepository;
         private GenericRepository<Category> categoryRepository;
-        private GenericRepository<Order> orderRepository;
-        private GenericRepository<OrderDetailProduct> orderDetailProductRepository;
-        private GenericRepository<OrderDetailUser> orderDetailUserRepository;
+        private OrderRepository orderRepository;
 
-        public GenericRepository<Product> ProductRepository
+        public ProductRepository ProductRepository
         {
             get
             {
                 if (this.productRepository == null)
                 {
-                    this.productRepository = new GenericRepository<Product>(context, environment);
+                    this.productRepository = new ProductRepository(context);
                 }
                 return productRepository;
             }
@@ -46,43 +46,21 @@ namespace Repository.Implementations
             }
         }
 
-        public GenericRepository<Order> OrderRepository
+        public OrderRepository OrderRepository
         {
             get
             {
                 if (this.orderRepository == null)
                 {
-                    this.orderRepository = new GenericRepository<Order>(context, environment);
+                    this.orderRepository = new OrderRepository(context);
                 }
                 return orderRepository;
-            }
-        }
-        public GenericRepository<OrderDetailProduct> OrderDetailProductRepository
-        {
-            get
-            {
-                if (this.orderDetailProductRepository == null)
-                {
-                    this.orderDetailProductRepository = new GenericRepository<OrderDetailProduct>(context, environment);
-                }
-                return orderDetailProductRepository;
-            }
-        }
-        public GenericRepository<OrderDetailUser> OrderDetailUserRepository
-        {
-            get
-            {
-                if (this.orderDetailUserRepository == null)
-                {
-                    this.orderDetailUserRepository = new GenericRepository<OrderDetailUser>(context, environment);
-                }
-                return orderDetailUserRepository;
             }
         }
 
         public void Save()
         {
-            context.SaveChanges();
+           context.SaveChangesAsync();
         }
 
         public void Dispose()

@@ -17,25 +17,27 @@ namespace WebAPI.Controllers
     public class OrderController : HomeController
     {
         private readonly OrderManagementService _service;
+        private readonly ResponseMessage responseMessage;
         public static IWebHostEnvironment _environment;
 
-        public OrderController(IWebHostEnvironment environment, OrderManagementService service)
+        public OrderController(IWebHostEnvironment environment, OrderManagementService service, ResponseMessage message)
         {
             _service = service;
             _environment = environment;
+            this.responseMessage = message;
         }
 
         [HttpGet]
         [Route("[action]")]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Json(_service.Get());
+            return Json(await _service.Get());
         }
 
         [HttpGet("[action]/{id:int}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            return Json(_service.GetById(id));
+            return Json(await _service.GetById(id));
         }
 
         [Route("[action]")]
@@ -56,6 +58,45 @@ namespace WebAPI.Controllers
                 responseMessage.Body = "Order was not saved";
             }
 
+            return Json(responseMessage);
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public JsonResult Update([FromBody] OrderDTO orderDTO)
+        {
+            ResponseMessage responseMessage = new ResponseMessage();
+
+            if (_service.Update(orderDTO))
+            {
+                responseMessage.Code = 201;
+                responseMessage.Body = "Order was updated";
+            }
+            else
+            {
+                responseMessage.Code = 202;
+                responseMessage.Body = "Order was not updated";
+            }
+
+            return Json(responseMessage);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CompleteOrder(int id, bool value)
+        {
+            if (id != 0)
+            {
+                if (await _service.CompleteOrderAsync(id, value))
+                {
+                    responseMessage.Code = 201;
+                    responseMessage.Body = "Order was completed";
+                }
+                else
+                {
+                    responseMessage.Code = 202;
+                    responseMessage.Body = "Order was not completed";
+                }
+            }
             return Json(responseMessage);
         }
 

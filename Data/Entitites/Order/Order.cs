@@ -20,6 +20,10 @@ namespace Data.Entitites
         [ScaffoldColumn(false)]
         public DateTime OrderTime { get; set; }
 
+        public bool IsCompleted { get; set; }
+
+        public double TotalPrice { get; set; }
+
         [BindNever]
         public OrderDetailUser OrderDetailUser { get; set; }
 

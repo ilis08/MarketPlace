@@ -17,6 +17,8 @@ namespace ApplicationService.DTOs
 
         public PaymentType PaymentType { get; set; } 
 
+        public double TotalPrice { get; set; }
+
         [BindNever]
         public OrderDetailUser OrderDetailUser { get; set; }
 

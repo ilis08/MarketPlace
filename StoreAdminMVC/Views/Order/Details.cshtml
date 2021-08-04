@@ -10,33 +10,50 @@
 <div class="row justify-content-center m-3">
     <div class="col-sm-8">
         <div class="card">
-            <div class="card-header">
-                <h1>Order #@Model.Id</h1>
-            </div>
+            @if (Model.IsCompleted)
+            {
+                <div class="card-header">
+                    <p>№ @Model.Id</p>
+                    <p>Order is completed <i class="fa fa-check" aria-hidden="true"></i></p>
+                </div>
+            }
+            else
+            {
+                <div class="card-header">
+                    <p>№ @Model.Id</p>
+                    <p>Order is in process <i class="fas fa-sync-alt"></i></p>
+                </div>
+            }
+
+
+            <br />
 
             <div class="card-body text-center">
                 <h4>Payment type : @Model.PaymentType</h4>
                 <h4>Customer : @Model.FullName</h4>
                 <h4>Customer Phone : @Model.Phone</h4>
-                <table>
-                    @foreach (var item in Model.OrderDetailProducts)
-                    {
-                        <tbody>
-                            <tr>
-                                <td>@item.ProductName</td>
-                                <td>@item.Count</td>
-                            </tr>
-                        </tbody>
-                    }
-                </table>
-                
+                <h4>Total Price : @Model.TotalPrice</h4>
+            </div>
+
+
+            <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+                <div class="my-3 p-3">
+                    <ul class="list-group">
+                        @foreach (var item in Model.OrderDetailProducts)
+                        {
+                            <li class="list-group-item">Product : <a asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark">@item.ProductName</a>. Count : @item.Count</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div>
 
             </div>
             <div class="card-footer text-center">
-                <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Back</a>
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success m-1">Edit</a>
-                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger m-1">Delete</a>
+                <a asp-controller="Order" asp-action="Index" class="btn btn-primary">Back</a>
+                <a asp-controller="Order" asp-action="CompleteOrder" asp-route-id="@Model.Id" >Complete order</a>
             </div>
         </div>
     </div>
 </div>
+

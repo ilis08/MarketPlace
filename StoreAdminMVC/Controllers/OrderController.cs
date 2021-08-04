@@ -70,5 +70,28 @@ namespace StoreAdminMVC.Controllers
 
             return View(Order);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> CompleteOrder(int id, bool state)
+        {
+            var type = new { Id = id, State = state };
+
+            var content = JsonSerializer.Serialize(type);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(content);
+            var byteContent = new ByteArrayContent(buffer);
+
+            var client = _clientFactory.CreateClient("myapi");
+
+            HttpResponseMessage response = await client.PostAsync("Order/CompleteOrder", byteContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Details", new { Id = id });
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }

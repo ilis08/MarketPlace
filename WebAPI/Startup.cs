@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using System.IO;
 using ApplicationService.Implementations;
 using Repository.Implementations;
+using WebAPI.Messages;
 
 namespace WebAPI
 {
@@ -53,6 +54,7 @@ namespace WebAPI
                     tags: new string[] { "api", "SqlDb" });
 
             services.AddTransient<OrderManagementService>();
+            services.AddTransient<ResponseMessage>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -14,7 +14,7 @@ namespace ApplicationService.Implementations
 {
     public class ProductManagementService
     {
-        public List<ProductDTO> Get(string query)
+        public async Task<IEnumerable<ProductDTO>> Get(string query)
         {
             List<ProductDTO> productDto = new List<ProductDTO>();
 
@@ -22,7 +22,7 @@ namespace ApplicationService.Implementations
             {
                 if (query == null)
                 {
-                    foreach (var item in unitOfWork.ProductRepository.GetProducts())
+                    foreach (var item in await unitOfWork.ProductRepository.GetProducts())
                     {
                         productDto.Add(new ProductDTO
                         {
@@ -66,13 +66,13 @@ namespace ApplicationService.Implementations
             return productDto;
         }
 
-        public ProductDTO GetById(int id)
+        public async Task<ProductDTO> GetById(int id)
         {
             ProductDTO productDto = new ProductDTO();
 
                 using(UnitOfWork unitOfWork = new UnitOfWork())
                 {
-                Product product = unitOfWork.ProductRepository.GetProductById(id);
+                Product product = await unitOfWork.ProductRepository.GetProductById(id);
 
                 if (product != null)
                 {
@@ -142,7 +142,7 @@ namespace ApplicationService.Implementations
             {
                 using (UnitOfWork unitOfWork = new UnitOfWork())
                 {
-                    Product product = unitOfWork.ProductRepository.GetById(id);
+                    var product = unitOfWork.ProductRepository.GetProductById(id);
                     unitOfWork.ProductRepository.Delete(product);
                     unitOfWork.Save();
                 }

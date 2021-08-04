@@ -9,13 +9,45 @@
 <div class="list-group">
     @foreach (var item in Model)
     {
-        <a asp-action="Details" asp-route-id="@item.Id" class="list-group-item list-group-item-action active" aria-current="true">
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">Order #@item.Id</h5>
-                <small>3 days ago</small>
-            </div>
-            <p class="mb-1">Some placeholder content in a paragraph.</p>
-            <small>Order Type : @item.PaymentType</small>
-        </a>
+        @if (item.IsCompleted == true)
+        {
+            <a asp-action="Details" asp-route-id="@item.Id" class="list-group-item list-group-item-action" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Order #@item.Id</h5>
+                    <small>Completed <i class="fa fa-check" aria-hidden="true"></i></small>
+                </div>
+                <p class="mb-1">Total price : @item.TotalPrice</p>
+                @if (item.PaymentType == Data.Entitites.PaymentType.ByCard)
+                {
+                    <small>Payment Type : @item.PaymentType <i class="far fa-credit-card"></i></small>
+                }
+                else
+                {
+                    <small>Payment Type : @item.PaymentType <i class="far fa-money-bill-alt"></i></small>
+                }
+
+            </a>
+            <br />
+        }
+        else
+        {
+            <a asp-action="Details" asp-route-id="@item.Id" class="list-group-item list-group-item-action" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Order #@item.Id</h5>
+                    <small>In process <i class="fas fa-sync-alt"></i></small>
+                </div>
+                <p class="mb-1">Total price : @item.TotalPrice</p>
+                @if (item.PaymentType == Data.Entitites.PaymentType.ByCard)
+                {
+                    <small>Payment Type : @item.PaymentType <i class="far fa-credit-card"></i></small>
+                }
+                else
+                {
+                    <small>Payment Type : @item.PaymentType <i class="far fa-money-bill-alt"></i></small>
+                }
+            </a>
+            <br />
+        }
+
     }
 </div>

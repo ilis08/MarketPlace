@@ -11,5 +11,9 @@ namespace StoreAdminMVC.ViewModels
         public int Id { get; set; }
 
         public PaymentType PaymentType { get; set; }
+
+        public bool IsCompleted { get; set; }
+
+        public double TotalPrice { get; set; }
     }
 }

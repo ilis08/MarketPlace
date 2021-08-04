@@ -14,6 +14,10 @@ namespace ApplicationService.DTOs.OrderManagementDTOs
 
         public PaymentType PaymentType { get; set; }
 
+        public bool IsCompleted { get; set; }
+
+        public double TotalPrice { get; set; }
+
         public string FullName { get; set; }
 
         public string Phone { get; set; }
