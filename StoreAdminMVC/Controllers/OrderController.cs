@@ -71,18 +71,14 @@ namespace StoreAdminMVC.Controllers
             return View(Order);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> CompleteOrder(int id, bool state)
+        [HttpGet]
+        public async Task<ActionResult> CompleteOrder(int id)
         {
-            var type = new { Id = id, State = state };
-
-            var content = JsonSerializer.Serialize(type);
-            var buffer = System.Text.Encoding.UTF8.GetBytes(content);
-            var byteContent = new ByteArrayContent(buffer);
+            var request = new HttpRequestMessage(HttpMethod.Post, $"Order/CompleteOrder/{id}");
 
             var client = _clientFactory.CreateClient("myapi");
 
-            HttpResponseMessage response = await client.PostAsync("Order/CompleteOrder", byteContent);
+            var response = await client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {

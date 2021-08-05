@@ -78,11 +78,11 @@ namespace Repository.Implementations.OrderRepo
             context.Attach(order.OrderDetailUser).State = EntityState.Added;
         }
 
-        public async Task CompleteOrder(int id, bool state)
+        public async Task CompleteOrder(int id)
         {
             var order = await context.Orders.FindAsync(id);
 
-            order.IsCompleted = state;
+            order.IsCompleted = true;
 
             context.Orders.Attach(order);
             context.Entry(order).Property(x => x.IsCompleted).IsModified = true;

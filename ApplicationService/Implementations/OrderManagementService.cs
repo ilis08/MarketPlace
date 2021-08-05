@@ -142,11 +142,11 @@ namespace ApplicationService.Implementations
             }      
         }
 
-        public async Task<bool> CompleteOrderAsync(int id, bool orderValue)
+        public async Task<bool> CompleteOrderAsync(int id)
         {
             try
             {
-                await unitOfWork.OrderRepository.CompleteOrder(id, orderValue);
+                await unitOfWork.OrderRepository.CompleteOrder(id);
 
                 return true;
             }

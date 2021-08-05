@@ -3,7 +3,6 @@
     ViewData["Title"] = "Home Page";
 }
 
-
 <div class="card-deck">
     @foreach (var product in Model)
     {
@@ -15,7 +14,15 @@
             <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
 
             <div class="card-footer text-center">
-                <a asp-action="AddToCart" asp-route-id="@product.Id" class="btn btn-primary m-1">Buy</a>
+                <form asp-page="/Cart" method="post">
+                    <input type="hidden" asp-for="@Model.Id"/>
+                    <span class="card-text p-1">
+                        <button type="submit"
+                                class="btn btn-success btn-sm pull-right" style="float:right">
+                            Add to Cart.
+                        </button>
+                    </span>
+                </form>
                 <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary m-1">Details</a>
             </div>
         </div>

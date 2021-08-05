@@ -51,7 +51,10 @@
             </div>
             <div class="card-footer text-center">
                 <a asp-controller="Order" asp-action="Index" class="btn btn-primary">Back</a>
-                <a asp-controller="Order" asp-action="CompleteOrder" asp-route-id="@Model.Id" >Complete order</a>
+                @if (!Model.IsCompleted)
+                {
+                    <a asp-controller="Order" asp-action="CompleteOrder" asp-route-id="@Model.Id">Complete Order</a>
+                }
             </div>
         </div>
     </div>
