@@ -1,4 +1,4 @@
-﻿using StoreAdminMVC.ViewModels;
+﻿using StoreMVC.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

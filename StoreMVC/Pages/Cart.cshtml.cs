@@ -7,30 +7,32 @@ using Data.Entitites;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using StoreAdminMVC.ViewModels;
+using StoreMVC.ViewModels;
 using StoreMVC.Models.Order;
+using StoreMVC.Models.Order.SessionCart;
 
 namespace StoreMVC.Pages
 {
+    [ValidateAntiForgeryToken]
     public class CartModel : PageModel
     {
         public Cart Cart { get; set; }
         private readonly IHttpClientFactory clientFactory;
 
-        public CartModel(IHttpClientFactory factory)
+        public ProductVM Product { get; set; }
+
+        public CartModel(IHttpClientFactory factory, Cart cart)
         {
             clientFactory = factory;
+            Cart = cart;
         }
 
         public void OnGet()
         {
-
         }
 
         public async Task OnPostAsync(int id)
         {
-            ProductVM Product = new ProductVM();
-
             var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
 
             var client = clientFactory.CreateClient("myapi");
@@ -41,10 +43,6 @@ namespace StoreMVC.Pages
             {
                 var responseStream = await response.Content.ReadAsStringAsync();
                 Product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
-            }
-            else
-            {
-                Product = new ProductVM();
             }
 
             Cart.AddToCart(Product);

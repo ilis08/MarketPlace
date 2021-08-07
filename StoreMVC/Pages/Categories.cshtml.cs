@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using StoreAdminMVC.ViewModels;
+using StoreMVC.ViewModels;
 
 namespace StoreMVC.Pages
 {

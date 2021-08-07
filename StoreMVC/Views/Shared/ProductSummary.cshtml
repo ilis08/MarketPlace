@@ -1,10 +1,9 @@
 ﻿@model StoreMVC.ViewModels.ProductVM
 
-<form id="@Model.ProductID" asp-page="/Cart" method="post">
-    <input type="hidden" asp-for="ProductID" />
+<form id="@Model.Id" asp-page="/Cart" method="post">
+    <input type="hidden" asp-for="Id" />
 
     <span class="card-text p-1">
-        @Model.Description
         <button type="submit"
                 class="btn btn-success btn-sm pull-right" style="float:right">
             Add to Cart.

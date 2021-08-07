@@ -1,4 +1,4 @@
-﻿using StoreAdminMVC.ViewModels;
+﻿using StoreMVC.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +10,15 @@ namespace StoreMVC.Models.Order
     {
         public List<CartLine> Lines { get; set; } = new List<CartLine>();
 
-        public void AddToCart(ProductVM product)
+        public virtual void AddToCart(ProductVM product)
         {
             CartLine line = Lines.Where(p => p.Product.Id == product.Id).FirstOrDefault();
 
-            if (line != null)
+            if (line == null)
             {
                 Lines.Add(new CartLine
                 {
-                    Product = line.Product,
+                    Product = product,
                     Count = 1
                 });
             }

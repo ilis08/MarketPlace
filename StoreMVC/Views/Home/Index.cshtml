@@ -13,18 +13,7 @@
 
             <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
 
-            <div class="card-footer text-center">
-                <form asp-page="/Cart" method="post">
-                    <input type="hidden" asp-for="@Model.Id"/>
-                    <span class="card-text p-1">
-                        <button type="submit"
-                                class="btn btn-success btn-sm pull-right" style="float:right">
-                            Add to Cart.
-                        </button>
-                    </span>
-                </form>
-                <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary m-1">Details</a>
-            </div>
+            <partial name="ProductSummary" model="product"/>
         </div>
     }
 </div>

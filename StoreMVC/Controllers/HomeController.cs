@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using StoreAdminMVC.ViewModels;
 using StoreMVC.Models;
+using StoreMVC.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

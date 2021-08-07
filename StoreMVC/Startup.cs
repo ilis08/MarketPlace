@@ -4,12 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using StoreMVC.Models.Order;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using StoreMVC.Models.Order.SessionCart;
+using Microsoft.AspNetCore.Http;
 
 namespace StoreMVC
 {
@@ -28,6 +31,14 @@ namespace StoreMVC
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(opts =>
+            opts.Cookie.IsEssential = true );
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddScoped(c => CartSession.GetCart(c));
 
             services.AddHttpClient("myapi", c =>
             {
@@ -50,7 +61,8 @@ namespace StoreMVC
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
-            
+
+            app.UseSession();
 
 
             app.UseRouting();
@@ -62,6 +74,8 @@ namespace StoreMVC
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapDefaultControllerRoute();
 
                 endpoints.MapRazorPages();
             });
