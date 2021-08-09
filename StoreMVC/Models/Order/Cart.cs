@@ -27,5 +27,15 @@ namespace StoreMVC.Models.Order
                 line.Count += 1;
             }
         }
+
+        public virtual void RemoveFromCart(ProductVM product)
+        {
+            Lines.RemoveAll(p => p.Product.Id == product.Id);
+        }
+
+        public double ComputeTotalPrice()
+        {
+            return Lines.Sum(e => e.Count * e.Product.Price);
+        }
     }
 }

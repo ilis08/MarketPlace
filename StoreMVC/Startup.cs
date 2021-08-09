@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using StoreMVC.Models.Order.SessionCart;
 using Microsoft.AspNetCore.Http;
+using StoreMVC.ViewModels;
 
 namespace StoreMVC
 {
@@ -38,7 +39,7 @@ namespace StoreMVC
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddScoped(c => CartSession.GetCart(c));
+            services.AddTransient(c => CartSession.GetCart(c));
 
             services.AddHttpClient("myapi", c =>
             {

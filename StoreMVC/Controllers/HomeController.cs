@@ -18,7 +18,6 @@ namespace StoreMVC.Controllers
         private readonly IHttpClientFactory _clientFactory;
         public IEnumerable<ProductVM> Products { get; private set; }
 
-        private readonly string imagePath = @"C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/Images/";
 
         public HomeController(IHttpClientFactory clientFactory)
         {
@@ -27,8 +26,6 @@ namespace StoreMVC.Controllers
 
         public async Task<ActionResult> Index(string query)
         {
-            ViewBag.Image = imagePath;
-
             var request = new HttpRequestMessage(HttpMethod.Get, "Product/Get/");
 
             var client = _clientFactory.CreateClient("myapi");

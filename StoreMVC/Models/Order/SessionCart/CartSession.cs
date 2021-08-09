@@ -32,5 +32,11 @@ namespace StoreMVC.Models.Order.SessionCart
             base.AddToCart(product);
             Session.SetJson("Cart", this);
         }
+
+        public override void RemoveFromCart(ProductVM product)
+        {
+            base.RemoveFromCart(product);
+            Session.SetJson("Cart", this);
+        }
     }
 }

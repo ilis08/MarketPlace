@@ -4,38 +4,78 @@
 }
 
 <h4>Your cart</h4>
-<table class="table table-bordered" table-striped>
-    <thead>
-        <tr>
-            <th>Quantity</th>
-            <th>Item</th>
-            <th class="text-right">Price</th>
-            <th class="text-right">Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var line in Model.Cart.Lines)
-        {
-            <tr>
-                <td class="text-center">@line.Count</td>
-                <td class="text-left">@line.Product.ProductName</td>
-                <td class="text-right">@line.Product.Price.ToString("c")</td>
-                <td class="text-right">
-                    @((line.Count * line.Product.Price).ToString("c"))
-                </td>
-            </tr>
-        }
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="3" class="text-right">Total:</td>
-            <td>
-                1500
-            </td>
-        </tr>
-    </tfoot>
-</table>
-<div class="text-center">
-    <a class="btn-btn-primary" asp-action="Index" asp-controller="Home">Continue Shopping</a>
-    <a class="btn btn-primary" asp-action="Checkout" asp-controller="Order">Checkout</a>
-</div>
+<hr />
+
+@if (Model.Cart.Lines.Count == 0)
+{
+    <div class="text-center">
+        <h3>Sorry, cart is empty</h3>
+    </div>
+    <br />
+    <div class="text-center">
+        <a class="btn-btn-primary" asp-action="Index" asp-controller="Home">Continue Shopping</a>
+    </div>
+    <div>
+
+    </div>
+}
+else
+{
+    @foreach (var item in Model.Cart.Lines)
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-2">
+                    <img class="rounded" width="140" height="140" src="~/Images/@item.Product.Image" />
+                </div>
+                <div class="col-8 text-left">
+                    <a asp-controller="Home" asp-action="Details" asp-route-id="@item.Product.Id">@item.Product.ProductName</a>
+                </div>
+                <div class="col-2 text-right">
+                    <form asp-page-handler="Remove" asp-route-id="@item.Product.Id" method="post">
+                        <input type="submit" value="Remove" class="btn btn-light"/>
+                    </form>
+                </div>
+            </div>
+            <br />
+            <div class="row d-flex align-items-center">
+                <div class="col-6">
+
+                </div>
+                <div class="col-1 d-flex align-items-center">
+                    <partial name="ProductAdd" model="item.Product" />
+                </div>
+                <div class="col-1 d-flex align-items-center">
+                    <p class="m-0">@item.Count</p>
+                </div>
+                <div class="col-1 d-flex align-items-center">
+                    <partial name="ProductAdd" model="item.Product" />
+                </div>
+                <div class="col-3 d-flex align-items-center">
+                    <p class="m-0">@((@item.Product.Price * @item.Count).ToString("c"))</p>
+                </div>
+            </div>
+        </div>
+        <hr />
+    }
+    <br />
+    <div class="row text-center">
+        <div class="col-6">
+            <a class="btn-btn-primary" asp-action="Index" asp-controller="Home">Continue Shopping</a>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col text-right">
+                    <p>
+                        @Model.Cart.ComputeTotalPrice().ToString("c")
+                    </p>
+                </div>
+                <div class="col text-left">
+                    <a asp-controller="Order" asp-action="Checkout">Checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
