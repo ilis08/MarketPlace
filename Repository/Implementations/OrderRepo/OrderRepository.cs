@@ -52,7 +52,7 @@ namespace Repository.Implementations.OrderRepo
         {
             foreach (var product in products)
             {
-                var price = context.Products.Where(o => o.Id == product.ProductId).Select(c => c.Price).FirstOrDefault();
+                var price = context.Products.Where(o => o.Id == product.Product.Id).Select(c => c.Price).FirstOrDefault();
 
                 product.Price = price;
 

@@ -1,0 +1,31 @@
+﻿@model StoreMVC.ViewModels.ProductVM
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+<div class="row justify-content-center m-3">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-header">
+                <h1>@Model.ProductName</h1>
+            </div>
+
+            <div class="card-body text-center">
+                <img class="card-img-top" width="450" height="600" src="~/Images/@Model.Image" asp-append-version="true" />
+
+                <h4>Product ID : @Model.Id</h4>
+                <h4>Description : @Model.Description</h4>
+                <h4>Release : @Model.Release</h4>
+                <h4>Category : @Model.Category.Title</h4>
+                <h4>Price : @Model.Price.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))</h4>
+
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Back</a>
+            </div>
+        </div>
+    </div>
+</div>

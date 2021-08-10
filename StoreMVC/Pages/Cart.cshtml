@@ -1,5 +1,6 @@
 ﻿@page "/cart"
 @model StoreMVC.Pages.CartModel
+@using System.Globalization
 @{
 }
 
@@ -33,7 +34,9 @@ else
                 </div>
                 <div class="col-2 text-right">
                     <form asp-page-handler="Remove" asp-route-id="@item.Product.Id" method="post">
-                        <input type="submit" value="Remove" class="btn btn-light"/>
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -42,36 +45,42 @@ else
                 <div class="col-6">
 
                 </div>
-                <div class="col-1 d-flex align-items-center">
-                    <partial name="ProductAdd" model="item.Product" />
+                <div class="row col-2">
+                    <div class="col-4 d-flex align-items-center justify-content-start">
+                        <partial name="ProductAdd" model="item.Product" />
+                    </div>
+                    <div class="col-4 justify-content-center d-flex align-items-center justify-content-center">
+                        <h4 class="m-0">@item.Count</h4>
+                    </div>
+                    <div class="col-4 d-flex align-items-center justify-content-end">
+                        <partial name="ProductRemove" model="item.Product" />
+                    </div>
                 </div>
-                <div class="col-1 d-flex align-items-center">
-                    <p class="m-0">@item.Count</p>
-                </div>
-                <div class="col-1 d-flex align-items-center">
-                    <partial name="ProductAdd" model="item.Product" />
-                </div>
-                <div class="col-3 d-flex align-items-center">
-                    <p class="m-0">@((@item.Product.Price * @item.Count).ToString("c"))</p>
+
+                <div class="col-4 d-flex justify-content-end align-items-center">
+                    <h5 class="m-0">@((@item.Product.Price * @item.Count).ToString("c", CultureInfo.CreateSpecificCulture("en-US")))</h5>
                 </div>
             </div>
         </div>
         <hr />
     }
     <br />
-    <div class="row text-center">
-        <div class="col-6">
-            <a class="btn-btn-primary" asp-action="Index" asp-controller="Home">Continue Shopping</a>
+    <div class="row d-flex align-items-center">
+        <div class="col-6 d-flex align-items-center">
+            <a class="btn btn-warning font-weight-bold" asp-action="Index" asp-controller="Home">Continue Shopping</a>
         </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="col text-right">
-                    <p>
-                        @Model.Cart.ComputeTotalPrice().ToString("c")
-                    </p>
+        <div class="col-2">
+
+        </div>
+        <div class="border-success col-4 d-flex align-items-center align-self-center">
+            <div class="row badge-light rounded p-4">
+                <div class="col-6 text-right d-flex align-items-center">
+                    <h3>
+                        @Model.Cart.ComputeTotalPrice().ToString("c", CultureInfo.CreateSpecificCulture("en-US"))
+                    </h3>
                 </div>
-                <div class="col text-left">
-                    <a asp-controller="Order" asp-action="Checkout">Checkout</a>
+                <div class="col-6">
+                    <a asp-controller="Order" asp-action="Checkout" class="btn btn-lg btn-success">Checkout</a>
                 </div>
             </div>
         </div>

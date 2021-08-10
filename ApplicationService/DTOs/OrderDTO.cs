@@ -19,10 +19,8 @@ namespace ApplicationService.DTOs
 
         public double TotalPrice { get; set; }
 
-        [BindNever]
         public OrderDetailUser OrderDetailUser { get; set; }
 
-        [BindNever]
         public IEnumerable<OrderDetailProductsDTO> OrderDetailProducts { get; set; }
 
         public IEnumerable<ValidationResult> ValidatePaymentType(ValidationContext validationContext)

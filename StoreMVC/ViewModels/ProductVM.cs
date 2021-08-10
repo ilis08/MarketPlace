@@ -21,13 +21,9 @@ namespace StoreMVC.ViewModels
         public double Price { get; set; }
         public string Image { get; set; }
 
-        public IFormFile ImageFile { get; set; }
-
         [Display(Name = "Category")]
         public int CategoryId { get; set; }
         public CategoryVM Category { get; set; }
-
-        public SelectList CategoryList { get; set; }
 
         public ProductVM()
         {

@@ -1,4 +1,5 @@
 ﻿@using StoreMVC.Controllers;
+@using System.Globalization;
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -6,14 +7,28 @@
 <div class="card-deck">
     @foreach (var product in Model)
     {
-        <div class="card m-3" style="min-width: 18rem; max-width:30.5%;">
+        <div class="card m-3" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
             <div class="card-header">
-                <h3>@product.ProductName</h3>
+                <a class="fill-div" asp-action="Details" asp-route-id="@product.Id">@product.ProductName</a>
             </div>
 
             <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
+            <hr />
+            <div class="row pb-2">
+                <div class="col-6 text-center">
+                    <h5>@product.Price.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))</h5>
+                </div>
+                <div class="col-6 text-center">
+                    <partial name="ProductSummary" model="product" />
+                </div>
+            </div>
 
-            <partial name="ProductSummary" model="product"/>
         </div>
     }
 </div>
+
+<script>
+    function Details(id) {
+        location.href = "Home/Details/" + id;
+    }
+</script>

@@ -63,6 +63,24 @@ namespace StoreMVC.Pages
             }
 
             Cart.RemoveFromCart(Product);
+
+        }
+
+        public async Task OnPostMinusAsync(int id)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
+
+            var client = clientFactory.CreateClient("myapi");
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseStream = await response.Content.ReadAsStringAsync();
+                Product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
+            }
+
+            Cart.MinusCount(Product);
         }
     }
 }

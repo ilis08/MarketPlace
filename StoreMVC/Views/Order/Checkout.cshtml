@@ -1,91 +1,135 @@
-﻿@model StoreMVC.ViewModels.OrderVM
+﻿@using System.Globalization
+@model StoreMVC.ViewModels.OrderVM
 @{
+    Layout = "CartLayout";
     ViewData["Title"] = "Checkout";
 }
 
-<h4>Checkout</h4>
+<div class="mt-4 col-12">
+    <h1>Checkout</h1>
 
-<br />
+    <br />
 
-<div>
-    <form asp-action="Checkout">
-        <h5>Your contact data</h5>
+    <form asp-action="Checkout" method="post" enctype="application/x-www-form-urlencoded">
+        <input type="hidden" asp-for="@Model.OrderId"/>
 
-        <br />
+        <section>
+            <div class="container">
+                <div class="row">
+                    <main class="col-8">
+                        <h4>Your contact data</h4>
+                        <br />
+                        <div class="row">
+                            <div class="col-4">
+                                <small>Surname</small>
+                                <input asp-for="@Model.OrderDetailUser.Surname" class="form-control" />
+                                <span asp-validation-for="@Model.OrderDetailUser.Surname"></span>
+                            </div>
+                            <div class="col-4">
+                                <small>Name</small>
+                                <input asp-for="@Model.OrderDetailUser.Name" class="form-control" />
+                                <span asp-validation-for="@Model.OrderDetailUser.Name"></span>
+                            </div>
 
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-4">
+                                <small>Phone number</small>
+                                <input asp-for="@Model.OrderDetailUser.PhoneNumber" class="form-control" />
+                                <span asp-validation-for="@Model.OrderDetailUser.PhoneNumber"></span>
+                            </div>
+                            <div class="col-4">
+                                <small>City</small>
+                                <input class="form-control" />
+                                <span asp-validation-for="@Model.OrderDetailUser.Name"></span>
+                            </div>
+                        </div>
+                        <br />
 
-        <div class="row">
-            <div class="col-4">
-                <small>Surname</small>
-                <input asp-for="@Model.OrderDetailUser.Surname" class="form-control" />
-                <span asp-validation-for="@Model.OrderDetailUser.Surname"></span>
-            </div>
-            <div class="col-4">
-                <small>Name</small>
-                <input asp-for="@Model.OrderDetailUser.Name" class="form-control" />
-                <span asp-validation-for="@Model.OrderDetailUser.Name"></span>
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-4">
-                <small>Phone number</small>
-                <input asp-for="@Model.OrderDetailUser.PhoneNumber" class="form-control" />
-                <span asp-validation-for="@Model.OrderDetailUser.PhoneNumber"></span>
-            </div>
-            <div class="col-4">
-                <small>City</small>
-                <input asp-for="@Model.OrderDetailUser.Name" class="form-control" />
-                <span asp-validation-for="@Model.OrderDetailUser.Name"></span>
-            </div>
-        </div>
-        <br />
+                        <h4>Your Order</h4>
+                        <br />
 
-        <h5>Your Order</h5>
+                        @foreach (var item in Model.OrderDetailProducts)
+                        {
+                            <div class="row">
+                                <div class="col-3">
+                                    <img src="~/Images/@item.Product.Image" width="150" height="160" />
+                                </div>
+                                <div class="col-3">
+                                    <small>Product</small>
+                                    <div>
+                                        <a asp-controller="Index" asp-action="Index" asp-route-id="@item.Product.Id">@item.Product.ProductName</a>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <small>Price</small>
+                                    <p>@item.Product.Price</p>
+                                </div>
+                                <div class="col-2">
+                                    <small>Quantity</small>
+                                    <p>@item.Count</p>
+                                </div>
+                                <div class="col-2">
+                                    <small>Total Price</small>
+                                    <p>@((item.Count * item.Product.Price).ToString("c", CultureInfo.CreateSpecificCulture("en-US")))</p>
+                                </div>
+                            </div>
+                            <hr />
+                        }
 
-        @foreach (var item in Model.OrderDetailProducts)
-        {
-            <div class="row">
-                <div class="col-2">
-                    <img src="~/Images/@item.Product.Image" width="150" height="160" />
+                        <h5>Payment Type</h5>
+
+                        <div>
+                            @foreach (var type in Enum.GetValues(Model.PaymentType.GetType()))
+                            {
+                            <div class="form-check m-1 pb-4">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    <input class="form-check-input" asp-for="@Model.PaymentType" value="@type.GetType().GetEnumName(type)" id="@type" type="radio">
+                                    @type.GetType().GetEnumName(type)
+                                </label>
+                                
+                            </div>
+                            }
+                        </div>
+                    </main>
+
+                    <aside class="col-4" >
+                        <div class="col-12 bg-light rounded">
+                            <br />
+                            <h4 class="text-center">Total</h4>
+                            <br />
+                            <div class="row">
+                                <div class="col-7">
+                                    <p>@Model.OrderDetailProducts.Sum(c => c.Count) items worth</p>
+                                </div>
+                                <div class="col-5 text-right">
+                                    <p>@Model.OrderDetailProducts.Sum(c => c.Count * c.Product.Price).ToString("c", CultureInfo.CreateSpecificCulture("en-US"))</p>
+                                </div>
+                            </div>
+
+                            <hr />
+                            <div class="row d-flex align-items-center">
+                                <div class="col-5 text-left d-flex align-items-center">
+                                    <h5>Sum</h5>
+                                </div>
+                                <div class="col-7 text-center d-flex align-items-center">
+                                    <h4>@Model.OrderDetailProducts.Sum(c => c.Count * c.Product.Price).ToString("c", CultureInfo.CreateSpecificCulture("en-US"))</h4>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="d-flex align-items-center">
+                                <input type="submit" value="Create" class="btn btn-success btn-lg btn-block mb-3" />
+                            </div>
+
+                        </div>
+                    </aside>
                 </div>
-                <div class="col-3">
-                    <small>Product</small>
-                    <div>
-                        <a asp-controller="Index" asp-action="Index" asp-route-id="@item.Product.Id">@item.Product.ProductName</a>
-                    </div>
-                </div>
-                <div class="col-1">
-                    <small>Price</small>
-                    <p>@item.Product.Price</p>
-                </div>
-                <div class="col-1">
-                    <small>Quantity</small>
-                    <p>@item.Count</p>
-                </div>
-                <div class="col-2">
-                    <small>Total Price</small>
-                    <p>@((item.Count * item.Product.Price))</p>
-                </div>
             </div>
-            <hr />
-        }
 
-        <h5>Payment Type</h5>
-
-        <div>
-            @foreach (var type in Enum.GetValues(Model.PaymentType.GetType()))
-            {
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                <label class="form-check-label" for="defaultCheck1">
-                    @type.GetType().GetEnumName(type)
-                </label>
-            </div>
-            }
-        </div>
+        </section>
 
     </form>
 
-   
+
 </div>

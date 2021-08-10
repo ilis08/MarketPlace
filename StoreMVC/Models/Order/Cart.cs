@@ -33,6 +33,14 @@ namespace StoreMVC.Models.Order
             Lines.RemoveAll(p => p.Product.Id == product.Id);
         }
 
+        public virtual void MinusCount(ProductVM product)
+        {
+            foreach (var item in Lines.Where(p => p.Product.Id == product.Id))
+            {
+                item.Count -= 1;
+            }
+        }
+
         public double ComputeTotalPrice()
         {
             return Lines.Sum(e => e.Count * e.Product.Price);

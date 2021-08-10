@@ -87,3 +87,28 @@ body {
 .cardContent {
     vertical-align: middle;
 }
+
+.orderAside{
+    
+    position:fixed;
+}
+
+#productDiv {
+    background-color: #f00;
+    width: 200px;
+    height: 200px;
+}
+
+.productsIndex{
+    display:block;
+    height:100%;
+    width:100%;
+}
+
+
+a.fill-div {
+    display: block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+}

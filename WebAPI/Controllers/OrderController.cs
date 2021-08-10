@@ -14,6 +14,7 @@ namespace WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
+    [ApiController]
     public class OrderController : HomeController
     {
         private readonly OrderManagementService _service;
@@ -44,7 +45,6 @@ namespace WebAPI.Controllers
         [HttpPost]
         public JsonResult Save([FromBody] OrderDTO orderDTO)
         { 
-
             ResponseMessage responseMessage = new ResponseMessage();
 
             if (_service.Save(orderDTO))

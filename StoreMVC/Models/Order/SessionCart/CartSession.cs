@@ -11,7 +11,6 @@ namespace StoreMVC.Models.Order.SessionCart
 {
     public class CartSession : Cart
     {
-       
         public static Cart GetCart(IServiceProvider service)
         {
             ISession session = service.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
@@ -36,6 +35,12 @@ namespace StoreMVC.Models.Order.SessionCart
         public override void RemoveFromCart(ProductVM product)
         {
             base.RemoveFromCart(product);
+            Session.SetJson("Cart", this);
+        }
+
+        public override void MinusCount(ProductVM product)
+        {
+            base.MinusCount(product);
             Session.SetJson("Cart", this);
         }
     }

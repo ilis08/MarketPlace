@@ -16,7 +16,8 @@ namespace StoreMVC.Controllers
     public class HomeController : Controller
     {
         private readonly IHttpClientFactory _clientFactory;
-        public IEnumerable<ProductVM> Products { get; private set; }
+        private IEnumerable<ProductVM> Products { get; set; }
+        private ProductVM Product { get; set; }
 
 
         public HomeController(IHttpClientFactory clientFactory)
@@ -45,6 +46,29 @@ namespace StoreMVC.Controllers
 
             return View(Products);
         }
+
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var client = _clientFactory.CreateClient("myapi");
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseStream = await response.Content.ReadAsStringAsync();
+                Product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View(Product);
+        }
+
 
         public IActionResult Privacy()
         {

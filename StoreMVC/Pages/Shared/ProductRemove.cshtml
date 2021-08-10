@@ -1,0 +1,12 @@
+﻿@model StoreMVC.ViewModels.ProductVM
+
+<form id="@Model.Id" asp-page-handler="Minus" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <span class="card-text">
+        <button type="submit"
+                class="btn btn-success btn-sm pull-right" style="float:right">
+            <i class="fas fa-minus fa-1x"></i>
+        </button>
+    </span>
+</form>
