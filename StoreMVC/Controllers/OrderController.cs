@@ -54,6 +54,7 @@ namespace StoreMVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                Cart.CleanCart();
                 return RedirectToAction("Index", "Home");
             }
 

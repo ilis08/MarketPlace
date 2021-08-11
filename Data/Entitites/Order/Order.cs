@@ -30,19 +30,10 @@ namespace Data.Entitites
         [BindNever]
         public IEnumerable<OrderDetailProduct> OrderDetailProduct { get; set; }
 
-
-        public IEnumerable<ValidationResult> ValidatePaymentType(ValidationContext validationContext)
-        {
-            if (PaymentType == PaymentType.None)
-            {
-                yield return new ValidationResult("Payment type is not selected");
-            }
-        }
     }
 
     public enum PaymentType
     {
-        None,
         ByCash,
         ByCard,
     }

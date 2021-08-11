@@ -1,8 +1,7 @@
 ﻿@model StoreMVC.ViewModels.ProductVM
 
-<form id="@Model.Id" asp-page="/Cart" method="post">
-    <input type="hidden" asp-for="Id" />
-
+<form id="@Model.Id" asp-page="/Cart" asp-route-id="@Model.Id" method="post">
+    <input type="hidden" asp-for="Id"/>
     <span class="card-text">
         <button type="submit"
                 class="btn btn-success btn-sm pull-right" style="float:right">

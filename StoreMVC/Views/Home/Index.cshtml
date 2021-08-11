@@ -1,29 +1,58 @@
-﻿@using StoreMVC.Controllers;
+﻿@model IEnumerable<ProductVM>
+@using StoreMVC.Controllers;
 @using System.Globalization;
 @{
     ViewData["Title"] = "Home Page";
 }
 
+<h1>Laptops</h1>
+
 <div class="card-deck">
-    @foreach (var product in Model)
+    @foreach (var product in Model.Where(c => c.Category.Id == 2))
     {
-        <div class="card m-3" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
-            <div class="card-header">
-                <a class="fill-div" asp-action="Details" asp-route-id="@product.Id">@product.ProductName</a>
-            </div>
+    <div class="card m-3" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
+        <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
 
-            <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
-            <hr />
-            <div class="row pb-2">
-                <div class="col-6 text-center">
-                    <h5>@product.Price.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))</h5>
-                </div>
-                <div class="col-6 text-center">
-                    <partial name="ProductSummary" model="product" />
-                </div>
-            </div>
-
+        <div class="card-header">
+            <a class="fill-div" asp-action="Details" asp-route-id="@product.Id">@product.ProductName</a>
         </div>
+        <div class="row pt-2 pb-2">
+            <div class="col-6 text-center">
+                <h5>@product.Price.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))</h5>
+            </div>
+            <div class="col-6 text-center">
+                <partial name="ProductSummary" model="product" />
+            </div>
+        </div>
+
+    </div>
+    }
+</div>
+
+<br />
+
+<h2>Smartphones</h2>
+
+<div class="card-deck">
+    @foreach (var product in Model.Where(c => c.Category.Id == 3))
+    {
+    <div class="card m-3" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
+
+        <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
+        <div class="card-header">
+            <a class="fill-div" asp-action="Details" asp-route-id="@product.Id">@product.ProductName</a>
+        </div>
+
+        <div class="row pt-2 pb-2">
+            <div class="col-6 text-center">
+                <h5>@product.Price.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))</h5>
+            </div>
+            <div class="col-6 text-center">
+                <partial name="ProductSummary" model="product" />
+            </div>
+        </div>
+
+    </div>
     }
 </div>
 

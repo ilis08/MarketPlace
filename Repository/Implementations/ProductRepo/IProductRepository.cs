@@ -17,6 +17,6 @@ namespace Repository.Implementations.ProductRepo
 
         void Update(Product entity);
 
-        void Delete(Task<Product> entity);
+        void Delete(Product entity);
     }
 }

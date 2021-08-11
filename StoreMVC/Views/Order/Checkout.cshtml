@@ -11,7 +11,7 @@
     <br />
 
     <form asp-action="Checkout" method="post" enctype="application/x-www-form-urlencoded">
-        <input type="hidden" asp-for="@Model.OrderId"/>
+        <input type="hidden" asp-for="@Model.OrderId" />
 
         <section>
             <div class="container">
@@ -19,32 +19,34 @@
                     <main class="col-8">
                         <h4>Your contact data</h4>
                         <br />
-                        <div class="row">
-                            <div class="col-4">
-                                <small>Surname</small>
-                                <input asp-for="@Model.OrderDetailUser.Surname" class="form-control" />
-                                <span asp-validation-for="@Model.OrderDetailUser.Surname"></span>
-                            </div>
-                            <div class="col-4">
-                                <small>Name</small>
-                                <input asp-for="@Model.OrderDetailUser.Name" class="form-control" />
-                                <span asp-validation-for="@Model.OrderDetailUser.Name"></span>
-                            </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <small>Surname</small>
+                                    <input asp-for="@Model.OrderDetailUser.Surname" class="form-control" />
+                                    <span asp-validation-for="@Model.OrderDetailUser.Surname"></span>
+                                </div>
+                                <div class="col-4">
+                                    <small>Name</small>
+                                    <input asp-for="@Model.OrderDetailUser.Name" class="form-control" />
+                                    <span asp-validation-for="@Model.OrderDetailUser.Name"></span>
+                                </div>
 
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col-4">
-                                <small>Phone number</small>
-                                <input asp-for="@Model.OrderDetailUser.PhoneNumber" class="form-control" />
-                                <span asp-validation-for="@Model.OrderDetailUser.PhoneNumber"></span>
                             </div>
-                            <div class="col-4">
-                                <small>City</small>
-                                <input class="form-control" />
-                                <span asp-validation-for="@Model.OrderDetailUser.Name"></span>
+                            <br />
+                            <div class="row">
+                                <div class="col-4">
+                                    <small>Phone number</small>
+                                    <input asp-for="@Model.OrderDetailUser.PhoneNumber" class="form-control" />
+                                    <span asp-validation-for="@Model.OrderDetailUser.PhoneNumber"></span>
+                                </div>
+                                <div class="col-4">
+                                    <small>City</small>
+                                    <input class="form-control" />
+                                    <span asp-validation-for="@Model.OrderDetailUser.Name"></span>
+                                </div>
                             </div>
-                        </div>
+                     
                         <br />
 
                         <h4>Your Order</h4>
@@ -83,18 +85,18 @@
                         <div>
                             @foreach (var type in Enum.GetValues(Model.PaymentType.GetType()))
                             {
-                            <div class="form-check m-1 pb-4">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    <input class="form-check-input" asp-for="@Model.PaymentType" value="@type.GetType().GetEnumName(type)" id="@type" type="radio">
-                                    @type.GetType().GetEnumName(type)
-                                </label>
-                                
-                            </div>
+                                <div class="form-check m-1 pb-4">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        <input class="form-check-input" asp-for="@Model.PaymentType" value="@type.GetType().GetEnumName(type)" id="@type" type="radio">
+                                        @type.GetType().GetEnumName(type)
+                                    </label>
+
+                                </div>
                             }
                         </div>
                     </main>
 
-                    <aside class="col-4" >
+                    <aside class="col-4">
                         <div class="col-12 bg-light rounded">
                             <br />
                             <h4 class="text-center">Total</h4>
@@ -128,8 +130,12 @@
             </div>
 
         </section>
-
     </form>
 
 
 </div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

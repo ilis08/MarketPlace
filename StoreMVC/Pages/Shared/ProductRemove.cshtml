@@ -1,7 +1,7 @@
 ﻿@model StoreMVC.ViewModels.ProductVM
 
 <form id="@Model.Id" asp-page-handler="Minus" method="post">
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="@Model.Id" />
 
     <span class="card-text">
         <button type="submit"

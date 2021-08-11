@@ -25,7 +25,7 @@ namespace Repository.Implementations.ProductRepo
             context.Add(order);
         }
 
-        public void Delete(Task<Product> entity)
+        public void Delete(Product entity)
         {
             context.Remove(entity);
         }

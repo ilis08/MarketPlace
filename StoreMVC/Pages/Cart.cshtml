@@ -47,13 +47,29 @@ else
                 </div>
                 <div class="row col-2">
                     <div class="col-4 d-flex align-items-center justify-content-start">
-                        <partial name="ProductAdd" model="item.Product" />
+                        <form asp-page="/Cart" asp-route-id="@item.Product.Id" method="post">
+                            <input type="hidden" asp-for="@item.Product.Id" />
+                            <span class="card-text">
+                                <button type="submit"
+                                        class="btn btn-success btn-sm pull-right" style="float:right">
+                                    <i class="fas fa-plus fa-1x"></i>
+                                </button>
+                            </span>
+                        </form>
                     </div>
                     <div class="col-4 justify-content-center d-flex align-items-center justify-content-center">
                         <h4 class="m-0">@item.Count</h4>
                     </div>
                     <div class="col-4 d-flex align-items-center justify-content-end">
-                        <partial name="ProductRemove" model="item.Product" />
+                        <form asp-page-handler="Minus" asp-route-id="@item.Product.Id" method="post">
+                            <input type="hidden" asp-for="@item.Product.Id" />
+                            <span class="card-text">
+                                <button type="submit"
+                                        class="btn btn-success btn-sm pull-right" style="float:right">
+                                    <i class="fas fa-minus fa-1x"></i>
+                                </button>
+                            </span>
+                        </form>
                     </div>
                 </div>
 

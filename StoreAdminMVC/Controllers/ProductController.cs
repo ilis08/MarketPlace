@@ -185,7 +185,7 @@ namespace StoreAdminMVC.Controllers
                     string jsonString = await response.Content.ReadAsStringAsync();
                     var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
                 }
-                return RedirectToAction("Details"+ "/" + productVM.Id);
+                return RedirectToAction("Details/", new { id = productVM.Id });
             }
             catch (Exception)
             {

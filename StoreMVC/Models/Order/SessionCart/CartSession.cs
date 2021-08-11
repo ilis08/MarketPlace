@@ -43,5 +43,11 @@ namespace StoreMVC.Models.Order.SessionCart
             base.MinusCount(product);
             Session.SetJson("Cart", this);
         }
+
+        public override void CleanCart()
+        {
+            base.CleanCart();
+            Session.SetJson("Cart", this); 
+        }
     }
 }

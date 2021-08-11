@@ -136,13 +136,13 @@ namespace ApplicationService.Implementations
 
 
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             try
             {
                 using (UnitOfWork unitOfWork = new UnitOfWork())
                 {
-                    var product = unitOfWork.ProductRepository.GetProductById(id);
+                    Product product = await unitOfWork.ProductRepository.GetProductById(id);
                     unitOfWork.ProductRepository.Delete(product);
                     unitOfWork.Save();
                 }

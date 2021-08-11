@@ -45,5 +45,10 @@ namespace StoreMVC.Models.Order
         {
             return Lines.Sum(e => e.Count * e.Product.Price);
         }
+
+        public virtual void CleanCart()
+        {
+            Lines.Clear();
+        }
     }
 }
