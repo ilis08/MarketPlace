@@ -40,6 +40,11 @@ namespace Repository.Implementations.ProductRepo
             return await context.Products.Include(x => x.Category).ToListAsync();
         }
 
+        public async Task<IEnumerable<Product>> GetProductsWithParamsAsync(GetProductsParameters getProducts)
+        {
+            return await context.Products.OrderBy(p => p.Price).Skip((getProducts.PageNumber - 1) * getProducts.PageSize).Take(getProducts.PageSize).Include(x => x.Category).ToListAsync();
+        }
+
         public void Update(Product entity)
         {
             context.Products.Update(entity);

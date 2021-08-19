@@ -3,6 +3,7 @@ using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repository.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,13 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Get(string query)
         {
             return Json(await _service.Get(query));
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IActionResult> GetWithParams([FromQuery] GetProductsParameters parameters)
+        {
+            return Json(await _service.GetPaginated(parameters));
         }
 
         [HttpGet("[action]/{id:int}")]

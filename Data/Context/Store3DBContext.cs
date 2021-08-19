@@ -25,7 +25,7 @@ namespace Data.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=IlisStoreEntitiesDbContext;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(@"Data Source = tcp:ilisstoredb.database.windows.net, 1433; Initial Catalog = IlisStoreDB; User Id = iliya@ilisstoredb; Password = gsrk$T173bv");
         }
     }
 }

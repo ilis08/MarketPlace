@@ -29,6 +29,7 @@ namespace ApplicationService.Implementations
                         });
                     }
                 }
+
                 /*else
                 {
                     foreach (var item in unitOfWork.CategoryRepository.Find())

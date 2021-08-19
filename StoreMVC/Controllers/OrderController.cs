@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace StoreMVC.Controllers
@@ -44,13 +45,7 @@ namespace StoreMVC.Controllers
 
             var client = _clientFactory.CreateClient("myapi");
 
-            var content = JsonConvert.SerializeObject(order);
-            var buffer = System.Text.Encoding.UTF8.GetBytes(content);
-            var byteContent = new ByteArrayContent(buffer);
-
-            byteContent.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
-
-            var response = await client.PostAsync("Order/Save", byteContent);
+            var response = await client.PostAsJsonAsync("Order/Save", order);
 
             if (response.IsSuccessStatusCode)
             {

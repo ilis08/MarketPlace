@@ -25,9 +25,9 @@ namespace StoreMVC.Controllers
             _clientFactory = clientFactory;
         }
 
-        public async Task<ActionResult> Index(string query)
+        public async Task<ActionResult> Index()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "Product/Get/");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/Get/");
 
             var client = _clientFactory.CreateClient("myapi");
 
@@ -45,6 +45,15 @@ namespace StoreMVC.Controllers
 
 
             return View(Products);
+        }
+
+        public void Add(ref int i)
+        {
+            ++i;
+        }
+        public void Minus(ref int i)
+        {
+            --i;
         }
 
 

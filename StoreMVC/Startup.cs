@@ -43,7 +43,7 @@ namespace StoreMVC
 
             services.AddHttpClient("myapi", c =>
             {
-                c.BaseAddress = new Uri("http://localhost:41486/api/");
+                c.BaseAddress = new Uri("https://ilisapi.azurewebsites.net/api/");
                 c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
         }

@@ -66,8 +66,36 @@ namespace ApplicationService.Implementations
             return productDto;
         }
 
-        public async Task<ProductDTO> GetById(int id)
+        public async Task<IEnumerable<ProductDTO>> GetPaginated(GetProductsParameters parameters)
         {
+            List<ProductDTO> productDto = new List<ProductDTO>();
+
+            using (UnitOfWork unitOfWork = new UnitOfWork())
+            {
+                    foreach (var item in await unitOfWork.ProductRepository.GetProductsWithParamsAsync(parameters))
+                    {
+                        productDto.Add(new ProductDTO
+                        {
+                            Id = item.Id,
+                            ProductName = item.ProductName,
+                            Description = item.Description,
+                            Release = item.Release,
+                            Price = item.Price,
+                            Image = item.Image,
+                            Category = new CategoryDTO
+                            {
+                                Id = item.Category.Id,
+                                Title = item.Category.Title,
+                                Description = item.Category.Description
+                            }
+                        });
+                }
+                return productDto;
+            }
+        }
+
+            public async Task<ProductDTO> GetById(int id)
+            {
             ProductDTO productDto = new ProductDTO();
 
                 using(UnitOfWork unitOfWork = new UnitOfWork())
