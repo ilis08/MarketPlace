@@ -14,7 +14,7 @@ namespace Repository.Implementations
 {
     public class UnitOfWork : IDisposable, IEnumerable
     {
-        private Store3DBContext context = new Store3DBContext();
+        private Store4DBContext context = new Store4DBContext();
 
         private IWebHostEnvironment environment;
 

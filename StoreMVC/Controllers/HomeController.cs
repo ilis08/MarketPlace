@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StoreMVC.Models;
+using StoreMVC.Service;
 using StoreMVC.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -15,67 +16,31 @@ namespace StoreMVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IHttpClientFactory _clientFactory;
-        private IEnumerable<ProductVM> Products { get; set; }
-        private ProductVM Product { get; set; }
+        private readonly IProductService productService;
 
 
-        public HomeController(IHttpClientFactory clientFactory)
+        public HomeController(IProductService _productService)
         {
-            _clientFactory = clientFactory;
+            productService = _productService;
         }
 
         public async Task<ActionResult> Index()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/Get/");
+            await productService.GetProductsAsync();
 
-            var client = _clientFactory.CreateClient("myapi");
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                Products = JsonConvert.DeserializeObject<List<ProductVM>>(responseStream);
-            }
-            else
-            {
-                Products = Array.Empty<ProductVM>();
-            }
-
-
-            return View(Products);
+            return View(productService.Products);
         }
-
-        public void Add(ref int i)
-        {
-            ++i;
-        }
-        public void Minus(ref int i)
-        {
-            --i;
-        }
-
 
         public async Task<IActionResult> Details(int id)
-        {
-            var client = _clientFactory.CreateClient("myapi");
+        { 
+            await productService.GetProductAsync(id);
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                Product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
-            }
-            else
+            if (productService.Product.Id == 0)
             {
                 return RedirectToAction("Index");
             }
 
-            return View(Product);
+            return View(productService.Product);
         }
 
 

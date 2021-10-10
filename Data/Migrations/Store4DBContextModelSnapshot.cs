@@ -8,15 +8,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
-    [DbContext(typeof(Store3DBContext))]
-    partial class Store3DBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(Store4DBContext))]
+    partial class Store4DBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.7")
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Data.Entitites.Category", b =>
@@ -193,7 +193,7 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Data.Entitites.Product", "Product")
-                        .WithMany("OrderDetailProducts")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -220,11 +220,6 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entitites.Order", b =>
                 {
                     b.Navigation("OrderDetailProduct");
-                });
-
-            modelBuilder.Entity("Data.Entitites.Product", b =>
-                {
-                    b.Navigation("OrderDetailProducts");
                 });
 #pragma warning restore 612, 618
         }

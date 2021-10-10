@@ -16,11 +16,11 @@ namespace Repository.Implementations
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class 
     {
-        internal Store3DBContext context;
+        internal Store4DBContext context;
         internal DbSet<T> dbSet;
         private readonly IWebHostEnvironment _environment;
 
-        public GenericRepository(Store3DBContext context, IWebHostEnvironment environment)
+        public GenericRepository(Store4DBContext context, IWebHostEnvironment environment)
         {
             this.context = context;
             this.dbSet = context.Set<T>();

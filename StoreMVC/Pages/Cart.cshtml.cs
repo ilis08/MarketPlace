@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using StoreMVC.ViewModels;
 using StoreMVC.Models.Order;
 using StoreMVC.Models.Order.SessionCart;
+using StoreMVC.Service;
 
 namespace StoreMVC.Pages
 {
@@ -17,13 +18,12 @@ namespace StoreMVC.Pages
     public class CartModel : PageModel
     {
         public Cart Cart { get; set; }
-        private readonly IHttpClientFactory clientFactory;
 
-        public ProductVM Product { get; set; }
+        private readonly IProductService productMethods;
 
-        public CartModel(IHttpClientFactory factory, Cart cart)
+        public CartModel(IProductService product, Cart cart)
         {
-            clientFactory = factory;
+            productMethods = product;
             Cart = cart;
         }
 
@@ -33,54 +33,35 @@ namespace StoreMVC.Pages
 
         public async Task OnPostAsync(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
+            await productMethods.GetProductAsync(id);
 
-            var client = clientFactory.CreateClient("myapi");
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                Product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
-            }
-
-            Cart.AddToCart(Product);
+            Cart.AddToCart(productMethods.Product);
         }
 
         public async Task OnPostRemoveAsync(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
+            await productMethods.GetProductAsync(id);
 
-            var client = clientFactory.CreateClient("myapi");
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                Product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
-            }
-
-            Cart.RemoveFromCart(Product);
-
+            Cart.RemoveFromCart(productMethods.Product);
         }
 
         public async Task OnPostMinusAsync(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
+            var cartLine = Cart.Lines.Where(p => p.Product.Id == id).FirstOrDefault();
 
-            var client = clientFactory.CreateClient("myapi");
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
+            if (cartLine.Count > 1)
             {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                Product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
-            }
+                await productMethods.GetProductAsync(id);
 
-            Cart.MinusCount(Product);
+                Cart.MinusCount(productMethods.Product);
+            }
+            else
+            {
+                await productMethods.GetProductAsync(id);
+
+                Cart.RemoveFromCart(productMethods.Product);
+            }
+            
         }
     }
 }

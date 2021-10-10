@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using StoreMVC.Models.Order.SessionCart;
 using Microsoft.AspNetCore.Http;
 using StoreMVC.ViewModels;
+using StoreMVC.Service;
 
 namespace StoreMVC
 {
@@ -40,6 +41,7 @@ namespace StoreMVC
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddTransient(c => CartSession.GetCart(c));
+            services.AddScoped<IProductService, ProductService>();
 
             services.AddHttpClient("myapi", c =>
             {

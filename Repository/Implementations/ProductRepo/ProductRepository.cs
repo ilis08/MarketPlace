@@ -13,9 +13,9 @@ namespace Repository.Implementations.ProductRepo
 {
     public class ProductRepository : IProductRepository
     {
-        internal Store3DBContext context;
+        internal Store4DBContext context;
 
-        public ProductRepository(Store3DBContext context)
+        public ProductRepository(Store4DBContext context)
         {
             this.context = context;
         }

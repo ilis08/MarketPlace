@@ -76,6 +76,8 @@ namespace Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PaymentType = table.Column<int>(type: "int", nullable: false),
                     OrderTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    TotalPrice = table.Column<double>(type: "float", nullable: false),
                     OrderDetailUserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -97,7 +99,8 @@ namespace Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Count = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: false)
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
