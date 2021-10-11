@@ -1,5 +1,4 @@
-﻿using Data.Context;
-using Data.Entitites;
+﻿using Data.Entitites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,14 +7,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Data.Context;
 
 namespace Repository.Implementations.ProductRepo
 {
     public class ProductRepository : IProductRepository
     {
-        internal Store4DBContext context;
+        internal RepositoryContext context;
 
-        public ProductRepository(Store4DBContext context)
+        public ProductRepository(RepositoryContext context)
         {
             this.context = context;
         }

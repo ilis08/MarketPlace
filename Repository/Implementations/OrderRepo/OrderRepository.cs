@@ -11,9 +11,9 @@ namespace Repository.Implementations.OrderRepo
 {
     public class OrderRepository : IOrderRepository
     {
-        internal Store4DBContext context;
+        internal RepositoryContext context;
 
-        public OrderRepository(Store4DBContext context)
+        public OrderRepository(RepositoryContext context)
         {
             this.context = context;
         }

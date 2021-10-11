@@ -1,4 +1,4 @@
-using Data.Context;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +18,8 @@ using System.IO;
 using ApplicationService.Implementations;
 using Repository.Implementations;
 using WebAPI.Messages;
+using Data.Context;
+using WebAPI.Extensions;
 
 namespace WebAPI
 {
@@ -33,28 +35,43 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson(x => 
-                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-
             #region Swagger
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IlisStoreAPI", Version = "v1" });
 
-                var filePath = Path.Combine(System.AppContext.BaseDirectory, "WebAPI.xml");
-                c.IncludeXmlComments(filePath);
-            });
+            services.ConfigureSwagger();
+
+            #endregion
+
+            #region Database
+
+            services.ConfigureDatabaseContext(Configuration);
+
+            #endregion
+
+            services.AddTransient<UnitOfWork>();
+
+            #region ApplicationService
+            services.ConfigureCategoryService();
+            services.ConfigureProductService();
+            services.ConfigureOrderService();
+            #endregion
+
+            #region Repository
+
+            services.ConfigureUnitOfWork();
 
             #endregion
 
             services.AddHealthChecks()
-                 .AddSqlServer(Configuration.GetConnectionString("IlisStoreDB"),
-                    name: "ilisDb-check",
-                    failureStatus: HealthStatus.Unhealthy,
-                    tags: new string[] { "api", "SqlDb" });
+                .AddSqlServer(Configuration.GetConnectionString("IlisStoreDB"),
+                  name: "ilisDb-check",
+                  failureStatus: HealthStatus.Unhealthy,
+                  tags: new string[] { "api", "SqlDb" });
 
-            services.AddTransient<OrderManagementService>();
-            services.AddTransient<ResponseMessage>();
+
+
+            services.AddControllers().AddNewtonsoftJson(x =>
+                  x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

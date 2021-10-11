@@ -16,11 +16,11 @@ namespace ApplicationService.Implementations
 {
     public class OrderManagementService
     {
-        public UnitOfWork unitOfWork = null;
+        public UnitOfWork unitOfWork;
 
-        public OrderManagementService()
+        public OrderManagementService(UnitOfWork _unitOfWork)
         { 
-            unitOfWork = new UnitOfWork();
+            unitOfWork = _unitOfWork;
         }
 
         public async Task<IEnumerable<OrderGetDTO>> Get()

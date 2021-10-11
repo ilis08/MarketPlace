@@ -4,16 +4,14 @@ using Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Data.Migrations
+namespace WebAPI.Migrations
 {
-    [DbContext(typeof(Store4DBContext))]
-    [Migration("20211010123909_Initial")]
-    partial class Initial
+    [DbContext(typeof(RepositoryContext))]
+    partial class RepositoryContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

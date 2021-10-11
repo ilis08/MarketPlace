@@ -14,33 +14,38 @@ namespace ApplicationService.Implementations
 {
     public class ProductManagementService
     {
+        private UnitOfWork unitOfWork;
+
+        public ProductManagementService(UnitOfWork _unitOfWork)
+        {
+            unitOfWork = _unitOfWork;
+        }
+
         public async Task<IEnumerable<ProductDTO>> Get(string query)
         {
             List<ProductDTO> productDto = new List<ProductDTO>();
 
-            using (UnitOfWork unitOfWork = new UnitOfWork())
-            {
-                if (query == null)
+            if (query == null)
                 {
-                    foreach (var item in await unitOfWork.ProductRepository.GetProducts())
+                foreach (var item in await unitOfWork.ProductRepository.GetProducts())
+                {
+                    productDto.Add(new ProductDTO
                     {
-                        productDto.Add(new ProductDTO
+                        Id = item.Id,
+                        ProductName = item.ProductName,
+                        Description = item.Description,
+                        Release = item.Release,
+                        Price = item.Price,
+                        Image = item.Image,
+                        Category = new CategoryDTO
                         {
-                            Id = item.Id,
-                            ProductName = item.ProductName,
-                            Description = item.Description,
-                            Release = item.Release,
-                            Price = item.Price,
-                            Image = item.Image,
-                            Category = new CategoryDTO
-                            {
-                                Id = item.Category.Id,
-                                Title = item.Category.Title,
-                                Description = item.Category.Description
-                            }                           
-                        });
-                    }
+                            Id = item.Category.Id,
+                            Title = item.Category.Title,
+                            Description = item.Category.Description
+                        }
+                    });
                 }
+                
                /* else
                 {
                     foreach (var item in unitOfWork.ProductRepository.GetByQuery().Where(c => c.ProductName.Contains(query)).ToList())
@@ -70,57 +75,51 @@ namespace ApplicationService.Implementations
         {
             List<ProductDTO> productDto = new List<ProductDTO>();
 
-            using (UnitOfWork unitOfWork = new UnitOfWork())
+            foreach (var item in await unitOfWork.ProductRepository.GetProductsWithParamsAsync(parameters))
             {
-                    foreach (var item in await unitOfWork.ProductRepository.GetProductsWithParamsAsync(parameters))
+                productDto.Add(new ProductDTO
+                {
+                    Id = item.Id,
+                    ProductName = item.ProductName,
+                    Description = item.Description,
+                    Release = item.Release,
+                    Price = item.Price,
+                    Image = item.Image,
+                    Category = new CategoryDTO
                     {
-                        productDto.Add(new ProductDTO
-                        {
-                            Id = item.Id,
-                            ProductName = item.ProductName,
-                            Description = item.Description,
-                            Release = item.Release,
-                            Price = item.Price,
-                            Image = item.Image,
-                            Category = new CategoryDTO
-                            {
-                                Id = item.Category.Id,
-                                Title = item.Category.Title,
-                                Description = item.Category.Description
-                            }
-                        });
-                }
-                return productDto;
+                        Id = item.Category.Id,
+                        Title = item.Category.Title,
+                        Description = item.Category.Description
+                    }
+                });
             }
+                return productDto;
         }
 
-            public async Task<ProductDTO> GetById(int id)
-            {
+        public async Task<ProductDTO> GetById(int id)
+        {
             ProductDTO productDto = new ProductDTO();
 
-                using(UnitOfWork unitOfWork = new UnitOfWork())
-                {
-                Product product = await unitOfWork.ProductRepository.GetProductById(id);
+            Product product = await unitOfWork.ProductRepository.GetProductById(id);
 
-                if (product != null)
+            if (product != null)
+            {
+                productDto = new ProductDTO
                 {
-                    productDto = new ProductDTO
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    Description = product.Description,
+                    Release = product.Release,
+                    Price = product.Price,
+                    Image = product.Image,
+                    Category = new CategoryDTO
                     {
-                        Id = product.Id,
-                        ProductName = product.ProductName,
-                        Description = product.Description,
-                        Release = product.Release,
-                        Price = product.Price,
-                        Image = product.Image,
-                        Category = new CategoryDTO
-                        {
-                            Id = product.Category.Id,
-                            Title = product.Category.Title,
-                            Description = product.Category.Description
-                        }
-                    };
-                }                   
-                }
+                        Id = product.Category.Id,
+                        Title = product.Category.Title,
+                        Description = product.Category.Description
+                    }
+                };
+            }
 
             return productDto;
         }
@@ -129,31 +128,29 @@ namespace ApplicationService.Implementations
         { 
             try
             {
-                using (UnitOfWork unitOfWork = new UnitOfWork())
+                productDto.Image = unitOfWork.ProductRepository.SaveImageAsync(productDto.ImageFile);
+
+                Product product = new Product
                 {
-                    productDto.Image = unitOfWork.ProductRepository.SaveImageAsync(productDto.ImageFile);
+                    Id = productDto.Id,
+                    ProductName = productDto.ProductName,
+                    Description = productDto.Description,
+                    Release = productDto.Release,
+                    Price = productDto.Price,
+                    Image = productDto.Image,
+                    CategoryId = productDto.CategoryId
+                };
 
-                    Product product = new Product
-                    {
-                        Id = productDto.Id,
-                        ProductName = productDto.ProductName,
-                        Description = productDto.Description,
-                        Release = productDto.Release,
-                        Price = productDto.Price,
-                        Image = productDto.Image,
-                        CategoryId = productDto.CategoryId
-                    };
-
-                    if (productDto.Id == 0)
-                    {
-                        unitOfWork.ProductRepository.Create(product);
-                    }
-                    else
-                    {
-                        unitOfWork.ProductRepository.Update(product);
-                    }
-                    unitOfWork.Save();
+                if (productDto.Id == 0)
+                {
+                    unitOfWork.ProductRepository.Create(product);
                 }
+                else
+                {
+                    unitOfWork.ProductRepository.Update(product);
+                }
+                unitOfWork.Save();
+                
                 return true;
             }
             catch
@@ -168,12 +165,10 @@ namespace ApplicationService.Implementations
         {
             try
             {
-                using (UnitOfWork unitOfWork = new UnitOfWork())
-                {
-                    Product product = await unitOfWork.ProductRepository.GetProductById(id);
-                    unitOfWork.ProductRepository.Delete(product);
-                    unitOfWork.Save();
-                }
+                Product product = await unitOfWork.ProductRepository.GetProductById(id);
+                unitOfWork.ProductRepository.Delete(product);
+                unitOfWork.Save();
+
 
                 return true;
             }

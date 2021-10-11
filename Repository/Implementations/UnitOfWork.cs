@@ -1,6 +1,8 @@
 ﻿using Data.Context;
 using Data.Entitites;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Repository.Implementations.CategoryRepo;
 using Repository.Implementations.OrderRepo;
 using Repository.Implementations.ProductRepo;
 using System;
@@ -14,12 +16,15 @@ namespace Repository.Implementations
 {
     public class UnitOfWork : IDisposable, IEnumerable
     {
-        private Store4DBContext context = new Store4DBContext();
+        private RepositoryContext context;
 
-        private IWebHostEnvironment environment;
+        public UnitOfWork(RepositoryContext _context)
+        {
+            context = _context;
+        }
 
+        private CategoryRepository categoryRepository;
         private ProductRepository productRepository;
-        private GenericRepository<Category> categoryRepository;
         private OrderRepository orderRepository;
 
         public ProductRepository ProductRepository
@@ -34,13 +39,13 @@ namespace Repository.Implementations
             }
         }
 
-        public GenericRepository<Category> CategoryRepository
+        public CategoryRepository CategoryRepository
         {
             get
             {
                 if (this.categoryRepository == null)
                 {
-                    this.categoryRepository = new GenericRepository<Category>(context, environment);
+                    this.categoryRepository = new CategoryRepository(context);
                 }
                 return categoryRepository;
             }
@@ -62,11 +67,28 @@ namespace Repository.Implementations
         {
            context.SaveChangesAsync();
         }
+        
+        #region IDisposable Support
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    context.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
 
         public void Dispose()
         {
-            context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+        #endregion
 
         public IEnumerator GetEnumerator()
         {

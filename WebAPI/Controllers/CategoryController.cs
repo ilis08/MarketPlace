@@ -2,8 +2,10 @@
 using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.Messages;
@@ -18,11 +20,11 @@ namespace WebAPI.Controllers
     [ApiController]
     public class CategoryController : HomeController
     {
-        private readonly CategoryManagementService _service = null;
+        private readonly CategoryManagementService service = null;
 
-        public CategoryController()
+        public CategoryController(CategoryManagementService _service)
         {
-            _service = new CategoryManagementService();
+            service = _service;
         }
 
 
@@ -33,15 +35,15 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("[action]")]
-        public JsonResult Get(string query)
+        public async Task<IActionResult> Get(string query)
         {
-            return Json(_service.Get(query));
+            return Ok(await service.Get(query));
         }
 
         [HttpGet("[action]/{id:int}")]
-        public JsonResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            return Json(_service.GetById(id));
+            return Ok(await service.GetById(id));
         }
 
         [Route("[action]")]
@@ -55,7 +57,7 @@ namespace WebAPI.Controllers
 
             ResponseMessage responseMessage = new ResponseMessage();
 
-            if (_service.Save(categoryDto))
+            if (service.Save(categoryDto))
             {
                 responseMessage.Code = 201;
                 responseMessage.Body = "Category was saved";
@@ -73,7 +75,9 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public JsonResult Delete(int id)
         {
-            return Json(_service.Delete(id));
+            return Json(service.Delete(id));
         }
+
+      
     }
 }

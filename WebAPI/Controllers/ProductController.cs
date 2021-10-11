@@ -17,13 +17,13 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ProductController : HomeController
     {
-        private readonly ProductManagementService _service = null;
+        private readonly ProductManagementService service = null;
         public static IWebHostEnvironment _environment;
 
-        public ProductController(IWebHostEnvironment environment)
+        public ProductController(IWebHostEnvironment environment, ProductManagementService _service)
         {
-            _service = new ProductManagementService();
             _environment = environment;
+            service = _service;
         }
 
         /// <summary>
@@ -37,20 +37,20 @@ namespace WebAPI.Controllers
         [Route("[action]")]
         public async Task<IActionResult> Get(string query)
         {
-            return Json(await _service.Get(query));
+            return Json(await service.Get(query));
         }
 
         [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> GetWithParams([FromQuery] GetProductsParameters parameters)
         {
-            return Json(await _service.GetPaginated(parameters));
+            return Json(await service.GetPaginated(parameters));
         }
 
         [HttpGet("[action]/{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Json(await _service.GetById(id));
+            return Json(await service.GetById(id));
         }
 
         [Route("[action]")]
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
 
             ResponseMessage responseMessage = new();
 
-            if (_service.Save(productDto))
+            if (service.Save(productDto))
             {
                 responseMessage.Code = 201;
                 responseMessage.Body = "Product was saved";
@@ -82,7 +82,7 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public JsonResult Delete(int id)
         {
-            return Json(_service.Delete(id));
+            return Json(service.Delete(id));
         }
     }
 }

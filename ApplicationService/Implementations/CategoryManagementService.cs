@@ -6,29 +6,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ApplicationService.Implementations
 {
     public class CategoryManagementService
     {
-        public List<CategoryDTO> Get(string query)
+        private UnitOfWork unitOfWork;
+
+        public CategoryManagementService(UnitOfWork _unitOfWork)
+        {
+            unitOfWork = _unitOfWork;
+        }
+
+        public async Task<IEnumerable<CategoryDTO>> Get(string query)
         {
             List<CategoryDTO> categoriesDto = new();
 
-            using (UnitOfWork unitOfWork = new UnitOfWork())
+            if (query == null)
             {
-                if (query == null)
+                foreach (var item in await unitOfWork.CategoryRepository.GetCategoriesAsync())
                 {
-                    foreach (var item in unitOfWork.CategoryRepository.Get())
+                    categoriesDto.Add(new CategoryDTO
                     {
-                        categoriesDto.Add(new CategoryDTO
-                        {
-                            Id = item.Id,
-                            Title = item.Title,
-                            Description = item.Description
-                        });
-                    }
+                        Id = item.Id,
+                        Title = item.Title,
+                        Description = item.Description
+                    });
                 }
+            }
 
                 /*else
                 {
@@ -42,26 +48,23 @@ namespace ApplicationService.Implementations
                         });
                     }
                 }*/
-            }
+
             return categoriesDto;
         }
 
-        public CategoryDTO GetById(int id)
+        public async Task<CategoryDTO> GetById(int id)
         {
             CategoryDTO categoryDTO = new CategoryDTO();
 
-            using (UnitOfWork unitOfWork = new UnitOfWork())
+                Category category = await unitOfWork.CategoryRepository.GetCategorytByIdAsync(id);
+            if (category != null)
             {
-                Category category = unitOfWork.CategoryRepository.GetById(id);
-                if (category != null)
+                categoryDTO = new CategoryDTO
                 {
-                    categoryDTO = new CategoryDTO
-                    {
-                        Id = category.Id,
-                        Title = category.Title,
-                        Description = category.Description
-                    };
-                }
+                    Id = category.Id,
+                    Title = category.Title,
+                    Description = category.Description
+                };
             }
             return categoryDTO;
         }
@@ -77,18 +80,18 @@ namespace ApplicationService.Implementations
 
             try
             {
-                using (UnitOfWork unitOfWork = new UnitOfWork())
+
+                if (categoryDTO.Id == 0)
                 {
-                    if (categoryDTO.Id == 0)
-                    {
-                        unitOfWork.CategoryRepository.Create(Category);
-                    }
-                    else
-                    {
-                        unitOfWork.CategoryRepository.Update(Category);
-                    }
-                    unitOfWork.Save();
+                    unitOfWork.CategoryRepository.Create(Category);
                 }
+                else
+                {
+                    unitOfWork.CategoryRepository.Update(Category);
+                }
+                   
+                unitOfWork.Save();
+                
                 return true;
             }
             catch
@@ -100,16 +103,14 @@ namespace ApplicationService.Implementations
 
 
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             try
             {
-                using (UnitOfWork unitOfWork = new UnitOfWork())
-                {
-                    Category category = unitOfWork.CategoryRepository.GetById(id);
-                    unitOfWork.CategoryRepository.Delete(category);
-                    unitOfWork.Save();
-                }
+                Category category = await unitOfWork.CategoryRepository.GetCategorytByIdAsync(id);
+                unitOfWork.CategoryRepository.Delete(category);
+                unitOfWork.Save();
+
 
                 return true;
             }
