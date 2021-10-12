@@ -61,6 +61,8 @@ namespace WebAPI
 
             #endregion
 
+            services.ConfigureResponseMessage();
+
             services.AddHealthChecks()
                 .AddSqlServer(Configuration.GetConnectionString("IlisStoreDB"),
                   name: "ilisDb-check",

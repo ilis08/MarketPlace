@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public JsonResult Save([FromForm]ProductDTO productDto)
+        public async Task<IActionResult> Save([FromForm]ProductDTO productDto)
         {
             if (productDto.ProductName == null)
             {
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
 
             ResponseMessage responseMessage = new();
 
-            if (service.Save(productDto))
+            if (await service.Save(productDto))
             {
                 responseMessage.Code = 201;
                 responseMessage.Body = "Product was saved";
@@ -80,9 +80,9 @@ namespace WebAPI.Controllers
 
         [Route("[action]/{id:int}")]
         [HttpDelete]
-        public JsonResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return Json(service.Delete(id));
+            return Json(await service.Delete(id));
         }
     }
 }

@@ -124,7 +124,7 @@ namespace ApplicationService.Implementations
             return productDto;
         }
 
-        public bool Save(ProductDTO productDto)
+        public async Task<bool> Save(ProductDTO productDto)
         { 
             try
             {
@@ -149,8 +149,9 @@ namespace ApplicationService.Implementations
                 {
                     unitOfWork.ProductRepository.Update(product);
                 }
-                unitOfWork.Save();
-                
+
+                await unitOfWork.SaveAsync();
+
                 return true;
             }
             catch
@@ -167,7 +168,7 @@ namespace ApplicationService.Implementations
             {
                 Product product = await unitOfWork.ProductRepository.GetProductById(id);
                 unitOfWork.ProductRepository.Delete(product);
-                unitOfWork.Save();
+                await unitOfWork.SaveAsync();
 
 
                 return true;

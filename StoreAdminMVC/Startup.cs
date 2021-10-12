@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using StoreAdminMVC.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace StoreAdminMVC
         {
             services.AddHttpClient("myapi", c =>
             {
-                c.BaseAddress = new Uri("http://localhost:41486/api/");
+                c.BaseAddress = new Uri("http://localhost:5000/api/");
                 c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
 

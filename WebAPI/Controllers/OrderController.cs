@@ -43,11 +43,11 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public JsonResult Save([FromBody] OrderDTO orderDTO)
+        public async Task<IActionResult> Save([FromBody] OrderDTO orderDTO)
         { 
             ResponseMessage responseMessage = new ResponseMessage();
 
-            if (_service.Save(orderDTO))
+            if (await _service.Save(orderDTO))
             {
                 responseMessage.Code = 201;
                 responseMessage.Body = "Order was saved";
@@ -63,11 +63,11 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public JsonResult Update([FromBody] OrderDTO orderDTO)
+        public async Task<IActionResult> Update([FromBody] OrderDTO orderDTO)
         {
             ResponseMessage responseMessage = new ResponseMessage();
 
-            if (_service.Update(orderDTO))
+            if (await _service.Update(orderDTO))
             {
                 responseMessage.Code = 201;
                 responseMessage.Body = "Order was updated";
@@ -103,9 +103,9 @@ namespace WebAPI.Controllers
 
         [Route("[action]/{id:int}")]
         [HttpDelete]
-        public JsonResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return Json(_service.Delete(id));
+            return Json(await _service.Delete(id));
         }
     }
 }

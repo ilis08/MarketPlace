@@ -28,12 +28,10 @@ namespace StoreAdminMVC.Controllers
         public bool GetPullRequestsError { get; private set; }
 
 
-        public ProductController(IHttpClientFactory clientFactory, HttpClient httpClient)
+        public ProductController(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
         }
-
-        private readonly Uri uri = new Uri("http://localhost:41486/api");
 
         public async Task<ActionResult> Index(string query)
         {
@@ -59,43 +57,36 @@ namespace StoreAdminMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Create(string query)
+        public async Task<IActionResult> Create()
         {
-            ProductVM productVM = new ProductVM();
+            ProductVM productVM = new();
 
+            var request = new HttpRequestMessage(HttpMethod.Get, "Category/Get/");
 
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = uri;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Accept", "*/*");
+            var client = _clientFactory.CreateClient("myapi");
 
-                HttpResponseMessage responseMessage = await client.GetAsync("api/Category/Get" + query);
-                string jsonString = await responseMessage.Content.ReadAsStringAsync();
+            var response = await client.SendAsync(request);
 
-                List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(jsonString);
+            string jsonString = await response.Content.ReadAsStringAsync();
 
+            List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(jsonString);
 
+            productVM.CategoryList = new SelectList(
+                categories,
+                "Id",
+                "Title"
+                );
 
-                productVM.CategoryList = new SelectList(
-                    categories,
-                    "Id",
-                    "Title"
-                    );
-
-                return View(productVM);
-            }
+            return View(productVM);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(ProductVM productVM)
+        public async Task<IActionResult> Create(ProductVM productVM)
         {
             try
             {
-                var client = _clientFactory.CreateClient();
-
-                client.BaseAddress = uri;
+                var client = _clientFactory.CreateClient("myapi");
 
                 using (var memoryStream = new MemoryStream())
                 {
@@ -113,13 +104,8 @@ namespace StoreAdminMVC.Controllers
                     form.Add(new StringContent(productVM.Price.ToString()), nameof(productVM.Price));
                     form.Add(new StringContent(productVM.CategoryId.ToString()), nameof(productVM.CategoryId));
 
-                    var response = await client.PostAsync("api/Product/Save", form);
-
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
-
+                    var response = await client.PostAsync("Product/Save", form);
                 }
-
                 return RedirectToAction("Index");
             }
             catch (Exception)
@@ -131,28 +117,24 @@ namespace StoreAdminMVC.Controllers
         [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = uri;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Accept", "*/*");
+            var client = _clientFactory.CreateClient("myapi");
 
-                HttpResponseMessage responseMessage = await client.GetAsync("api/Product/GetById/"+ id);
+            HttpResponseMessage responseMessage = await client.GetAsync("Product/GetById/" + id);
 
-                string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var gameVM = JsonConvert.DeserializeObject<ProductVM>(jsonString);
+            string jsonString = await responseMessage.Content.ReadAsStringAsync();
+            var gameVM = JsonConvert.DeserializeObject<ProductVM>(jsonString);
 
-                responseMessage = await client.GetAsync("api/Category/Get");
-                jsonString = await responseMessage.Content.ReadAsStringAsync();
+            responseMessage = await client.GetAsync("Category/Get");
+            jsonString = await responseMessage.Content.ReadAsStringAsync();
 
-                List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(jsonString);
-                gameVM.CategoryList = new SelectList(
-                    categories,
-                    "Id",
-                    "Title");
+            List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(jsonString);
+            gameVM.CategoryList = new SelectList(
+                categories,
+                "Id",
+                "Title");
 
-                return View(gameVM);
-            }
+            return View(gameVM);
+
         }
 
         [HttpPost]
@@ -162,8 +144,6 @@ namespace StoreAdminMVC.Controllers
             try
             {
                 var client = _clientFactory.CreateClient();
-
-                client.BaseAddress = uri;
 
                 using (var memoryStream = new MemoryStream())
                 {
@@ -181,11 +161,8 @@ namespace StoreAdminMVC.Controllers
                     form.Add(new StringContent(productVM.CategoryId.ToString()), nameof(productVM.CategoryId));
 
                     var response = await client.PostAsync("api/Product/Save", form);
-
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
                 }
-                return RedirectToAction("Details/", new { id = productVM.Id });
+                return RedirectToAction("Index");
             }
             catch (Exception)
             {
@@ -195,37 +172,41 @@ namespace StoreAdminMVC.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            using (var client = new HttpClient())
+            ProductVM productVM;
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
+
+            var client = _clientFactory.CreateClient("myapi");
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
             {
-                client.BaseAddress = uri;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-
-                HttpResponseMessage responseMessage = await client.GetAsync("api/Product/GetById/" + id);
-
-                string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
-
-                return View(responseData);
+                var responseStream = await response.Content.ReadAsStringAsync();
+                productVM = JsonConvert.DeserializeObject<ProductVM>(responseStream);
             }
+            else
+            {
+                GetPullRequestsError = true;
+                productVM = null;
+            }
+
+            return View(productVM);
         }
 
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = uri;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/Product/GetById/{id}");
 
-                HttpResponseMessage responseMessage = await client.GetAsync("api/Product/GetById/" + id);
+            var client = _clientFactory.CreateClient("myapi");
 
-                string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
+            var response = await client.SendAsync(request);
 
-                return View(responseData);
-            }
+            string jsonString = await response.Content.ReadAsStringAsync();
+            var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
+
+            return View(responseData);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -234,14 +215,12 @@ namespace StoreAdminMVC.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = uri;
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                var request = new HttpRequestMessage(HttpMethod.Get, $"api/Product/Delete/{id}");
 
-                    HttpResponseMessage responseMessage = await client.DeleteAsync("api/Product/Delete/" + id);
-                }
+                var client = _clientFactory.CreateClient("myapi");
+
+                var response = await client.SendAsync(request);
+
                 return RedirectToAction("Index");
             }
             catch

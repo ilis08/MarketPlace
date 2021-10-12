@@ -15,7 +15,7 @@ namespace StoreAdminMVC.Controllers
     [ResourceFilter]
     public class CategoryController : Controller
     {
-        private readonly Uri uri = new Uri("http://localhost:41486/api/Category/");
+        private readonly Uri uri = new Uri("http://localhost:5000/api/Category/");
 
        
         public async Task<ActionResult> Index(string query)

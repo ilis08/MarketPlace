@@ -69,7 +69,7 @@ namespace ApplicationService.Implementations
             return orderDTO;
         }
 
-        public bool Save(OrderDTO orderDTO)
+        public async Task<bool> Save(OrderDTO orderDTO)
         {
             List<OrderDetailProduct> mapObject = ObjectMapper.Mapper.Map<List<OrderDetailProduct>>(orderDTO.OrderDetailProducts);
 
@@ -95,7 +95,7 @@ namespace ApplicationService.Implementations
                     unitOfWork.OrderRepository.Create(order);
                 }
 
-                unitOfWork.Save();
+                await unitOfWork.SaveAsync();
 
                 return true;
 
@@ -106,7 +106,7 @@ namespace ApplicationService.Implementations
             }
         }
 
-        public bool Update(OrderDTO orderDTO)
+        public async Task<bool> Update(OrderDTO orderDTO)
         {
             if (orderDTO != null)
             {
@@ -127,7 +127,7 @@ namespace ApplicationService.Implementations
                         unitOfWork.OrderRepository.Update(order);
                     }
 
-                    unitOfWork.Save();
+                    await unitOfWork.SaveAsync();
 
                     return true;
 
@@ -158,14 +158,15 @@ namespace ApplicationService.Implementations
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var order = unitOfWork.OrderRepository.GetOrder(id);
 
             if (order != null)
             {
                 unitOfWork.OrderRepository.Delete(order);
-                unitOfWork.Save();
+
+                await unitOfWork.SaveAsync();
             }
 
             return true;

@@ -9,5 +9,14 @@ namespace StoreAdminMVC.Filters
 {
     public class LoopOverProductVM
     {
+        public LoopOverProductVM(string name)
+        {
+            ShowConsole(name);
+        }
+
+        public void ShowConsole(string name)
+        {
+            Console.WriteLine($"Aboba is {name}");
+        }
     }
 }

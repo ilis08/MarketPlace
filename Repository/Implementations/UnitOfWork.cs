@@ -63,29 +63,16 @@ namespace Repository.Implementations
             }
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-           context.SaveChangesAsync();
+           await context.SaveChangesAsync();
         }
         
         #region IDisposable Support
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    context.Dispose();
-                }
-            }
-            this.disposed = true;
-        }
 
         public void Dispose()
         {
-            Dispose(true);
+            context.Dispose();
             GC.SuppressFinalize(this);
         }
         #endregion

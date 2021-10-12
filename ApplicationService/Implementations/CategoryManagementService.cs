@@ -69,7 +69,7 @@ namespace ApplicationService.Implementations
             return categoryDTO;
         }
 
-        public bool Save(CategoryDTO categoryDTO)
+        public async Task<bool> Save(CategoryDTO categoryDTO)
         {
             Category Category = new Category()
             {
@@ -89,9 +89,9 @@ namespace ApplicationService.Implementations
                 {
                     unitOfWork.CategoryRepository.Update(Category);
                 }
-                   
-                unitOfWork.Save();
-                
+
+                await unitOfWork.SaveAsync();
+
                 return true;
             }
             catch
@@ -109,7 +109,7 @@ namespace ApplicationService.Implementations
             {
                 Category category = await unitOfWork.CategoryRepository.GetCategorytByIdAsync(id);
                 unitOfWork.CategoryRepository.Delete(category);
-                unitOfWork.Save();
+                await unitOfWork.SaveAsync();
 
 
                 return true;

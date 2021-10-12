@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.Messages;
 
 namespace WebAPI.Extensions
 {
@@ -34,7 +35,12 @@ namespace WebAPI.Extensions
 
         public static void ConfigureUnitOfWork(this IServiceCollection services)
         {
-            services.AddScoped<UnitOfWork>();
+            services.AddTransient<UnitOfWork>();
+        }
+
+        public static void ConfigureResponseMessage(this IServiceCollection services)
+        {
+            services.AddTransient<ResponseMessage>();
         }
     }
 }
