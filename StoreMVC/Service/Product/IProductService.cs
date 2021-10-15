@@ -10,7 +10,7 @@ namespace StoreMVC.Service
     {
         Task GetProductAsync(int id);
 
-        Task GetProductsAsync();
+        Task GetProductsAsync(string query);
 
         public ProductVM Product { get; set; }
 

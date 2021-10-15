@@ -25,15 +25,18 @@ namespace ApplicationService.Implementations
 
             if (query == null)
             {
-                foreach (var item in await unitOfWork.CategoryRepository.GetCategoriesAsync())
+                using (unitOfWork)
                 {
-                    categoriesDto.Add(new CategoryDTO
+                    foreach (var item in await unitOfWork.CategoryRepository.GetCategoriesAsync())
                     {
-                        Id = item.Id,
-                        Title = item.Title,
-                        Description = item.Description
-                    });
-                }
+                        categoriesDto.Add(new CategoryDTO
+                        {
+                            Id = item.Id,
+                            Title = item.Title,
+                            Description = item.Description
+                        });
+                    }
+                }   
             }
 
                 /*else
@@ -56,16 +59,20 @@ namespace ApplicationService.Implementations
         {
             CategoryDTO categoryDTO = new CategoryDTO();
 
-                Category category = await unitOfWork.CategoryRepository.GetCategorytByIdAsync(id);
-            if (category != null)
+            using (unitOfWork)
             {
-                categoryDTO = new CategoryDTO
+                Category category = await unitOfWork.CategoryRepository.GetCategorytByIdAsync(id);
+                if (category != null)
                 {
-                    Id = category.Id,
-                    Title = category.Title,
-                    Description = category.Description
-                };
+                    categoryDTO = new CategoryDTO
+                    {
+                        Id = category.Id,
+                        Title = category.Title,
+                        Description = category.Description
+                    };
+                }
             }
+               
             return categoryDTO;
         }
 

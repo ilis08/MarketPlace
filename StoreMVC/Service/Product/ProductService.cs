@@ -35,9 +35,9 @@ namespace StoreMVC.Service
             }
         }
 
-        public async Task GetProductsAsync()
+        public async Task GetProductsAsync(string query)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/Get/");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/Get?query={query}");
 
             var client = clientFactory.CreateClient("myapi");
 

@@ -1,38 +1,44 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using StoreAdminMVC.Filters;
+using StoreAdminMVC.Services;
 using StoreAdminMVC.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
+
 
 namespace StoreAdminMVC.Controllers
 {
     [ResourceFilter]
     public class CategoryController : Controller
     {
-        private readonly Uri uri = new Uri("http://localhost:5000/api/Category/");
+        private readonly IHttpClientFactory clientFactory;
+        private ILogger<CategoryController> logger;
 
-       
+        public CategoryController(ILogger<CategoryController> _logger, IHttpClientFactory _client)
+        {
+            logger = _logger;
+            clientFactory = _client;
+        }
+
         public async Task<ActionResult> Index(string query)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = uri;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var client = clientFactory.CreateClient("myapi");
 
-                HttpResponseMessage response = await client.GetAsync("Get");
+            HttpResponseMessage response = await client.GetAsync("Category/Get");
 
-                string jsonString = await response.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<List<CategoryVM>>(jsonString);
+            var responseData = JsonConvert.DeserializeObject<List<CategoryVM>>(await response.Content.ReadAsStringAsync());
 
-                return View(responseData);
-            }
+            return View(responseData);
+
         }
 
         [HttpGet]
@@ -47,20 +53,10 @@ namespace StoreAdminMVC.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = uri;
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                var client = clientFactory.CreateClient("myapi");
 
-                    var content = JsonConvert.SerializeObject(categoryVM);
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(content);
-                    var byteContent = new ByteArrayContent(buffer);
+                HttpResponseMessage response = await client.PostAsJsonAsync("Category/Save", categoryVM);
 
-                    byteContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json");
-
-                    HttpResponseMessage responseMessage = await client.PostAsync("Save", byteContent);
-                }
                 return RedirectToAction("Index");
             }
             catch (Exception)
@@ -72,104 +68,58 @@ namespace StoreAdminMVC.Controllers
         [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = uri;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            var client = clientFactory.CreateClient("myapi");
 
-                HttpResponseMessage responseMessage = await client.GetAsync("GetById/" + id);
+            var response = await client.GetAsync("Category/GetById/" + id);
 
-                string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<CategoryVM>(jsonString);
+            var responseData = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
 
-                return View(responseData);
-            }
-        }
+            return View(responseData);
+        }     
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(CategoryVM categoryVM)
         {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = uri;
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            var client = clientFactory.CreateClient("myapi");
 
-                    var content = JsonConvert.SerializeObject(categoryVM);
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(content);
-                    var byteContent = new ByteArrayContent(buffer);
+            var response = await client.PostAsJsonAsync("Category/Save", categoryVM);
 
-                    byteContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-
-                    HttpResponseMessage responseMessage = await client.PostAsync("Save", byteContent);
-                }
-                return RedirectToAction("Index");
-            }
-            catch (Exception)
-            {
-                return View();
-            }
+            return RedirectToAction("Index");
         }
 
         public async Task<ActionResult> Details(int id)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = uri;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            var client = clientFactory.CreateClient("myapi");
 
-                HttpResponseMessage responseMessage = await client.GetAsync("GetById/" + id);
+            var response = await client.GetAsync("Category/GetById/" + id);
 
-                string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<CategoryVM>(jsonString);
+            var body = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
 
-                return View(responseData);
-            }
+            return View(body);
         }
 
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = uri;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            var client = clientFactory.CreateClient("myapi");
 
-                HttpResponseMessage responseMessage = await client.GetAsync("GetById/" + id);
+            var response = await client.GetAsync("Category/GetById/" + id);
 
-                string jsonString = await responseMessage.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<CategoryVM>(jsonString);
+            var responseData = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
 
-                return View(responseData);
-            }
+            return View(responseData);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = uri;
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            var client = clientFactory.CreateClient("myapi");
 
-                    HttpResponseMessage responseMessage = await client.DeleteAsync("Delete/" + id);
-                }
-                return RedirectToAction("Index");
-            }
-            catch 
-            {
-                return View();
-            }
+            var response = await client.DeleteAsync("Category/Delete/" + id);
+
+            return RedirectToAction("Index");
         }
     }
 }

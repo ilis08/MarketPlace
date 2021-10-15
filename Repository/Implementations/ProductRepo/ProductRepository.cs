@@ -30,6 +30,11 @@ namespace Repository.Implementations.ProductRepo
             context.Remove(entity);
         }
 
+        public IQueryable<Product> GetProductByQuery(string query)
+        {
+            return context.Products.Include(x => x.Category).Where(c => c.ProductName.Contains(query));
+        }
+
         public async Task<Product> GetProductById(int id)
         {
             return await context.Products.Where(p => p.Id == id).Include(x => x.Category).FirstOrDefaultAsync();
@@ -37,7 +42,7 @@ namespace Repository.Implementations.ProductRepo
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            return await context.Products.Include(x => x.Category).ToListAsync();
+            return await context.Products.Include(x => x.Category).OrderBy(x => x.Category.Id).Take(10).ToListAsync();
         }
 
         public async Task<IEnumerable<Product>> GetProductsWithParamsAsync(GetProductsParameters getProducts)
@@ -52,6 +57,48 @@ namespace Repository.Implementations.ProductRepo
 
         public string SaveImageAsync(IFormFile imageFile)
         {
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
+
+            var imagePath = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/", "Images/", imageName);
+
+            var imagePathStore = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/", "Images/", imageName);
+
+
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                imageFile.CopyTo(fileStream);
+            }
+
+            using (var fileStream = new FileStream(imagePathStore, FileMode.Create))
+            {
+                imageFile.CopyTo(fileStream);
+            }
+
+
+            return imageName;
+        }
+
+        public string UpdateImage(IFormFile imageFile, string oldImarePath)
+        {
+            Parallel.Invoke(
+                () =>
+                    {
+                        if (File.Exists(@$"C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/Images/{oldImarePath}"))
+                        {
+                            File.Delete(@$"C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/Images/{oldImarePath}");
+                        }
+                    },
+                () =>
+                    {
+                        if (File.Exists(@$"C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/Images/{oldImarePath}"))
+                        {
+                            File.Delete(@$"C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/Images/{oldImarePath}");
+                        }
+                    });
+
+
             string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
 
             imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);

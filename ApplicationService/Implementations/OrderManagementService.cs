@@ -25,17 +25,20 @@ namespace ApplicationService.Implementations
 
         public async Task<IEnumerable<OrderGetDTO>> Get()
         {
-            List<OrderGetDTO> orders = new List<OrderGetDTO>();
+            List<OrderGetDTO> orders = new();
 
-            foreach (var item in await unitOfWork.OrderRepository.GetOrders())
+            using (unitOfWork)
             {
-                orders.Add(new OrderGetDTO
+                foreach (var item in await unitOfWork.OrderRepository.GetOrders())
                 {
-                    Id = item.Id,
-                    PaymentType = item.PaymentType,
-                    IsCompleted = item.IsCompleted,
-                    TotalPrice = item.TotalPrice                   
-                });
+                    orders.Add(new OrderGetDTO
+                    {
+                        Id = item.Id,
+                        PaymentType = item.PaymentType,
+                        IsCompleted = item.IsCompleted,
+                        TotalPrice = item.TotalPrice
+                    });
+                }
             }
 
             return orders;

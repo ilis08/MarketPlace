@@ -26,7 +26,7 @@ namespace Repository.Implementations.CategoryRepo
 
         public async Task<Category> GetCategorytByIdAsync(int id)
         {
-            return await context.Categories.Where(c => c.Id == id).FirstOrDefaultAsync();
+            return await context.Categories.FindAsync(id);
         }
 
         public void Create(Category entity)

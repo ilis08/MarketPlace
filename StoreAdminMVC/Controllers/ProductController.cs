@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -43,8 +44,7 @@ namespace StoreAdminMVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                Products = JsonConvert.DeserializeObject<List<ProductVM>>(responseStream);
+                Products = JsonConvert.DeserializeObject<List<ProductVM>>(await response.Content.ReadAsStringAsync());
             }
             else
             {
@@ -61,15 +61,11 @@ namespace StoreAdminMVC.Controllers
         {
             ProductVM productVM = new();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, "Category/Get/");
-
             var client = _clientFactory.CreateClient("myapi");
 
-            var response = await client.SendAsync(request);
+            var response = await client.GetAsync("Category/Get/");
 
-            string jsonString = await response.Content.ReadAsStringAsync();
-
-            List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(jsonString);
+            List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(await response.Content.ReadAsStringAsync());
 
             productVM.CategoryList = new SelectList(
                 categories,
@@ -117,23 +113,26 @@ namespace StoreAdminMVC.Controllers
         [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
+            ProductVM product = new();
+
             var client = _clientFactory.CreateClient("myapi");
 
-            HttpResponseMessage responseMessage = await client.GetAsync("Product/GetById/" + id);
+            HttpResponseMessage response = await client.GetAsync("Product/GetById/" + id);
 
-            string jsonString = await responseMessage.Content.ReadAsStringAsync();
-            var gameVM = JsonConvert.DeserializeObject<ProductVM>(jsonString);
+            product = JsonConvert.DeserializeObject<ProductVM>(await response.Content.ReadAsStringAsync());
 
-            responseMessage = await client.GetAsync("Category/Get");
-            jsonString = await responseMessage.Content.ReadAsStringAsync();
+            product.CategoryId = product.Category.Id;
 
-            List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(jsonString);
-            gameVM.CategoryList = new SelectList(
+            response = await client.GetAsync("Category/Get");
+
+            List<CategoryVM> categories = JsonConvert.DeserializeObject<List<CategoryVM>>(await response.Content.ReadAsStringAsync());
+
+            product.CategoryList = new SelectList(
                 categories,
                 "Id",
                 "Title");
 
-            return View(gameVM);
+            return View(product);
 
         }
 
@@ -143,30 +142,62 @@ namespace StoreAdminMVC.Controllers
         {
             try
             {
-                var client = _clientFactory.CreateClient();
+                var client = _clientFactory.CreateClient("myapi");
 
-                using (var memoryStream = new MemoryStream())
+                if (productVM.ImageFile == null)
                 {
-                    await productVM.ImageFile.CopyToAsync(memoryStream);
+                 /*   using (var memoryStream = new MemoryStream())
+                    {*/
 
-                    using var form = new MultipartFormDataContent();
-                    using var fileContent = new ByteArrayContent(memoryStream.ToArray());
-                    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-                    form.Add(new StringContent(productVM.Id.ToString()), nameof(productVM.Id));
-                    form.Add(fileContent, nameof(productVM.ImageFile), productVM.ImageFile.FileName);
-                    form.Add(new StringContent(productVM.ProductName), nameof(productVM.ProductName));
-                    form.Add(new StringContent(productVM.Description), nameof(productVM.Description));
-                    form.Add(new StringContent(productVM.Release.ToString()), nameof(productVM.Release));
-                    form.Add(new StringContent(productVM.Price.ToString()), nameof(productVM.Price));
-                    form.Add(new StringContent(productVM.CategoryId.ToString()), nameof(productVM.CategoryId));
+                        /*  using var fileContent = new ByteArrayContent(memoryStream.ToArray());
+                          fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
 
-                    var response = await client.PostAsync("api/Product/Save", form);
+                          form.Add(fileContent);
+  */
+                        using var form = new MultipartFormDataContent();
+                        form.Add(new StringContent(productVM.Id.ToString()), nameof(productVM.Id));
+                        form.Add(new StringContent(productVM.ProductName), nameof(productVM.ProductName));
+                        form.Add(new StringContent(productVM.Description), nameof(productVM.Description));
+                        form.Add(new StringContent(productVM.Release.ToString()), nameof(productVM.Release));
+                        form.Add(new StringContent(productVM.Image), nameof(productVM.Image));
+                        form.Add(new StringContent(productVM.Price.ToString()), nameof(productVM.Price));
+                        form.Add(new StringContent(productVM.CategoryId.ToString()), nameof(productVM.CategoryId));
+
+                        var response = await client.PutAsync("Product/Update", form);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return RedirectToAction("Details", new { Id = productVM.Id });
+                        }
+                    
+   
+                }
+                else
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await productVM.ImageFile.CopyToAsync(memoryStream);
+
+                        using var form = new MultipartFormDataContent();
+                        using var fileContent = new ByteArrayContent(memoryStream.ToArray());
+                        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+                        form.Add(new StringContent(productVM.Id.ToString()), nameof(productVM.Id));
+                        form.Add(fileContent, nameof(productVM.ImageFile), productVM.ImageFile.FileName);
+                        form.Add(new StringContent(productVM.ProductName), nameof(productVM.ProductName));
+                        form.Add(new StringContent(productVM.Description), nameof(productVM.Description));
+                        form.Add(new StringContent(productVM.Image), nameof(productVM.Image));
+                        form.Add(new StringContent(productVM.Release.ToString()), nameof(productVM.Release));
+                        form.Add(new StringContent(productVM.Price.ToString()), nameof(productVM.Price));
+                        form.Add(new StringContent(productVM.CategoryId.ToString()), nameof(productVM.CategoryId));
+
+                        var response = await client.PutAsync("Product/Update", form);
+                    }
                 }
                 return RedirectToAction("Index");
             }
             catch (Exception)
             {
-                return View();
+                return View("Edit", new { Id = productVM.Id });
             }
         }
 
@@ -174,16 +205,13 @@ namespace StoreAdminMVC.Controllers
         {
             ProductVM productVM;
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
-
             var client = _clientFactory.CreateClient("myapi");
 
-            var response = await client.SendAsync(request);
+            var response = await client.GetAsync("Product/GetById/" + id);
 
             if (response.IsSuccessStatusCode)
             {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                productVM = JsonConvert.DeserializeObject<ProductVM>(responseStream);
+                productVM = JsonConvert.DeserializeObject<ProductVM>(await response.Content.ReadAsStringAsync());
             }
             else
             {
@@ -197,14 +225,11 @@ namespace StoreAdminMVC.Controllers
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"api/Product/GetById/{id}");
-
             var client = _clientFactory.CreateClient("myapi");
 
-            var response = await client.SendAsync(request);
+            var response = await client.GetAsync($"Product/GetById/{id}");
 
-            string jsonString = await response.Content.ReadAsStringAsync();
-            var responseData = JsonConvert.DeserializeObject<ProductVM>(jsonString);
+            var responseData = JsonConvert.DeserializeObject<ProductVM>(await response.Content.ReadAsStringAsync());
 
             return View(responseData);
         }
@@ -215,11 +240,9 @@ namespace StoreAdminMVC.Controllers
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"api/Product/Delete/{id}");
-
                 var client = _clientFactory.CreateClient("myapi");
 
-                var response = await client.SendAsync(request);
+                var response = await client.DeleteAsync($"Product/Delete/{id}");
 
                 return RedirectToAction("Index");
             }

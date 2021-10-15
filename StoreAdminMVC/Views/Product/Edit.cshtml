@@ -13,37 +13,40 @@
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Image"/>
             <div class="form-group">
                 <label asp-for="ProductName" class="control-label"></label>
                 <input asp-for="ProductName" class="form-control" />
-                <span asp-validation-for="ProductName" class="text-danger"></span>
+                <span asp-validation-for="@Model.ProductName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <span asp-validation-for="@Model.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Release" class="control-label"></label>
                 <input asp-for="Release" class="form-control" />
-                <span asp-validation-for="Release" class="text-danger"></span>
+                <span asp-validation-for="@Model.Release" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
                 <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <span asp-validation-for="@Model.Price" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Image" class="control-label"></label>
                 <div class="custom-file">
                     <input asp-for="ImageFile" class="custom-file-input" id="customFile">
-                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <label class="custom-file-label" for="customFile">@Model.Image</label>
                 </div>
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                <span asp-validation-for="@Model.ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" asp-items="@Model.CategoryList" class="form-control"></select>
+                <select asp-for="CategoryId" asp-items="@Model.CategoryList" class="form-control">
+                </select>
+                <span asp-validation-for="@Model.CategoryId" class="text-danger"></span>
             </div>
             <hr />
             <div class="form-group">

@@ -82,7 +82,7 @@ namespace WebAPI.Controllers
         }
 
         [Route("[action]/{id:int}")]
-        [HttpPost]
+        [HttpPut]
         public async Task<JsonResult> CompleteOrder(int id)
         {
             if (id != 0)

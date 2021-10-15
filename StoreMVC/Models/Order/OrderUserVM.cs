@@ -12,12 +12,14 @@ namespace StoreMVC.Models
         [BindNever]
         public int Id { get; set; }
         [Required]
+        [DataType(DataType.Text)]
         public string Surname { get; set; }
         [Required]
+        [DataType(DataType.Text)]
         public string Name { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
         [Required]
+        [Phone]
         public string PhoneNumber { get; set; }
     }
 }

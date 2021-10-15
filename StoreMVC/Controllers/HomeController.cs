@@ -24,9 +24,9 @@ namespace StoreMVC.Controllers
             productService = _productService;
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string query)
         {
-            await productService.GetProductsAsync();
+            await productService.GetProductsAsync(query);
 
             return View(productService.Products);
         }

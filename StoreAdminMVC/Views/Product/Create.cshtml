@@ -10,9 +10,9 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id"/>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="ProductName" class="control-label"></label>
                 <input asp-for="ProductName" class="form-control" />
@@ -39,10 +39,12 @@
                     <input type="file" asp-for="ImageFile" class="custom-file-input" />
                     <label class="custom-file-label">Choose File...</label>
                 </div>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Category" class="control-label"></label>
                 <select asp-for="CategoryId" asp-items="@Model.CategoryList" class="form-control"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <hr />
             <div class="form-group">
@@ -59,6 +61,9 @@
 </div>
 
 @section Scripts {
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
     <script type="text/javascript">
 
         $(".custom-file-input").on("change", function () {

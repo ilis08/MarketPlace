@@ -29,16 +29,13 @@ namespace StoreAdminMVC.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "Order/Get/");
-
             var client = _clientFactory.CreateClient("myapi");
 
-            var response = await client.SendAsync(request);
+            var response = await client.GetAsync("Order/Get/");
 
             if (response.IsSuccessStatusCode)
             {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                Orders = JsonConvert.DeserializeObject<List<OrderGetVM>>(responseStream);
+                Orders = JsonConvert.DeserializeObject<List<OrderGetVM>>(await response.Content.ReadAsStringAsync());
             }
             else
             {
@@ -51,16 +48,13 @@ namespace StoreAdminMVC.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Order/GetById/{id}");
-
             var client = _clientFactory.CreateClient("myapi");
 
-            var response = await client.SendAsync(request);
+            var response = await client.GetAsync($"Order/GetById/{id}");
 
             if (response.IsSuccessStatusCode)
             {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                Order = JsonConvert.DeserializeObject<OrderGetByIdVM>(responseStream);
+                Order = JsonConvert.DeserializeObject<OrderGetByIdVM>(await response.Content.ReadAsStringAsync());
             }
             else
             {
@@ -74,11 +68,9 @@ namespace StoreAdminMVC.Controllers
         [HttpGet]
         public async Task<ActionResult> CompleteOrder(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, $"Order/CompleteOrder/{id}");
-
             var client = _clientFactory.CreateClient("myapi");
 
-            var response = await client.SendAsync(request);
+            var response = await client.PutAsync($"Order/CompleteOrder/{id}", null);
 
             if (response.IsSuccessStatusCode)
             {

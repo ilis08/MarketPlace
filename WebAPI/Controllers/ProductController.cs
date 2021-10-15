@@ -78,6 +78,31 @@ namespace WebAPI.Controllers
             return Json(responseMessage);
         }
 
+        [Route("[action]")]
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm]ProductDTO product)
+        {
+            if (product.ProductName == default(string))
+            {
+                return Json(new ResponseMessage { Code = 500, Error = "Data is not valid" });
+            }
+
+            ResponseMessage responseMessage = new();
+
+            if (await service.Update(product))
+            {
+                responseMessage.Code = 201;
+                responseMessage.Body = "Product was updated";
+            }
+            else
+            {
+                responseMessage.Code = 202;
+                responseMessage.Body = "Product was not updated";
+            }
+
+            return Json(responseMessage);
+        }
+
         [Route("[action]/{id:int}")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)

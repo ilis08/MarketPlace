@@ -26,29 +26,10 @@ namespace ApplicationService.Implementations
             List<ProductDTO> productDto = new List<ProductDTO>();
 
             if (query == null)
+            {
+                using (unitOfWork)
                 {
-                foreach (var item in await unitOfWork.ProductRepository.GetProducts())
-                {
-                    productDto.Add(new ProductDTO
-                    {
-                        Id = item.Id,
-                        ProductName = item.ProductName,
-                        Description = item.Description,
-                        Release = item.Release,
-                        Price = item.Price,
-                        Image = item.Image,
-                        Category = new CategoryDTO
-                        {
-                            Id = item.Category.Id,
-                            Title = item.Category.Title,
-                            Description = item.Category.Description
-                        }
-                    });
-                }
-                
-               /* else
-                {
-                    foreach (var item in unitOfWork.ProductRepository.GetByQuery().Where(c => c.ProductName.Contains(query)).ToList())
+                    foreach (var item in await unitOfWork.ProductRepository.GetProducts())
                     {
                         productDto.Add(new ProductDTO
                         {
@@ -66,8 +47,32 @@ namespace ApplicationService.Implementations
                             }
                         });
                     }
-                }*/
+                }
             }
+            else
+            {
+                using (unitOfWork)
+                {
+                    foreach (var item in unitOfWork.ProductRepository.GetProductByQuery(query))
+                    {
+                        productDto.Add(new ProductDTO
+                        {
+                            Id = item.Id,
+                            ProductName = item.ProductName,
+                            Description = item.Description,
+                            Release = item.Release,
+                            Price = item.Price,
+                            Image = item.Image,
+                            Category = new CategoryDTO
+                            {
+                                Id = item.Category.Id,
+                                Title = item.Category.Title,
+                                Description = item.Category.Description
+                            }
+                        });
+                    }
+                }
+            }           
             return productDto;
         }
 
@@ -75,25 +80,29 @@ namespace ApplicationService.Implementations
         {
             List<ProductDTO> productDto = new List<ProductDTO>();
 
-            foreach (var item in await unitOfWork.ProductRepository.GetProductsWithParamsAsync(parameters))
+            using (unitOfWork)
             {
-                productDto.Add(new ProductDTO
+                foreach (var item in await unitOfWork.ProductRepository.GetProductsWithParamsAsync(parameters))
                 {
-                    Id = item.Id,
-                    ProductName = item.ProductName,
-                    Description = item.Description,
-                    Release = item.Release,
-                    Price = item.Price,
-                    Image = item.Image,
-                    Category = new CategoryDTO
+                    productDto.Add(new ProductDTO
                     {
-                        Id = item.Category.Id,
-                        Title = item.Category.Title,
-                        Description = item.Category.Description
-                    }
-                });
+                        Id = item.Id,
+                        ProductName = item.ProductName,
+                        Description = item.Description,
+                        Release = item.Release,
+                        Price = item.Price,
+                        Image = item.Image,
+                        Category = new CategoryDTO
+                        {
+                            Id = item.Category.Id,
+                            Title = item.Category.Title,
+                            Description = item.Category.Description
+                        }
+                    });
+                }
             }
-                return productDto;
+
+            return productDto;
         }
 
         public async Task<ProductDTO> GetById(int id)
@@ -145,10 +154,6 @@ namespace ApplicationService.Implementations
                 {
                     unitOfWork.ProductRepository.Create(product);
                 }
-                else
-                {
-                    unitOfWork.ProductRepository.Update(product);
-                }
 
                 await unitOfWork.SaveAsync();
 
@@ -160,6 +165,60 @@ namespace ApplicationService.Implementations
             }
         }
 
+        public async Task<bool> Update(ProductDTO productDto)
+        {
+            try
+            {
+                if (productDto.ImageFile == null)
+                {
+                    Product product = new Product
+                    {
+                        Id = productDto.Id,
+                        ProductName = productDto.ProductName,
+                        Description = productDto.Description,
+                        Release = productDto.Release,
+                        Price = productDto.Price,
+                        Image = productDto.Image,
+                        CategoryId = productDto.CategoryId
+                    };
+
+                    using (unitOfWork)
+                    {
+                        unitOfWork.ProductRepository.Update(product);
+
+                        await unitOfWork.SaveAsync();
+                    }
+                }
+                else
+                {
+                    productDto.Image = unitOfWork.ProductRepository.UpdateImage(productDto.ImageFile, productDto.Image);
+
+                    Product product = new Product
+                    {
+                        Id = productDto.Id,
+                        ProductName = productDto.ProductName,
+                        Description = productDto.Description,
+                        Release = productDto.Release,
+                        Price = productDto.Price,
+                        Image = productDto.Image,
+                        CategoryId = productDto.CategoryId
+                    };
+
+                    using (unitOfWork)
+                    {
+                        unitOfWork.ProductRepository.Update(product);
+
+                        await unitOfWork.SaveAsync();
+                    }
+                }
+
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
+        }
 
 
         public async Task<bool> Delete(int id)

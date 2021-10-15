@@ -1,6 +1,6 @@
 ﻿@model StoreMVC.ViewModels.ProductVM
 
-<form id="@Model.Id" asp-page="/Cart" asp-route-id="@Model.Id" method="post">
+<form onclick="Add(@Model.Id)" method="post">
     <input type="hidden" asp-for="Id"/>
     <span class="card-text">
         <button type="submit"
@@ -9,3 +9,9 @@
         </button>
     </span>
 </form>
+
+<script>
+    function Add(id) {
+        location.href = "/cart/OnPostAsync/" + id;
+    }
+</script>

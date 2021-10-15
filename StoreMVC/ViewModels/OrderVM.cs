@@ -13,7 +13,7 @@ namespace StoreMVC.ViewModels
     public class OrderVM
     {
         public int OrderId { get; set; }
-
+        [DataType(DataType.CreditCard)]
         public PaymentType PaymentType { get; set; }
 
         public double TotalPrice { get; set; }
