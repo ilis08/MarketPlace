@@ -33,7 +33,7 @@ namespace Repository.Implementations
             {
                 if (this.productRepository == null)
                 {
-                    this.productRepository = new ProductRepository(context);
+                    this.productRepository = new ProductRepository(context, new ProductImage());
                 }
                 return productRepository;
             }

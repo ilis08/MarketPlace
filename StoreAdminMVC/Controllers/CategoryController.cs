@@ -53,11 +53,18 @@ namespace StoreAdminMVC.Controllers
         {
             try
             {
-                var client = clientFactory.CreateClient("myapi");
+                if (ModelState.IsValid)
+                {
+                    var client = clientFactory.CreateClient("myapi");
 
-                HttpResponseMessage response = await client.PostAsJsonAsync("Category/Save", categoryVM);
+                    HttpResponseMessage response = await client.PostAsJsonAsync("Category/Save", categoryVM);
 
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return View(categoryVM);
+                }        
             }
             catch (Exception)
             {

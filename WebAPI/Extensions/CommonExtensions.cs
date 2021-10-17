@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Repository.Implementations;
+using Repository.Implementations.ProductRepo;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,6 +42,11 @@ namespace WebAPI.Extensions
         public static void ConfigureResponseMessage(this IServiceCollection services)
         {
             services.AddTransient<ResponseMessage>();
+        }
+
+        public static void ConfigureProductImageService(this IServiceCollection services)
+        {
+            services.AddTransient<ProductImage>();
         }
     }
 }

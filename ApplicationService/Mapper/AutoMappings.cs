@@ -43,6 +43,8 @@ namespace ApplicationService
             /*CreateMap<OrderDetailProductByIdDTO, OrderDetailProduct>().ForPath(dest =>
                 dest.Product.ProductName, opt => opt.MapFrom(src => src.ProductName)).ForMember(dest =>
                 dest.Count, opt => opt.MapFrom(src => src.Count));*/
+
+            CreateMap<Product, ProductDTO>();
         }
     }
 }

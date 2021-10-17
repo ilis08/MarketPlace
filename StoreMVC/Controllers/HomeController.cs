@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using StoreMVC.Models;
 using StoreMVC.Service;
 using StoreMVC.ViewModels;
+using StoreMVC.ViewModels.Product;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,11 +25,25 @@ namespace StoreMVC.Controllers
             productService = _productService;
         }
 
-        public async Task<ActionResult> Index(string query)
+        public async Task<IActionResult> Index(string query)
         {
-            await productService.GetProductsAsync(query);
+            if (query == null)
+            {
+                return View();
+            }
+            else
+            {
+                await productService.GetProductsAsync(query);
 
-            return View(productService.Products);
+                return View("IndexByQuery", productService.Products);
+            }
+        }
+
+        public async Task<IActionResult> GetProductsByParams([FromQuery]GetProductsParams productParams)
+        {
+            await productService.GetProductsByParams(productParams);
+
+            return View(productService.ProductListVM);
         }
 
         public async Task<IActionResult> Details(int id)

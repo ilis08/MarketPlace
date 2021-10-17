@@ -19,7 +19,7 @@
                 <h4>Product ID : @Model.Id</h4>
                 <h4>Description : @Model.Description</h4>
                 <h4>Release : @Model.Release</h4>
-                <h4>Category : @Model.Category.Title</h4>
+                <h4>Category : <a asp-action="GetProductsByCategory" asp-route-category="@Model.Category.Title">@Model.Category.Title</a></h4>
                 <h4>Price : @Model.Price.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))</h4>
 
             </div>

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StoreMVC.ViewModels;
+using StoreMVC.ViewModels.Product;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -14,6 +15,8 @@ namespace StoreMVC.Service
         public ProductVM Product { get; set; }
 
         public IEnumerable<ProductVM> Products { get; set; }
+
+        public ProductListVM ProductListVM { get; set; }
 
         public ProductService(IHttpClientFactory _factory)
         {
@@ -51,6 +54,29 @@ namespace StoreMVC.Service
             else
             {
                 Products = Array.Empty<ProductVM>();
+            }
+        }
+
+        public async Task<bool> GetProductsByParams(GetProductsParams productsParams)
+        {
+            var client = clientFactory.CreateClient("myapi");
+
+            var response = await client.GetAsync($"Product/GetProductsByCategory?Category={productsParams.Category}&Ordering={productsParams.Ordering}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                Products = JsonConvert.DeserializeObject<List<ProductVM>>(await response.Content.ReadAsStringAsync());
+
+                ProductListVM = new ProductListVM();
+
+                ProductListVM.Products = Products;
+                ProductListVM.Params = productsParams;
+
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

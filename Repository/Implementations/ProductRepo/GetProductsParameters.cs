@@ -6,9 +6,17 @@ using System.Threading.Tasks;
 
 namespace Repository.Implementations
 {
+    public enum Ordering
+    {
+        OrderByDescending,
+        OrderBy
+    }
+
     public class GetProductsParameters
     {
-        public int CategoryId { get; set; }
+        public string Category { get; set; }
+
+        public Ordering Ordering { get; set; }
 
         const int maxPageSize = 50;
 

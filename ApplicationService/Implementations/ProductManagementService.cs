@@ -1,4 +1,5 @@
 ﻿using ApplicationService.DTOs;
+using ApplicationService.Mapper;
 using Data.Context;
 using Data.Entitites;
 using Microsoft.AspNetCore.Http;
@@ -133,12 +134,19 @@ namespace ApplicationService.Implementations
             return productDto;
         }
 
+        public async Task<IEnumerable<ProductDTO>> GetProductsByCategory(GetProductsParameters productsParameters)
+        {
+            IEnumerable<Product> product = await unitOfWork.ProductRepository.GetProductByCategory(productsParameters);
+
+            var productDTO = ObjectMapper.Mapper.Map<IEnumerable<ProductDTO>>(product);
+
+            return productDTO;
+        }
+
         public async Task<bool> Save(ProductDTO productDto)
         { 
             try
             {
-                productDto.Image = unitOfWork.ProductRepository.SaveImageAsync(productDto.ImageFile);
-
                 Product product = new Product
                 {
                     Id = productDto.Id,
@@ -146,13 +154,12 @@ namespace ApplicationService.Implementations
                     Description = productDto.Description,
                     Release = productDto.Release,
                     Price = productDto.Price,
-                    Image = productDto.Image,
                     CategoryId = productDto.CategoryId
                 };
 
                 if (productDto.Id == 0)
                 {
-                    unitOfWork.ProductRepository.Create(product);
+                    unitOfWork.ProductRepository.Create(product, productDto.ImageFile);
                 }
 
                 await unitOfWork.SaveAsync();
@@ -191,8 +198,6 @@ namespace ApplicationService.Implementations
                 }
                 else
                 {
-                    productDto.Image = unitOfWork.ProductRepository.UpdateImage(productDto.ImageFile, productDto.Image);
-
                     Product product = new Product
                     {
                         Id = productDto.Id,
@@ -206,7 +211,7 @@ namespace ApplicationService.Implementations
 
                     using (unitOfWork)
                     {
-                        unitOfWork.ProductRepository.Update(product);
+                        unitOfWork.ProductRepository.UpdateWithImage(productDto.ImageFile, product);
 
                         await unitOfWork.SaveAsync();
                     }

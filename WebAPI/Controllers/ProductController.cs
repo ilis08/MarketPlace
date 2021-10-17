@@ -53,6 +53,12 @@ namespace WebAPI.Controllers
             return Json(await service.GetById(id));
         }
 
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetProductsByParams([FromQuery] GetProductsParameters productsParameters)
+        {
+            return Json(await service.GetProductsByCategory(productsParameters));
+        }
+
         [Route("[action]")]
         [HttpPost]
         public async Task<IActionResult> Save([FromForm]ProductDTO productDto)

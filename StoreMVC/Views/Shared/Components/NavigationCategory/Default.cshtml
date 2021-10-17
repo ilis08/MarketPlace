@@ -1,0 +1,19 @@
+﻿@using StoreMVC.Models
+@using StoreMVC.ViewModels.Product;
+@model ProductListVM
+
+
+@for (int i = 0; i < 5; i++)
+{
+    <br />
+}
+
+@foreach (var category in Model.Categories)
+{
+<form asp-controller="Home" asp-action="GetProductsByParams">
+    <input type="hidden" asp-for="Params.Category" value="@category.Title"/>
+    <input class="btn btn-block" type="submit" value="@category.Title"/>
+</form>
+   
+}
+

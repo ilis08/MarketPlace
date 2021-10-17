@@ -1,0 +1,51 @@
+﻿@model ProductListVM
+@using StoreMVC.Controllers;
+@using System.Globalization;
+@using System.ComponentModel;
+@using System.Linq;
+
+@{
+    ViewBag.Title = Model.Params.Category;
+}
+
+<br />
+
+
+<div>
+    <div class="text-center">
+        <select id="productPrice" class="custom-select justify-content-center" aria-label="Default select example" onchange="Find()">
+            <option selected>Open this select menu</option>
+            <option value="Laptop">From cheap to expensive </option>
+            <option value="Phone">From expensive to cheap</option>
+        </select>
+    </div>
+</div>
+
+<div class="card-deck">
+    @foreach (var product in Model.Products)
+    {
+        <div class="card m-1 p-1" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
+            <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
+
+            <div class="card-header">
+                <a class="fill-div" asp-action="Details" asp-route-id="@product.Id">@product.ProductName</a>
+            </div>
+            <div class="row pt-2 pb-2">
+                <div class="col-6 text-center">
+                    <h5>@product.Price.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))</h5>
+                </div>
+                <div class="col-6 text-center">
+                    <partial name="ProductSummary" model="product" />
+                </div>
+            </div>
+
+        </div>
+    }
+</div>
+
+<script>
+    function Find() {
+        var param = document.getElementById("productPrice")
+        location.href = "/Home/GetProductsByCategory?category=" + param.value
+    }
+</script>

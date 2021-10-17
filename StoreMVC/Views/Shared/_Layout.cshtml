@@ -23,20 +23,24 @@
     </header>
     <div>
         <div class="bg-success text-white text-center p-3 m-1">
+            <div class="text-center">
+                <form class="form-inline justify-content-end" asp-controller="Home" asp-action="Index">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query"/>
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit" value="Filter">Search</button>
+                </form>
+            </div>
         </div>
     </div>
     <div class="row m-1 p-1">
         <div id="categories" class="col-2">
-            <p>
-            
-            </p>
+            @await Component.InvokeAsync("NavigationCategory", new ProductListVM())
         </div>
-        <div class="col-8">
+        <div class="col-9">
             @RenderBody()
         </div>
-        <div class="col-2">
+        <div class="col-1">
             <p>
-                
+
             </p>
         </div>
     </div>

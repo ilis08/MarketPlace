@@ -14,15 +14,19 @@ namespace Repository.Implementations.ProductRepo
     public class ProductRepository : IProductRepository
     {
         internal RepositoryContext context;
+        internal ProductImage imageService;
 
-        public ProductRepository(RepositoryContext context)
+        public ProductRepository(RepositoryContext context, ProductImage _imageService)
         {
             this.context = context;
+            imageService = _imageService;
         }
 
-        public void Create(Product order)
+        public void Create(Product product, IFormFile file)
         {
-            context.Add(order);
+            product.Image = imageService.SaveImageAsync(file);
+
+            context.Add(product);
         }
 
         public void Delete(Product entity)
@@ -55,71 +59,24 @@ namespace Repository.Implementations.ProductRepo
             context.Products.Update(entity);
         }
 
-        public string SaveImageAsync(IFormFile imageFile)
+        public void UpdateWithImage(IFormFile image, Product product)
         {
-            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            product.Image = imageService.UpdateImage(image, product.Image);
 
-            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
-
-            var imagePath = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/", "Images/", imageName);
-
-            var imagePathStore = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/", "Images/", imageName);
-
-
-            using (var fileStream = new FileStream(imagePath, FileMode.Create))
-            {
-                imageFile.CopyTo(fileStream);
-            }
-
-            using (var fileStream = new FileStream(imagePathStore, FileMode.Create))
-            {
-                imageFile.CopyTo(fileStream);
-            }
-
-
-            return imageName;
+            context.Products.Update(product);
         }
 
-        public string UpdateImage(IFormFile imageFile, string oldImarePath)
+        public async Task<IEnumerable<Product>> GetProductByCategory(GetProductsParameters productsParameters)
         {
-            Parallel.Invoke(
-                () =>
-                    {
-                        if (File.Exists(@$"C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/Images/{oldImarePath}"))
-                        {
-                            File.Delete(@$"C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/Images/{oldImarePath}");
-                        }
-                    },
-                () =>
-                    {
-                        if (File.Exists(@$"C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/Images/{oldImarePath}"))
-                        {
-                            File.Delete(@$"C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/Images/{oldImarePath}");
-                        }
-                    });
-
-
-            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
-
-            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
-
-            var imagePath = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/", "Images/", imageName);
-
-            var imagePathStore = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/", "Images/", imageName);
-
-
-            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            if (productsParameters.Ordering == Ordering.OrderBy)
             {
-                imageFile.CopyTo(fileStream);
+                return await context.Products.Where(p => p.Category.Title == productsParameters.Category).OrderBy(x => x.Price).ToListAsync();
             }
-
-            using (var fileStream = new FileStream(imagePathStore, FileMode.Create))
+            else
             {
-                imageFile.CopyTo(fileStream);
+                return await context.Products.Where(p => p.Category.Title == productsParameters.Category).OrderByDescending(x => x.Price).ToListAsync();
             }
-
-
-            return imageName;
+            
         }
     }
 }

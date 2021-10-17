@@ -14,19 +14,19 @@ namespace StoreAdminMVC.ViewModels
         [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "Please, enter the product name.")]
+        [StringLength(40)]
         public string ProductName { get; set; }
         [Required(ErrorMessage = "Please, enter the description.")]
+        [StringLength(100)]
         public string Description { get; set; }
         [Display(Name = "Date of release")]
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "Please, enter the release date")]
         public DateTime? Release { get; set; }
         [Required(ErrorMessage = "Please, enter the price")]
-        [Range(1, maximum:double.MaxValue)]
+        [Range(1, 999999.0)]
         public double Price { get; set; }
         public string Image { get; set; }
-        [Required(ErrorMessage = "Pleas, choose an image")]
-        [DataType(DataType.Upload)]
         public IFormFile ImageFile { get; set; }
 
         [Display(Name = "Category")]
