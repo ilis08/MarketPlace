@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -39,11 +41,11 @@ namespace StoreMVC.Controllers
             }
         }
 
-        public async Task<IActionResult> GetProductsByParams([FromQuery]GetProductsParams productParams)
+        public async Task<IActionResult> GetProductsByCategory(string category, Ordering ordering)
         {
-            await productService.GetProductsByParams(productParams);
+            var model = await productService.GetProductsByParams(new GetProductsParams(category, ordering));
 
-            return View(productService.ProductListVM);
+            return View(model);
         }
 
         public async Task<IActionResult> Details(int id)

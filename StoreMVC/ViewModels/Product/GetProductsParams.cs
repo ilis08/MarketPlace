@@ -7,15 +7,27 @@ namespace StoreMVC.ViewModels.Product
 {
     public enum Ordering
     {
-        OrderByDescending,
-        OrderBy
+        OrderByHighestPrice = 0,
+        OrderByLowestPrice = 1
     }
     public class GetProductsParams
     {
+        public GetProductsParams(string category)
+        {
+            Category = category;
+        }
+
         public GetProductsParams(string category, Ordering ordering)
         {
             Category = category;
             Ordering = ordering;
+        }
+
+        public GetProductsParams(string category, Ordering ordering, int pageSize)
+        {
+            Category = category;
+            Ordering = ordering;
+            PageSize = pageSize;
         }
 
         public GetProductsParams()
@@ -25,6 +37,8 @@ namespace StoreMVC.ViewModels.Product
 
         public string Category { get; set; }
 
-        public Ordering Ordering { get; set; } = Ordering.OrderBy;
+        public Ordering Ordering { get; set; }
+
+        public int PageSize { get; set; } = 4;
     }
 }

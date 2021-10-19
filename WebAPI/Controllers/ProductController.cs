@@ -40,13 +40,6 @@ namespace WebAPI.Controllers
             return Json(await service.Get(query));
         }
 
-        [HttpGet]
-        [Route("[action]")]
-        public async Task<IActionResult> GetWithParams([FromQuery] GetProductsParameters parameters)
-        {
-            return Json(await service.GetPaginated(parameters));
-        }
-
         [HttpGet("[action]/{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -56,7 +49,7 @@ namespace WebAPI.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> GetProductsByParams([FromQuery] GetProductsParameters productsParameters)
         {
-            return Json(await service.GetProductsByCategory(productsParameters));
+            return Json(await service.GetProductsByParameters(productsParameters));
         }
 
         [Route("[action]")]

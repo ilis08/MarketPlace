@@ -36,7 +36,10 @@ namespace StoreMVC
 
             services.AddDistributedMemoryCache();
             services.AddSession(opts =>
-            opts.Cookie.IsEssential = true );
+            {
+                opts.IdleTimeout = TimeSpan.FromDays(120);
+                opts.Cookie.IsEssential = true;
+            });  
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

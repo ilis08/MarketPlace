@@ -10,14 +10,18 @@
 
 <br />
 
+<div class="row">
+    <div class="col-10">
 
-<div>
-    <div class="text-center">
-        <select id="productPrice" class="custom-select justify-content-center" aria-label="Default select example" onchange="Find()">
-            <option selected>Open this select menu</option>
-            <option value="Laptop">From cheap to expensive </option>
-            <option value="Phone">From expensive to cheap</option>
-        </select>
+    </div>
+    <div class="col-2">
+        <div class="justify-content-end">
+            <select id="productPrice" class="custom-select justify-content-end" aria-label="Default select example" onchange="Find()">
+                <option selected>Order by</option>
+                <option value="@Model.Params.Category&Ordering=@Ordering.OrderByLowestPrice">From cheaper to expensive </option>
+                <option value="@Model.Params.Category&Ordering=@Ordering.OrderByHighestPrice">From expensive to cheaper</option>
+            </select>
+        </div>
     </div>
 </div>
 

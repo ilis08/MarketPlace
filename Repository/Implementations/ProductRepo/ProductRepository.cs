@@ -49,11 +49,6 @@ namespace Repository.Implementations.ProductRepo
             return await context.Products.Include(x => x.Category).OrderBy(x => x.Category.Id).Take(10).ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsWithParamsAsync(GetProductsParameters getProducts)
-        {
-            return await context.Products.OrderBy(p => p.Price).Skip((getProducts.PageNumber - 1) * getProducts.PageSize).Take(getProducts.PageSize).Include(x => x.Category).ToListAsync();
-        }
-
         public void Update(Product entity)
         {
             context.Products.Update(entity);
@@ -66,15 +61,23 @@ namespace Repository.Implementations.ProductRepo
             context.Products.Update(product);
         }
 
-        public async Task<IEnumerable<Product>> GetProductByCategory(GetProductsParameters productsParameters)
+        public async Task<IEnumerable<Product>> GetProductsByParameters(GetProductsParameters productsParameters)
         {
-            if (productsParameters.Ordering == Ordering.OrderBy)
+            if (productsParameters.Ordering == Ordering.OrderByHighestPrice)
             {
-                return await context.Products.Where(p => p.Category.Title == productsParameters.Category).OrderBy(x => x.Price).ToListAsync();
+                return await context.Products.Where(p => p.Category.Title == productsParameters.Category)
+                    .OrderByDescending(x => x.Price)
+                    .Skip((productsParameters.PageNumber - 1) * productsParameters.PageSize)
+                    .Take(productsParameters.PageSize)
+                    .ToListAsync();
             }
             else
             {
-                return await context.Products.Where(p => p.Category.Title == productsParameters.Category).OrderByDescending(x => x.Price).ToListAsync();
+                return await context.Products.Where(p => p.Category.Title == productsParameters.Category)
+                    .OrderBy(x => x.Price)
+                    .Skip((productsParameters.PageNumber - 1) * productsParameters.PageSize)
+                    .Take(productsParameters.PageSize)
+                    .ToListAsync();
             }
             
         }

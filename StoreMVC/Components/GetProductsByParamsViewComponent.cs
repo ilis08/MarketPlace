@@ -19,20 +19,17 @@ namespace StoreMVC.Components
             clientFactory = _factory;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(GetProductsParams productsParams)
+        public async Task<IViewComponentResult> InvokeAsync(ProductListVM productsParams)
         {
             var client = clientFactory.CreateClient("myapi");
 
-            var response = await client.GetAsync($"Product/GetProductsByParams?Category={productsParams.Category}&Ordering={productsParams.Ordering}");
+            var response = await client.GetAsync($"Product/GetProductsByParams?Category={productsParams.Params.Category}&Ordering={0}&PageSize={productsParams.Params.PageSize}");
 
             var products = JsonConvert.DeserializeObject<IEnumerable<ProductVM>>(await response.Content.ReadAsStringAsync());
 
-            ProductListVM productList = new();
+            productsParams.Products = products;
 
-            productList.Params = productsParams;
-            productList.Products = products;
-
-            return View(productList);
+            return View(productsParams);
         }
     }
 }

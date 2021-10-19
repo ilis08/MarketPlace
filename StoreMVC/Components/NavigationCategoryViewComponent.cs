@@ -19,7 +19,7 @@ namespace StoreMVC.Components
             clientFactory = _factory;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(ProductListVM product)
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             var client = clientFactory.CreateClient("myapi");
 
@@ -28,6 +28,8 @@ namespace StoreMVC.Components
             var category = JsonConvert.DeserializeObject<IEnumerable<CategoryVM>>(await response.Content.ReadAsStringAsync());
 
             ViewBag.SelectedCategory = RouteData?.Values["category"];
+
+            ProductListVM product = new ProductListVM();
 
             product.Categories = category;
 

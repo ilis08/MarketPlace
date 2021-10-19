@@ -75,36 +75,7 @@ namespace ApplicationService.Implementations
                 }
             }           
             return productDto;
-        }
-
-        public async Task<IEnumerable<ProductDTO>> GetPaginated(GetProductsParameters parameters)
-        {
-            List<ProductDTO> productDto = new List<ProductDTO>();
-
-            using (unitOfWork)
-            {
-                foreach (var item in await unitOfWork.ProductRepository.GetProductsWithParamsAsync(parameters))
-                {
-                    productDto.Add(new ProductDTO
-                    {
-                        Id = item.Id,
-                        ProductName = item.ProductName,
-                        Description = item.Description,
-                        Release = item.Release,
-                        Price = item.Price,
-                        Image = item.Image,
-                        Category = new CategoryDTO
-                        {
-                            Id = item.Category.Id,
-                            Title = item.Category.Title,
-                            Description = item.Category.Description
-                        }
-                    });
-                }
-            }
-
-            return productDto;
-        }
+        }     
 
         public async Task<ProductDTO> GetById(int id)
         {
@@ -134,9 +105,9 @@ namespace ApplicationService.Implementations
             return productDto;
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetProductsByCategory(GetProductsParameters productsParameters)
+        public async Task<IEnumerable<ProductDTO>> GetProductsByParameters(GetProductsParameters productsParameters)
         {
-            IEnumerable<Product> product = await unitOfWork.ProductRepository.GetProductByCategory(productsParameters);
+            IEnumerable<Product> product = await unitOfWork.ProductRepository.GetProductsByParameters(productsParameters);
 
             var productDTO = ObjectMapper.Mapper.Map<IEnumerable<ProductDTO>>(product);
 

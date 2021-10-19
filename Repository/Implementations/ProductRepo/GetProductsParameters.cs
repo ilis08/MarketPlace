@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,8 @@ namespace Repository.Implementations
 {
     public enum Ordering
     {
-        OrderByDescending,
-        OrderBy
+        OrderByHighestPrice = 0,
+        OrderByLowestPrice = 1
     }
 
     public class GetProductsParameters
@@ -20,10 +21,11 @@ namespace Repository.Implementations
 
         const int maxPageSize = 50;
 
+        [NotMapped]
         public int PageNumber { get; set; } = 1;
 
-        private int pageSize = 10;
-
+        private int pageSize = 4;
+        [NotMapped]
         public int PageSize
         {
             get

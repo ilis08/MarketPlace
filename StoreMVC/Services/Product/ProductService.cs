@@ -57,11 +57,11 @@ namespace StoreMVC.Service
             }
         }
 
-        public async Task<bool> GetProductsByParams(GetProductsParams productsParams)
+        public async Task<ProductListVM> GetProductsByParams(GetProductsParams productsParams)
         {
             var client = clientFactory.CreateClient("myapi");
 
-            var response = await client.GetAsync($"Product/GetProductsByCategory?Category={productsParams.Category}&Ordering={productsParams.Ordering}");
+            var response = await client.GetAsync($"Product/GetProductsByParams?Category={productsParams.Category}&Ordering={productsParams.Ordering}&PageSize={productsParams.PageSize}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -72,11 +72,11 @@ namespace StoreMVC.Service
                 ProductListVM.Products = Products;
                 ProductListVM.Params = productsParams;
 
-                return true;
+                return ProductListVM;
             }
             else
             {
-                return false;
+                return null;
             }
         }
     }

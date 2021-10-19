@@ -14,7 +14,7 @@ namespace Repository.Implementations.ProductRepo
 
         Task<Product> GetProductById(int id);
 
-        Task<IEnumerable<Product>> GetProductByCategory(GetProductsParameters productsParameters);
+        Task<IEnumerable<Product>> GetProductsByParameters(GetProductsParameters productsParameters);
 
         void Create(Product entity, IFormFile file);
 
