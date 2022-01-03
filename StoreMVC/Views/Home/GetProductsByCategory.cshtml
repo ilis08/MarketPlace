@@ -10,7 +10,7 @@
 
 <br />
 
-<div class="row">
+<div class="row fixedHeader" id="myHeader">
     <div class="col-10">
 
     </div>
@@ -25,13 +25,14 @@
     </div>
 </div>
 
+<hr />
 <div class="card-deck">
     @foreach (var product in Model.Products)
     {
         <div class="card m-1 p-1" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
             <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
 
-            <div class="card-header">
+            <div class="card-header" style="height:90%">
                 <a class="fill-div" asp-action="Details" asp-route-id="@product.Id">@product.ProductName</a>
             </div>
             <div class="row pt-2 pb-2">
@@ -46,10 +47,30 @@
         </div>
     }
 </div>
+<br />
+<div class="row">
+    <div class="col-2 justify-content-center">
+        <div class="justify-content-center">
+            <button class="btn btn-outline-success" style="height:100%; width:100%"><i class="fas fa-backward fa-2x"></i></button>
+        </div>
+    </div>
+    <div class="col-8">
+
+    </div>
+    <div class="col-2 justify-content-end">
+        <div class="justify-content-end">
+            <button class="btn btn-outline-success" style="height:100%; width:100%"><i class="fas fa-forward fa-2x"></i></button>
+        </div>
+    </div>
+</div>
 
 <script>
     function Find() {
         var param = document.getElementById("productPrice")
         location.href = "/Home/GetProductsByCategory?category=" + param.value
+    }
+
+    function Details(id) {
+        location.href = "/Home/Details/" + id;
     }
 </script>

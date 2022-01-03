@@ -21,11 +21,10 @@ namespace Repository.Implementations
 
         const int maxPageSize = 50;
 
-        [NotMapped]
         public int PageNumber { get; set; } = 1;
 
         private int pageSize = 4;
-        [NotMapped]
+
         public int PageSize
         {
             get

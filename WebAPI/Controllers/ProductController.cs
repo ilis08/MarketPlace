@@ -3,6 +3,7 @@ using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Repository.Implementations;
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,13 @@ namespace WebAPI.Controllers
     {
         private readonly ProductManagementService service = null;
         public static IWebHostEnvironment _environment;
+        private readonly ILogger<ProductController> logger;
 
-        public ProductController(IWebHostEnvironment environment, ProductManagementService _service)
+        public ProductController(IWebHostEnvironment environment, ProductManagementService _service, ILogger<ProductController> _logger)
         {
             _environment = environment;
             service = _service;
+            logger = _logger;   
         }
 
         /// <summary>
@@ -37,7 +40,19 @@ namespace WebAPI.Controllers
         [Route("[action]")]
         public async Task<IActionResult> Get(string query)
         {
-            return Json(await service.Get(query));
+            var body = await service.Get(query);
+
+            if (body.Any())
+            {
+                logger.Log(LogLevel.Information, "Succesfully getting list of products");
+                return Ok(body);
+            }
+            else
+            {
+                logger.Log(LogLevel.Error, "Cannot load a products");
+                return NoContent();
+            }
+
         }
 
         [HttpGet("[action]/{id:int}")]

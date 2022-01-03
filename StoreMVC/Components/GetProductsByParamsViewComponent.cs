@@ -23,7 +23,7 @@ namespace StoreMVC.Components
         {
             var client = clientFactory.CreateClient("myapi");
 
-            var response = await client.GetAsync($"Product/GetProductsByParams?Category={productsParams.Params.Category}&Ordering={0}&PageSize={productsParams.Params.PageSize}");
+            var response = await client.GetAsync($"Product/GetProductsByParams?Category={productsParams.Params.Category}&Ordering={productsParams.Params.Ordering}&PageSize={productsParams.Params.PageSize}");
 
             var products = JsonConvert.DeserializeObject<IEnumerable<ProductVM>>(await response.Content.ReadAsStringAsync());
 

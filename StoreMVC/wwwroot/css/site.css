@@ -74,6 +74,20 @@ body {
   white-space: nowrap;
 }
 
+.fixedHeader{
+
+}
+
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.sticky + .content {
+    padding-top: 102px;
+}
+
 .imgThumbnail {
     height: 250px;
     width: auto;

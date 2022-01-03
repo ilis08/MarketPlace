@@ -30,6 +30,14 @@ namespace StoreMVC.ViewModels.Product
             PageSize = pageSize;
         }
 
+        public GetProductsParams(string category, Ordering ordering, int pageSize, int pageNumber)
+        {
+            Category = category;
+            Ordering = ordering;
+            PageSize = pageSize;
+            PageNumber = pageNumber;
+        }
+
         public GetProductsParams()
         {
 
@@ -40,5 +48,7 @@ namespace StoreMVC.ViewModels.Product
         public Ordering Ordering { get; set; }
 
         public int PageSize { get; set; } = 4;
+
+        public int PageNumber { get; set; } = 1;
     }
 }

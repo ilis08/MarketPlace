@@ -4,7 +4,6 @@
 
 
 
-<br />
 <hr />
 
 <div class="card-deck">
@@ -13,7 +12,7 @@
         <div class="card m-1 p-1" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
             <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
 
-            <div class="card-header">
+            <div class="card-header" style="height:90%">
                 <a class="fill-div" asp-action="Details" asp-route-id="@product.Id">@product.ProductName</a>
             </div>
             <div class="row pt-2 pb-2">
@@ -29,4 +28,18 @@
     }
 </div>
 
-<hr />
+<div class="row">
+    <div class="col-10">
+
+    </div>
+    <div class="col-2 d-flex justify-content-end">
+        <div>
+            <a asp-action="GetProductsByCategory" asp-controller="Home" asp-route-category="@Model.Params.Category" class="btn btn-outline-success">
+                <i class="fas">Show more</i> 
+                <i class="fas fa-arrow-alt-circle-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+

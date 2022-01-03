@@ -6,15 +6,18 @@
 }
 
 <br />
+<br />
 
  @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new GetProductsParams("Laptop")))
 
-<br />
-
-@await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new GetProductsParams("Phone")))
+ @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new GetProductsParams("Phone")))
 
 <script>
     function Details(id) {
+        location.href = "Home/Details/" + id;
+    }
+
+    function FindCategory() {
         location.href = "Home/Details/" + id;
     }
 </script>
