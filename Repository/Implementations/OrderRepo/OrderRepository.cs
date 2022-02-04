@@ -1,17 +1,12 @@
 ﻿using Data.Context;
 using Data.Entitites;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Implementations.OrderRepo
 {
     public class OrderRepository : IOrderRepository
     {
-        internal RepositoryContext context;
+        private readonly RepositoryContext context;
 
         public OrderRepository(RepositoryContext context)
         {

@@ -1,26 +1,92 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Repository.Implementations;
+using WebAPI.Extensions;
 
-namespace WebAPI
+public class Program
 {
-    public class Program
+    public static void Main(string [] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Host.ConfigureLogging(logging =>
         {
-            CreateHostBuilder(args).Build().Run();
+            logging.AddConsole();
+            logging.AddDebug();
+        });
+
+        #region Swagger
+
+        builder.Services.ConfigureSwagger();
+
+        #endregion
+
+        #region Database
+
+        builder.Services.ConfigureDatabaseContext(builder.Configuration);
+
+        #endregion
+
+        builder.Services.AddTransient<UnitOfWork>();
+
+        #region ApplicationService
+        builder.Services.ConfigureCategoryService();
+        builder.Services.ConfigureProductService();
+        builder.Services.ConfigureOrderService();
+        #endregion
+
+        #region Repository
+
+        builder.Services.ConfigureUnitOfWork();
+
+        #endregion
+
+        builder.Services.ConfigureResponseMessage();
+
+        builder.Services.AddHealthChecks()
+            .AddSqlServer(builder.Configuration.GetConnectionString("IlisStoreDB"),
+              name: "ilisDb-check",
+              failureStatus: HealthStatus.Unhealthy,
+              tags: new string[] { "api", "SqlDb" });
+
+
+
+        builder.Services.AddControllers().AddNewtonsoftJson(x =>
+              x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+
+        var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseHsts();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+        app.ConfigureExceptionHandler(logger);
+
+        app.UseRouting();
+
+        app.UseAuthorization();
+
+        app.UseSwagger();
+
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "IlisStore V1");
+        });
+
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+
+        app.Run();
     }
 }
+

@@ -1,12 +1,6 @@
 ﻿using Data.Entitites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Data.Context;
 
 namespace Repository.Implementations.ProductRepo

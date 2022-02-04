@@ -37,6 +37,11 @@ namespace StoreMVC.Controllers
             {
                 await productService.GetProductsAsync(query);
 
+                if (productService.Products is null)
+                {
+                    return View();
+                }
+
                 return View("IndexByQuery", productService.Products);
             }
         }

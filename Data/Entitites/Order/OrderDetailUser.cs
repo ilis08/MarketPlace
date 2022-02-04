@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Data.Entitites
 {
@@ -9,12 +7,12 @@ namespace Data.Entitites
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Surname { get; set; }
+        public string? Surname { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
+        [Phone]
         [Required]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }

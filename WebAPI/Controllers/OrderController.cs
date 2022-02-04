@@ -1,14 +1,7 @@
 ﻿using ApplicationService.DTOs;
 using ApplicationService.Implementations;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPI.Messages;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebAPI.Controllers
 {
@@ -18,14 +11,12 @@ namespace WebAPI.Controllers
     public class OrderController : HomeController
     {
         private readonly OrderManagementService _service;
-        private readonly ResponseMessage responseMessage;
-        public static IWebHostEnvironment _environment;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(IWebHostEnvironment environment, OrderManagementService service, ResponseMessage message)
+        public OrderController(OrderManagementService service, ILogger<OrderController> logger)
         {
             _service = service;
-            _environment = environment;
-            this.responseMessage = message;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -63,10 +54,8 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] OrderDTO orderDTO)
+        public async Task<IActionResult> Update([FromBody] OrderDTO orderDTO, [FromServices]ResponseMessage responseMessage)
         {
-            ResponseMessage responseMessage = new ResponseMessage();
-
             if (await _service.Update(orderDTO))
             {
                 responseMessage.Code = 201;
@@ -83,7 +72,7 @@ namespace WebAPI.Controllers
 
         [Route("[action]/{id:int}")]
         [HttpPut]
-        public async Task<JsonResult> CompleteOrder(int id)
+        public async Task<JsonResult> CompleteOrder(int id, [FromServices] ResponseMessage responseMessage)
         {
             if (id != 0)
             {

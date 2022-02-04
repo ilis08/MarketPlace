@@ -1,22 +1,16 @@
 ﻿using ApplicationService.DTOs;
+using ApplicationService.DTOs.OrderDTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs.GetById;
-using ApplicationService.DTOs.OrderManagementDTOs.OrderSaveDTOs;
 using ApplicationService.Mapper;
-using AutoMapper;
 using Data.Entitites;
 using Repository.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApplicationService.Implementations
 {
     public class OrderManagementService
     {
-        public UnitOfWork unitOfWork;
+        private readonly UnitOfWork unitOfWork;
 
         public OrderManagementService(UnitOfWork _unitOfWork)
         { 

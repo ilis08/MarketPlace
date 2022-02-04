@@ -2,10 +2,9 @@
 using ApplicationService.DTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs.GetById;
 using ApplicationService.DTOs.OrderManagementDTOs.OrderSaveDTOs;
-using ApplicationService.Mapper;
+using ApplicationService.DTOs.ProductDTOs;
 using AutoMapper;
 using Data.Entitites;
-using System.Collections.Generic;
 
 namespace ApplicationService
 {

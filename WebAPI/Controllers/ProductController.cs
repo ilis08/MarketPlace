@@ -1,14 +1,7 @@
-﻿using ApplicationService.DTOs;
+﻿using ApplicationService.DTOs.ProductDTOs;
 using ApplicationService.Implementations;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Repository.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPI.Messages;
 
 namespace WebAPI.Controllers
@@ -19,12 +12,10 @@ namespace WebAPI.Controllers
     public class ProductController : HomeController
     {
         private readonly ProductManagementService service = null;
-        public static IWebHostEnvironment _environment;
         private readonly ILogger<ProductController> logger;
 
-        public ProductController(IWebHostEnvironment environment, ProductManagementService _service, ILogger<ProductController> _logger)
+        public ProductController(ProductManagementService _service, ILogger<ProductController> _logger)
         {
-            _environment = environment;
             service = _service;
             logger = _logger;   
         }
@@ -69,14 +60,12 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> Save([FromForm]ProductDTO productDto)
+        public async Task<IActionResult> Save([FromForm]ProductDTO productDto, [FromServices] ResponseMessage responseMessage)
         {
             if (productDto.ProductName == null)
             {
                 return Json(new ResponseMessage { Code = 500, Error = "Data is not valid" });
             }
-
-            ResponseMessage responseMessage = new();
 
             if (await service.Save(productDto))
             {
@@ -94,14 +83,12 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPut]
-        public async Task<IActionResult> Update([FromForm]ProductDTO product)
+        public async Task<IActionResult> Update([FromForm]ProductDTO product, [FromServices] ResponseMessage responseMessage)
         {
             if (product.ProductName == default(string))
             {
                 return Json(new ResponseMessage { Code = 500, Error = "Data is not valid" });
             }
-
-            ResponseMessage responseMessage = new();
 
             if (await service.Update(product))
             {

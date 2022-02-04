@@ -1,15 +1,8 @@
 ﻿using Data.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Repository.Implementations;
 using Repository.Implementations.ProductRepo;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPI.Messages;
 
 namespace WebAPI.Extensions

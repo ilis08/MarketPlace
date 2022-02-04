@@ -1,18 +1,12 @@
 ﻿using ApplicationService.DTOs;
-using Data.Context;
 using Data.Entitites;
 using Repository.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApplicationService.Implementations
 {
     public class CategoryManagementService
     {
-        private UnitOfWork unitOfWork;
+        private readonly UnitOfWork unitOfWork;
 
         public CategoryManagementService(UnitOfWork _unitOfWork)
         {
@@ -39,19 +33,6 @@ namespace ApplicationService.Implementations
                 }   
             }
 
-                /*else
-                {
-                    foreach (var item in unitOfWork.CategoryRepository.Find())
-                    {
-                        categoriesDto.Add(new CategoryDTO
-                        {
-                            Id = item.Id,
-                            Title = item.Title,
-                            Description = item.Description
-                        });
-                    }
-                }*/
-
             return categoriesDto;
         }
 
@@ -61,7 +42,7 @@ namespace ApplicationService.Implementations
 
             using (unitOfWork)
             {
-                Category category = await unitOfWork.CategoryRepository.GetCategorytByIdAsync(id);
+                Category category = await unitOfWork.CategoryRepository.GetCategoryByIdAsync(id);
                 if (category != null)
                 {
                     categoryDTO = new CategoryDTO
@@ -114,7 +95,7 @@ namespace ApplicationService.Implementations
         {
             try
             {
-                Category category = await unitOfWork.CategoryRepository.GetCategorytByIdAsync(id);
+                Category category = await unitOfWork.CategoryRepository.GetCategoryByIdAsync(id);
                 unitOfWork.CategoryRepository.Delete(category);
                 await unitOfWork.SaveAsync();
 

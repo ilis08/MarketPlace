@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using System.Collections.Generic;
+﻿
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Entitites
 {
@@ -18,17 +14,17 @@ namespace Data.Entitites
 
         [BindNever]
         [ScaffoldColumn(false)]
-        public DateTime OrderTime { get; set; }
+        public DateTime OrderTime { get; set; } = DateTime.Now;
 
         public bool IsCompleted { get; set; }
-
+        
         public double TotalPrice { get; set; }
 
         [BindNever]
-        public OrderDetailUser OrderDetailUser { get; set; }
+        public OrderDetailUser? OrderDetailUser { get; set; }
 
         [BindNever]
-        public IEnumerable<OrderDetailProduct> OrderDetailProduct { get; set; }
+        public IEnumerable<OrderDetailProduct>? OrderDetailProduct { get; set; }
 
     }
 

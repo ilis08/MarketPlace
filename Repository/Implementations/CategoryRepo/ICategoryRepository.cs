@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Data.Entitites;
+﻿using Data.Entitites;
 
 namespace Repository.Implementations.CategoryRepo
 {
@@ -11,7 +6,7 @@ namespace Repository.Implementations.CategoryRepo
     {
         Task<IEnumerable<Category>> GetCategoriesAsync();
 
-        Task<Category> GetCategorytByIdAsync(int id);
+        Task<Category> GetCategoryByIdAsync(int id);
 
         void Create(Category entity);
 

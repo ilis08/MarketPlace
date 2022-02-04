@@ -1,12 +1,6 @@
 ﻿using Data.Context;
 using Data.Entitites;
 using Microsoft.EntityFrameworkCore;
-using Repository.Implementations.OrderRepo;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Implementations.CategoryRepo
 {
@@ -24,7 +18,7 @@ namespace Repository.Implementations.CategoryRepo
             return await context.Categories.ToListAsync();
         }
 
-        public async Task<Category> GetCategorytByIdAsync(int id)
+        public async Task<Category> GetCategoryByIdAsync(int id)
         {
             return await context.Categories.FindAsync(id);
         }

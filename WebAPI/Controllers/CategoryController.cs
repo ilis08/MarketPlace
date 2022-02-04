@@ -1,14 +1,6 @@
 ﻿using ApplicationService.DTOs;
 using ApplicationService.Implementations;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPI.Messages;
 
 namespace WebAPI.Controllers
@@ -23,13 +15,11 @@ namespace WebAPI.Controllers
     {
         private readonly CategoryManagementService service;
         private readonly ILogger<CategoryController> logger;
-        private readonly ResponseMessage responseMessage;
 
-        public CategoryController(CategoryManagementService _service, ILogger<CategoryController> _logger, ResponseMessage _message)
+        public CategoryController(CategoryManagementService _service, ILogger<CategoryController> _logger)
         {
             service = _service;
             logger = _logger;
-            responseMessage = _message;
         }
 
 
@@ -41,7 +31,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> Get(string query)
-        {      
+        {
             var body = await service.Get(query);
 
             if (body.Any())
@@ -76,7 +66,7 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> Save([FromBody]CategoryDTO categoryDto)
+        public async Task<IActionResult> Save([FromBody]CategoryDTO categoryDto, [FromServices] ResponseMessage responseMessage)
         {
             if (categoryDto.Title == null && categoryDto.Description == null)
             {
@@ -101,7 +91,7 @@ namespace WebAPI.Controllers
 
         [Route("[action]/{id:int}")]
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, [FromServices] ResponseMessage responseMessage)
         {
             var body = await service.Delete(id);
 

@@ -1,4 +1,4 @@
-﻿using ApplicationService.DTOs;
+﻿using ApplicationService.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;

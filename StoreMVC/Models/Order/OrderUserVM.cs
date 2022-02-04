@@ -19,6 +19,7 @@ namespace StoreMVC.Models
         public string Name { get; set; }
 
         [Required]
+        [DataType(DataType.PhoneNumber)]
         [Phone]
         public string PhoneNumber { get; set; }
     }

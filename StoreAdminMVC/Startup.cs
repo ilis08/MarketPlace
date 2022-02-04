@@ -33,7 +33,7 @@ namespace StoreAdminMVC
 
             services.AddHttpClient("myapi", c =>
             {
-                c.BaseAddress = new Uri("http://localhost:5000/api/");
+                c.BaseAddress = new Uri("http://www.ilisstore.somee.com/api/");
                 c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
 

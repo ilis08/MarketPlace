@@ -1,16 +1,8 @@
 ﻿using Data.Context;
-using Data.Entitites;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Repository.Implementations.CategoryRepo;
 using Repository.Implementations.OrderRepo;
 using Repository.Implementations.ProductRepo;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Implementations
 {

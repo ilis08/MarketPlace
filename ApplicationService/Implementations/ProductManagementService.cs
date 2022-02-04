@@ -1,21 +1,14 @@
 ﻿using ApplicationService.DTOs;
+using ApplicationService.DTOs.ProductDTOs;
 using ApplicationService.Mapper;
-using Data.Context;
 using Data.Entitites;
-using Microsoft.AspNetCore.Http;
 using Repository.Implementations;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApplicationService.Implementations
 {
     public class ProductManagementService
     {
-        private UnitOfWork unitOfWork;
+        private readonly UnitOfWork unitOfWork;
 
         public ProductManagementService(UnitOfWork _unitOfWork)
         {

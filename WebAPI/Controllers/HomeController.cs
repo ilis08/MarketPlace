@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
@@ -16,6 +13,5 @@ namespace WebAPI.Controllers
         {
             return Json("REST-API e-Store. Version 1.0");
         }
-       
     }
 }

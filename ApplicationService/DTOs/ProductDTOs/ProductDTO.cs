@@ -1,12 +1,7 @@
-﻿using Data.Entitites;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
-namespace ApplicationService.DTOs
+namespace ApplicationService.DTOs.ProductDTOs
 {
     public class ProductDTO
     {
@@ -18,7 +13,7 @@ namespace ApplicationService.DTOs
         public string Image { get; set; }
 
         [NotMapped]
-        public IFormFile ImageFile { get; set; } 
+        public IFormFile ImageFile { get; set; }
         public int CategoryId { get; set; }
 
         public virtual CategoryDTO Category { get; set; }
