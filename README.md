@@ -1,3 +1,3 @@
 # DistributedStore-ASP.NET-Core
 
-https://ilisstore.azurewebsites.net/
+https://www.ilisstoreclient.somee.com/
