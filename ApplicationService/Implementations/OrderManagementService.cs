@@ -4,6 +4,7 @@ using ApplicationService.DTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs.GetById;
 using ApplicationService.Mapper;
 using Data.Entitites;
+using Exceptions.NotFound;
 using Repository.Implementations;
 
 namespace ApplicationService.Implementations
@@ -12,10 +13,7 @@ namespace ApplicationService.Implementations
     {
         private readonly UnitOfWork unitOfWork;
 
-        public OrderManagementService(UnitOfWork _unitOfWork)
-        { 
-            unitOfWork = _unitOfWork;
-        }
+        public OrderManagementService(UnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
 
         public async Task<IEnumerable<OrderGetDTO>> Get()
         {
@@ -44,6 +42,11 @@ namespace ApplicationService.Implementations
             OrderGetByIdDTO orderDTO = new OrderGetByIdDTO();
 
             Order order = await unitOfWork.OrderRepository.GetOrder(id);
+
+            if (order is null)
+            {
+                throw new NotFoundException(id, nameof(Order));
+            }
 
             List<OrderDetailProduct> orderDetailProducts = unitOfWork.OrderRepository.GetOrderDetailProducts(id);
 
@@ -155,18 +158,18 @@ namespace ApplicationService.Implementations
             }
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
             var order = unitOfWork.OrderRepository.GetOrder(id);
 
-            if (order != null)
+            if (order is null)
             {
-                unitOfWork.OrderRepository.Delete(order);
-
-                await unitOfWork.SaveAsync();
+                throw new NotFoundException(id, nameof(Order));
             }
 
-            return true;
+            unitOfWork.OrderRepository.Delete(order);
+
+            await unitOfWork.SaveAsync();
         }
 
     }

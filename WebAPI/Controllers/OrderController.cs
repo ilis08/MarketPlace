@@ -1,6 +1,7 @@
 ﻿using ApplicationService.DTOs;
 using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Filters;
 using WebAPI.Messages;
 
 namespace WebAPI.Controllers
@@ -34,6 +35,7 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Save([FromBody] OrderDTO orderDTO)
         { 
             ResponseMessage responseMessage = new ResponseMessage();
@@ -54,6 +56,7 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Update([FromBody] OrderDTO orderDTO, [FromServices]ResponseMessage responseMessage)
         {
             if (await _service.Update(orderDTO))
@@ -94,7 +97,9 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            return Json(await _service.Delete(id));
+            await _service.Delete(id);
+
+            return Ok("Order was deleted succesfully");
         }
     }
 }

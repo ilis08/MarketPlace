@@ -8,13 +8,13 @@ namespace Data.Entitites
         public int Id { get; set; }
         [Required]
         public int Count { get; set; }
-
+        [Required]
         public int ProductId { get; set; }
 
         public Product? Product { get; set; }
 
         public int OrderId { get; set; }
-
+        [Required]
         public double Price { get; set; }
     }
 }

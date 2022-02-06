@@ -40,6 +40,8 @@ public class Program
 
         #endregion
 
+        builder.Services.ConfigureCors();
+
         builder.Services.ConfigureResponseMessage();
 
         builder.Services.AddHealthChecks()
@@ -48,7 +50,7 @@ public class Program
               failureStatus: HealthStatus.Unhealthy,
               tags: new string[] { "api", "SqlDb" });
 
-
+        builder.Services.ConfigureValidationFilterAttribute();
 
         builder.Services.AddControllers().AddNewtonsoftJson(x =>
               x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

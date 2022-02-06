@@ -1,22 +1,25 @@
 ﻿using Data.Entitites;
 using Microsoft.AspNetCore.Http;
+using Repository.RequestFeatures;
 
 namespace Repository.Implementations.ProductRepo
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetProducts();
+        Task<IEnumerable<Product>> GetProductsAsync();
 
-        Task<Product> GetProductById(int id);
+        Task<Product> GetProductByIdAsync(int id);
 
-        Task<IEnumerable<Product>> GetProductsByParameters(GetProductsParameters productsParameters);
+        Task<PagedList<Product>> GetProductsByParametersAsync(ProductParameters productsParameters);
 
-        void Create(Product entity, IFormFile file);
+        Task<List<Product>> GetProductByQuery(string query);
 
-        void Update(Product entity);
+        void CreateProduct(Product entity, IFormFile file);
 
-        void UpdateWithImage(IFormFile file, Product product);
+        void UpdateProduct(Product entity);
 
-        void Delete(Product entity);
+        void UpdateProductWithImage(IFormFile file, Product product);
+
+        void DeleteProduct(Product entity);
     }
 }

@@ -27,6 +27,7 @@ namespace StoreAdminMVC.ViewModels
         [Range(1, 999999.0)]
         public double Price { get; set; }
         public string Image { get; set; }
+        [DataType(DataType.Upload)]
         public IFormFile ImageFile { get; set; }
 
         [Display(Name = "Category")]

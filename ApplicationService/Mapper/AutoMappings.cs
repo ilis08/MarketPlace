@@ -43,7 +43,8 @@ namespace ApplicationService
                 dest.Product.ProductName, opt => opt.MapFrom(src => src.ProductName)).ForMember(dest =>
                 dest.Count, opt => opt.MapFrom(src => src.Count));*/
 
-            CreateMap<Product, ProductDTO>();
+            CreateMap<Product, ProductDTO>().ReverseMap();
+            CreateMap<Category, CategoryDTO>().ReverseMap();
         }
     }
 }

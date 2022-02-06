@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Repository.Implementations;
 using Repository.Implementations.ProductRepo;
+using WebAPI.Filters;
 using WebAPI.Messages;
 
 namespace WebAPI.Extensions
@@ -41,5 +42,20 @@ namespace WebAPI.Extensions
         {
             services.AddTransient<ProductImage>();
         }
+
+        public static void ConfigureValidationFilterAttribute(this IServiceCollection services)
+        {
+            services.AddScoped<ValidationFilterAttribute>();
+        }
+
+        public static void ConfigureCors(this IServiceCollection services) =>
+            services.AddCors(opts =>
+            {
+                opts.AddPolicy("CorsPolicy", builder =>
+                    builder.WithOrigins("https://www.ilisstoreclient.somee.com/")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("X-Pagination"));
+            });
     }
 }

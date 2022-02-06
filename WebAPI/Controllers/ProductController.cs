@@ -2,6 +2,9 @@
 using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Implementations;
+using Repository.RequestFeatures;
+using System.Text.Json;
+using WebAPI.Filters;
 using WebAPI.Messages;
 
 namespace WebAPI.Controllers
@@ -49,31 +52,39 @@ namespace WebAPI.Controllers
         [HttpGet("[action]/{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Json(await service.GetById(id));
+            var product = await service.GetById(id);
+
+            logger.Log(LogLevel.Information, "Succesfully getting a product");
+
+            return Ok(product);
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetProductsByParams([FromQuery] GetProductsParameters productsParameters)
+        public async Task<IActionResult> GetProductsByParams([FromQuery]ProductParameters productsParameters)
         {
-            return Json(await service.GetProductsByParameters(productsParameters));
+            var pagedResult = await service.GetProductsByParameters(productsParameters);
+
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+
+            logger.Log(LogLevel.Information, "Succesfully list of a products by parameters");
+
+            return Ok(pagedResult.products);
         }
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> Save([FromForm]ProductDTO productDto, [FromServices] ResponseMessage responseMessage)
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Save([FromForm]ProductDTO product, [FromServices] ResponseMessage responseMessage)
         {
-            if (productDto.ProductName == null)
+            if (await service.Save(product))
             {
-                return Json(new ResponseMessage { Code = 500, Error = "Data is not valid" });
-            }
-
-            if (await service.Save(productDto))
-            {
+                logger.Log(LogLevel.Information, "Product was saved");
                 responseMessage.Code = 201;
                 responseMessage.Body = "Product was saved";
             }
             else
             {
+                logger.Log(LogLevel.Error, "Product was not saved");
                 responseMessage.Code = 202;
                 responseMessage.Body = "Product was not saved";
             }
@@ -92,11 +103,13 @@ namespace WebAPI.Controllers
 
             if (await service.Update(product))
             {
+                logger.Log(LogLevel.Information, "Product was updated");
                 responseMessage.Code = 201;
                 responseMessage.Body = "Product was updated";
             }
             else
             {
+                logger.Log(LogLevel.Error, "Product was not updated");
                 responseMessage.Code = 202;
                 responseMessage.Body = "Product was not updated";
             }
@@ -108,7 +121,11 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            return Json(await service.Delete(id));
+            await service.Delete(id);
+
+            logger.Log(LogLevel.Information, "Product was deleted succesfully");
+
+            return Ok("Product was deleted succesfully");
         }
     }
 }

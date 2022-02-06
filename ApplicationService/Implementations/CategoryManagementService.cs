@@ -1,5 +1,7 @@
 ﻿using ApplicationService.DTOs;
+using ApplicationService.Mapper;
 using Data.Entitites;
+using Exceptions.NotFound;
 using Repository.Implementations;
 
 namespace ApplicationService.Implementations
@@ -8,29 +10,20 @@ namespace ApplicationService.Implementations
     {
         private readonly UnitOfWork unitOfWork;
 
-        public CategoryManagementService(UnitOfWork _unitOfWork)
-        {
-            unitOfWork = _unitOfWork;
-        }
+        public CategoryManagementService(UnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
 
         public async Task<IEnumerable<CategoryDTO>> Get(string query)
         {
             List<CategoryDTO> categoriesDto = new();
 
-            if (query == null)
+            if (string.IsNullOrWhiteSpace(query))
             {
                 using (unitOfWork)
                 {
-                    foreach (var item in await unitOfWork.CategoryRepository.GetCategoriesAsync())
-                    {
-                        categoriesDto.Add(new CategoryDTO
-                        {
-                            Id = item.Id,
-                            Title = item.Title,
-                            Description = item.Description
-                        });
-                    }
-                }   
+                    var categories = await unitOfWork.CategoryRepository.GetCategoriesAsync();
+
+                    categoriesDto = ObjectMapper.Mapper.Map<List<CategoryDTO>>(categories);
+                }
             }
 
             return categoriesDto;
@@ -43,69 +36,52 @@ namespace ApplicationService.Implementations
             using (unitOfWork)
             {
                 Category category = await unitOfWork.CategoryRepository.GetCategoryByIdAsync(id);
-                if (category != null)
+
+                if (category is null)
                 {
-                    categoryDTO = new CategoryDTO
-                    {
-                        Id = category.Id,
-                        Title = category.Title,
-                        Description = category.Description
-                    };
+                    throw new NotFoundException(id, nameof(Category));
                 }
+
+                categoryDTO = ObjectMapper.Mapper.Map<CategoryDTO>(category);
             }
-               
+
             return categoryDTO;
         }
 
-        public async Task<bool> Save(CategoryDTO categoryDTO)
+        public async Task<CategoryDTO> Save(CategoryDTO categoryDTO)
         {
-            Category Category = new Category()
+            Category category = ObjectMapper.Mapper.Map<Category>(categoryDTO);
+
+            if (categoryDTO.Id == 0)
             {
-                Id = categoryDTO.Id,
-                Title = categoryDTO.Title,
-                Description = categoryDTO.Description
-            };
-
-            try
-            {
-
-                if (categoryDTO.Id == 0)
-                {
-                    unitOfWork.CategoryRepository.Create(Category);
-                }
-                else
-                {
-                    unitOfWork.CategoryRepository.Update(Category);
-                }
-
-                await unitOfWork.SaveAsync();
-
-                return true;
+                unitOfWork.CategoryRepository.Create(category);
             }
-            catch
+            else
             {
-                System.Console.WriteLine(Category);
-                return false;
+                unitOfWork.CategoryRepository.Update(category);
             }
+
+            await unitOfWork.SaveAsync();
+
+            var categoryToReturn = ObjectMapper.Mapper.Map<CategoryDTO>(category); 
+
+            return categoryToReturn;
         }
 
 
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
-            try
-            {
-                Category category = await unitOfWork.CategoryRepository.GetCategoryByIdAsync(id);
-                unitOfWork.CategoryRepository.Delete(category);
-                await unitOfWork.SaveAsync();
+            Category category = await unitOfWork.CategoryRepository.GetCategoryByIdAsync(id);
 
-
-                return true;
-            }
-            catch
+            if (category is null)
             {
-                return false;
+                throw new NotFoundException(id, nameof(Category));
             }
+
+            unitOfWork.CategoryRepository.Delete(category);
+
+            await unitOfWork.SaveAsync();
         }
     }
 }

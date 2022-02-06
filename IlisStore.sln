@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.6.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{75DCC512-A76A-463D-88EA-7D27B6BA559B}"
 EndProject
@@ -29,7 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreAdminMVC", "StoreAdmin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreMVC", "StoreMVC\StoreMVC.csproj", "{70A6AB8F-BB90-4D5D-8149-24A3E9B80749}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreReact", "StoreReact\StoreReact.csproj", "{060D8B5C-D410-4572-AAD2-155838ACD6BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreReact", "StoreReact\StoreReact.csproj", "{060D8B5C-D410-4572-AAD2-155838ACD6BC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exceptions", "Exceptions", "{873CE135-2BBC-4498-B0E6-7093239A37E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "Exceptions\Exceptions.csproj", "{376DB9D9-0702-4DF2-A049-90E06A594CC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +129,18 @@ Global
 		{060D8B5C-D410-4572-AAD2-155838ACD6BC}.Release|x64.Build.0 = Release|Any CPU
 		{060D8B5C-D410-4572-AAD2-155838ACD6BC}.Release|x86.ActiveCfg = Release|Any CPU
 		{060D8B5C-D410-4572-AAD2-155838ACD6BC}.Release|x86.Build.0 = Release|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Debug|x64.Build.0 = Debug|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Debug|x86.Build.0 = Debug|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Release|x64.ActiveCfg = Release|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Release|x64.Build.0 = Release|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Release|x86.ActiveCfg = Release|Any CPU
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +158,8 @@ Global
 		{AD930A42-FDD9-4806-A976-1ED5E43AA79A} = {9EBC4BBE-14E6-4DD2-8426-D96DD2C3D4FF}
 		{70A6AB8F-BB90-4D5D-8149-24A3E9B80749} = {9EBC4BBE-14E6-4DD2-8426-D96DD2C3D4FF}
 		{060D8B5C-D410-4572-AAD2-155838ACD6BC} = {9EBC4BBE-14E6-4DD2-8426-D96DD2C3D4FF}
+		{873CE135-2BBC-4498-B0E6-7093239A37E3} = {A403F832-54E7-45B4-9FE9-1923AFE25838}
+		{376DB9D9-0702-4DF2-A049-90E06A594CC0} = {873CE135-2BBC-4498-B0E6-7093239A37E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5EE8E3A8-C52B-48BB-84F6-179AEA0396B7}

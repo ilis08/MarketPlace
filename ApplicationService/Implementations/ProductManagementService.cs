@@ -1,8 +1,9 @@
-﻿using ApplicationService.DTOs;
-using ApplicationService.DTOs.ProductDTOs;
+﻿using ApplicationService.DTOs.ProductDTOs;
 using ApplicationService.Mapper;
 using Data.Entitites;
+using Exceptions.NotFound;
 using Repository.Implementations;
+using Repository.RequestFeatures;
 
 namespace ApplicationService.Implementations
 {
@@ -10,120 +11,67 @@ namespace ApplicationService.Implementations
     {
         private readonly UnitOfWork unitOfWork;
 
-        public ProductManagementService(UnitOfWork _unitOfWork)
-        {
-            unitOfWork = _unitOfWork;
-        }
+        public ProductManagementService(UnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
 
         public async Task<IEnumerable<ProductDTO>> Get(string query)
         {
-            List<ProductDTO> productDto = new List<ProductDTO>();
+            List<ProductDTO> productDto = new();
 
-            if (query == null)
+            if (string.IsNullOrWhiteSpace(query))
             {
                 using (unitOfWork)
                 {
-                    foreach (var item in await unitOfWork.ProductRepository.GetProducts())
-                    {
-                        productDto.Add(new ProductDTO
-                        {
-                            Id = item.Id,
-                            ProductName = item.ProductName,
-                            Description = item.Description,
-                            Release = item.Release,
-                            Price = item.Price,
-                            Image = item.Image,
-                            Category = new CategoryDTO
-                            {
-                                Id = item.Category.Id,
-                                Title = item.Category.Title,
-                                Description = item.Category.Description
-                            }
-                        });
-                    }
+                    var products = unitOfWork.ProductRepository.GetProductsAsync();
+
+                    productDto = ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
                 }
             }
             else
             {
                 using (unitOfWork)
                 {
-                    foreach (var item in unitOfWork.ProductRepository.GetProductByQuery(query))
-                    {
-                        productDto.Add(new ProductDTO
-                        {
-                            Id = item.Id,
-                            ProductName = item.ProductName,
-                            Description = item.Description,
-                            Release = item.Release,
-                            Price = item.Price,
-                            Image = item.Image,
-                            Category = new CategoryDTO
-                            {
-                                Id = item.Category.Id,
-                                Title = item.Category.Title,
-                                Description = item.Category.Description
-                            }
-                        });
-                    }
+                    var products = unitOfWork.ProductRepository.GetProductByQuery(query);
+
+                    productDto = ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
                 }
-            }           
+            }
             return productDto;
-        }     
+        }
 
         public async Task<ProductDTO> GetById(int id)
         {
-            ProductDTO productDto = new ProductDTO();
+            ProductDTO productDto = new();
 
-            Product product = await unitOfWork.ProductRepository.GetProductById(id);
+            Product product = await unitOfWork.ProductRepository.GetProductByIdAsync(id);
 
-            if (product != null)
+            if (product is null)
             {
-                productDto = new ProductDTO
-                {
-                    Id = product.Id,
-                    ProductName = product.ProductName,
-                    Description = product.Description,
-                    Release = product.Release,
-                    Price = product.Price,
-                    Image = product.Image,
-                    Category = new CategoryDTO
-                    {
-                        Id = product.Category.Id,
-                        Title = product.Category.Title,
-                        Description = product.Category.Description
-                    }
-                };
+                throw new NotFoundException(id, nameof(Product));
             }
+
+            productDto = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
             return productDto;
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetProductsByParameters(GetProductsParameters productsParameters)
+        public async Task<(IEnumerable<ProductDTO> products, MetaData metaData)> GetProductsByParameters(ProductParameters productsParameters)
         {
-            IEnumerable<Product> product = await unitOfWork.ProductRepository.GetProductsByParameters(productsParameters);
+            var productWithMetaData = await unitOfWork.ProductRepository.GetProductsByParametersAsync(productsParameters);
 
-            var productDTO = ObjectMapper.Mapper.Map<IEnumerable<ProductDTO>>(product);
+            var productDTO = ObjectMapper.Mapper.Map<IEnumerable<ProductDTO>>(productWithMetaData);
 
-            return productDTO;
+            return (products: productDTO, metaData: productWithMetaData.MetaData);
         }
 
         public async Task<bool> Save(ProductDTO productDto)
-        { 
+        {
             try
             {
-                Product product = new Product
-                {
-                    Id = productDto.Id,
-                    ProductName = productDto.ProductName,
-                    Description = productDto.Description,
-                    Release = productDto.Release,
-                    Price = productDto.Price,
-                    CategoryId = productDto.CategoryId
-                };
+                Product product = ObjectMapper.Mapper.Map<Product>(productDto);
 
                 if (productDto.Id == 0)
                 {
-                    unitOfWork.ProductRepository.Create(product, productDto.ImageFile);
+                    unitOfWork.ProductRepository.CreateProduct(product, productDto.ImageFile);
                 }
 
                 await unitOfWork.SaveAsync();
@@ -142,16 +90,7 @@ namespace ApplicationService.Implementations
             {
                 if (productDto.ImageFile == null)
                 {
-                    Product product = new Product
-                    {
-                        Id = productDto.Id,
-                        ProductName = productDto.ProductName,
-                        Description = productDto.Description,
-                        Release = productDto.Release,
-                        Price = productDto.Price,
-                        Image = productDto.Image,
-                        CategoryId = productDto.CategoryId
-                    };
+                    Product product = ObjectMapper.Mapper.Map<Product>(productDto);
 
                     using (unitOfWork)
                     {
@@ -162,20 +101,11 @@ namespace ApplicationService.Implementations
                 }
                 else
                 {
-                    Product product = new Product
-                    {
-                        Id = productDto.Id,
-                        ProductName = productDto.ProductName,
-                        Description = productDto.Description,
-                        Release = productDto.Release,
-                        Price = productDto.Price,
-                        Image = productDto.Image,
-                        CategoryId = productDto.CategoryId
-                    };
+                    Product product = ObjectMapper.Mapper.Map<Product>(productDto);
 
                     using (unitOfWork)
                     {
-                        unitOfWork.ProductRepository.UpdateWithImage(productDto.ImageFile, product);
+                        unitOfWork.ProductRepository.UpdateProductWithImage(productDto.ImageFile, product);
 
                         await unitOfWork.SaveAsync();
                     }
@@ -183,28 +113,24 @@ namespace ApplicationService.Implementations
 
                 return true;
             }
-            catch 
+            catch
             {
                 return false;
             }
         }
 
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
-            try
-            {
-                Product product = await unitOfWork.ProductRepository.GetProductById(id);
-                unitOfWork.ProductRepository.Delete(product);
-                await unitOfWork.SaveAsync();
+            Product product = await unitOfWork.ProductRepository.GetProductByIdAsync(id);
 
-
-                return true;
-            }
-            catch
+            if (product is null)
             {
-                return false;
+                throw new NotFoundException(id, nameof(Product));
             }
+
+            unitOfWork.ProductRepository.Delete(product);
+            await unitOfWork.SaveAsync();
         }
     }
 }

@@ -59,7 +59,9 @@ namespace StoreAdminMVC.Controllers
 
                     HttpResponseMessage response = await client.PostAsJsonAsync("Category/Save", categoryVM);
 
-                    return RedirectToAction("Index");
+                    var body = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
+
+                    return RedirectToAction("Details", new { id = body.Id });
                 }
                 else
                 {
@@ -92,7 +94,9 @@ namespace StoreAdminMVC.Controllers
 
             var response = await client.PostAsJsonAsync("Category/Save", categoryVM);
 
-            return RedirectToAction("Index");
+            var body = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
+
+            return RedirectToAction("Details", new {id = body.Id});
         }
 
         public async Task<ActionResult> Details(int id)

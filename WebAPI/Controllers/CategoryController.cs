@@ -1,6 +1,7 @@
 ﻿using ApplicationService.DTOs;
 using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Filters;
 using WebAPI.Messages;
 
 namespace WebAPI.Controllers
@@ -47,7 +48,7 @@ namespace WebAPI.Controllers
 
         }
 
-        [HttpGet("[action]/{id:int}")]
+        [HttpGet("[action]/{id:int}", Name = "CategoryById")]
         public async Task<IActionResult> GetById(int id)
         {
             var body = await service.GetById(id);
@@ -66,49 +67,23 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> Save([FromBody]CategoryDTO categoryDto, [FromServices] ResponseMessage responseMessage)
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Save([FromBody]CategoryDTO category)
         {
-            if (categoryDto.Title == null && categoryDto.Description == null)
-            {
-                return Json(new ResponseMessage { Code = 500, Error = "Data is not valid" });
-            }
+            var categoryToReturn = await service.Save(category);
 
-            if (await service.Save(categoryDto))
-            {
-                logger.Log(LogLevel.Information, "Category was saved");
-                responseMessage.Code = 201;
-                responseMessage.Body = "Category was saved";
-            }
-            else
-            {
-                logger.Log(LogLevel.Error, "Category was not saved");
-                responseMessage.Code = 202;
-                responseMessage.Body = "Category was not saved";
-            }
-
-            return Json(responseMessage);
+            return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
 
         [Route("[action]/{id:int}")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id, [FromServices] ResponseMessage responseMessage)
         {
-            var body = await service.Delete(id);
+            await service.Delete(id);
 
-            if (body)
-            {
-                logger.LogInformation("Category was deleted");
-                responseMessage.Code = 200;
-                responseMessage.Body = "Category was deleted";
-                return Ok();
-            }
-            else
-            {
-                logger.LogError("Category was not deleted");
-                responseMessage.Body = 304;
-                responseMessage.Body = "Category was not deleted";
-                return Json("Category was not deleted");
-            }
+            logger.Log(LogLevel.Information,"Category was deleted");
+
+            return Ok("Category was deleted succesfully");
         }
 
       

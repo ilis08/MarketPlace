@@ -29,7 +29,7 @@ namespace StoreMVC.Components
 
             ViewBag.SelectedCategory = RouteData?.Values["category"];
 
-            ProductListVM product = new ProductListVM();
+            ProductListVM product = new();
 
             product.Categories = category;
 

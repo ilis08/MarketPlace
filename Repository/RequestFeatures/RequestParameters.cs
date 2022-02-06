@@ -1,17 +1,13 @@
-﻿namespace Repository.Implementations
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Repository.RequestFeatures
 {
-    public enum Ordering
+    public class RequestParameters
     {
-        OrderByHighestPrice = 0,
-        OrderByLowestPrice = 1
-    }
-
-    public class GetProductsParameters
-    {
-        public string Category { get; set; }
-
-        public Ordering Ordering { get; set; }
-
         const int maxPageSize = 50;
 
         public int PageNumber { get; set; } = 1;
@@ -29,6 +25,5 @@
                 pageSize = (value > maxPageSize) ? maxPageSize : value;
             }
         }
-
     }
 }
