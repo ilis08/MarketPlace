@@ -7,11 +7,5 @@ namespace Repository.Implementations.CategoryRepo
         Task<IEnumerable<Category>> GetCategoriesAsync();
 
         Task<Category> GetCategoryByIdAsync(int id);
-
-        void Create(Category entity);
-
-        void Update(Category entity);
-
-        void Delete(Category entity);
     }
 }

@@ -18,6 +18,7 @@ namespace WebAPI.Extensions
 
                 var filePath = Path.Combine(System.AppContext.BaseDirectory, "WebAPI.xml");
                 c.IncludeXmlComments(filePath);
+                c.EnableAnnotations();
             });
         }
 
@@ -57,5 +58,21 @@ namespace WebAPI.Extensions
                     .AllowAnyHeader()
                     .WithExposedHeaders("X-Pagination"));
             });
+
+        public static void ConfigureResponseCaching(this IServiceCollection services) =>
+            services.AddResponseCaching();
+
+        public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
+            services.AddHttpCacheHeaders(
+                (expiration) =>
+                {
+                    expiration.MaxAge = 180;
+                    expiration.CacheLocation = Marvin.Cache.Headers.CacheLocation.Private;
+                },
+                (validationOpt) =>
+                {
+                    validationOpt.MustRevalidate = true;
+                }
+                );
     }
 }

@@ -12,7 +12,7 @@ namespace StoreMVC.ViewModels.Product
 
         }
 
-        public ProductListVM(GetProductsParams parameters)
+        public ProductListVM(ProductParameters parameters)
         {
             Params = parameters;
         }
@@ -21,6 +21,6 @@ namespace StoreMVC.ViewModels.Product
 
         public IEnumerable<CategoryVM> Categories { get; set; }
 
-        public GetProductsParams Params { get; set; }
+        public ProductParameters Params { get; set; }
     }
 }

@@ -5,6 +5,8 @@ using Data.Context;
 using Repository.RequestFeatures;
 using Exceptions;
 using Repository.Implementations.BaseRepo;
+using Repository.Extensions;
+using System.Linq;
 
 namespace Repository.Implementations.ProductRepo
 {
@@ -29,12 +31,11 @@ namespace Repository.Implementations.ProductRepo
         public async Task<List<Product>> GetProductByQuery(string query) => 
             await FindByCondition(c => c.ProductName.Contains(query)).Include(x => x.Category).ToListAsync();
 
-
         public async Task<Product> GetProductByIdAsync(int id) =>
             await FindByCondition(c => c.Id == id).Include(x => x.Category).FirstOrDefaultAsync();
 
         public async Task<IEnumerable<Product>> GetProductsAsync() =>
-            await FindAll().Include(x => x.Category).OrderBy(x => x.Category.Id).Take(10).ToListAsync();
+            await FindAll().Include(x => x.Category).OrderBy(x => x.Category.Id).ToListAsync();
 
         public void UpdateProduct(Product product) => Update(product);
 
@@ -47,31 +48,22 @@ namespace Repository.Implementations.ProductRepo
 
         public async Task<PagedList<Product>> GetProductsByParametersAsync(ProductParameters productsParameters)
         {
-            async Task<List<Product>> GetByOrdering(Ordering ordering){
-                if (productsParameters.Ordering == Ordering.OrderByHighestPrice)
-                {
-                    return await FindByCondition((p => p.Category.Title == productsParameters.Category
-                         && p.Price >= productsParameters.MinPrice && p.Price <= productsParameters.MaxPrice))
-                          .OrderByDescending(x => x.Price)
-                          .ToListAsync();
-                }
-                else
-                {
-                    return await FindByCondition((p => p.Category.Title == productsParameters.Category
-                         && p.Price >= productsParameters.MinPrice && p.Price <= productsParameters.MaxPrice))
-                          .OrderBy(x => x.Price)
-                          .ToListAsync();
-                }
-            }
-
             if (!productsParameters.ValidPriceRange)
             {
                 throw new PriceRangeBadRequestException();
             }
 
-            var count = await FindByCondition(x => x.Category.Title.Equals(productsParameters.Category)).CountAsync();
+            var count = await FindByCondition(x => x.Category.Title.Equals(productsParameters.Category))
+                            .FilterProducts(productsParameters.Ordering, productsParameters.MinPrice, productsParameters.MaxPrice)
+                            .CountAsync();
 
-            var products = await GetByOrdering(productsParameters.Ordering);
+            var products =  await FindAll()
+                            .FilterProducts(productsParameters.Ordering, productsParameters.MinPrice, productsParameters.MaxPrice)
+                            .SearchByName(productsParameters.ProductName)
+                            .SearchByCategory(productsParameters.Category)
+                            .Skip((productsParameters.PageNumber - 1) * productsParameters.PageSize)
+                            .Take(productsParameters.PageSize)
+                          .ToListAsync();
 
             return new PagedList<Product>(products, count, productsParameters.PageNumber, productsParameters.PageSize);
         }

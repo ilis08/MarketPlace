@@ -48,7 +48,7 @@ namespace StoreMVC.Controllers
 
         public async Task<IActionResult> GetProductsByCategory(string category, Ordering ordering)
         {
-            var model = await productService.GetProductsByParams(new GetProductsParams(category, ordering, 8));
+            var model = await productService.GetProductsByParams(new ProductParameters(category, ordering, 8));
 
             return View(model);
         }

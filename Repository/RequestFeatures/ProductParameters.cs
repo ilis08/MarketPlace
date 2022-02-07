@@ -1,30 +1,35 @@
-﻿using System;
+﻿using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Repository.RequestFeatures
 {
     public enum Ordering
     {
-        OrderByHighestPrice = 0,
-        OrderByLowestPrice = 1
+        OrderByHighestPrice,
+        OrderByLowestPrice,
+        OrderByNewest
     }
 
     public class ProductParameters : RequestParameters
     {
+        public string? ProductName { get; set; }
         [Required]
         public string Category { get; set; }
 
-        public Ordering Ordering { get; set; }
-        
-        [Required]
-        public double MinPrice { get; set; }
-        [Required]
+        public Ordering Ordering { get; set; } = Ordering.OrderByLowestPrice;
+
+        public double MinPrice { get; set; } = 1.0;
+
         public double MaxPrice { get; set; } = double.MaxValue;
 
-        public bool ValidPriceRange => MinPrice < MaxPrice;
+        internal bool ValidPriceRange => MinPrice < MaxPrice;
     }
 }

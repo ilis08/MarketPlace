@@ -63,59 +63,55 @@ namespace ApplicationService.Implementations
             return (products: productDTO, metaData: productWithMetaData.MetaData);
         }
 
-        public async Task<bool> Save(ProductDTO productDto)
+        public async Task<ProductDTO> Save(ProductDTO productDto)
         {
-            try
+            Product product = ObjectMapper.Mapper.Map<Product>(productDto);
+
+            if (productDto.Id == 0)
             {
-                Product product = ObjectMapper.Mapper.Map<Product>(productDto);
-
-                if (productDto.Id == 0)
-                {
-                    unitOfWork.ProductRepository.CreateProduct(product, productDto.ImageFile);
-                }
-
-                await unitOfWork.SaveAsync();
-
-                return true;
+                unitOfWork.ProductRepository.CreateProduct(product, productDto.ImageFile);
             }
-            catch
-            {
-                return false;
-            }
+
+            await unitOfWork.SaveAsync();
+
+            var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
+
+            return productToReturn;
         }
 
-        public async Task<bool> Update(ProductDTO productDto)
+        public async Task<ProductDTO> Update(ProductDTO productDto)
         {
-            try
+            Product product;
+
+            if (productDto.ImageFile == null)
             {
-                if (productDto.ImageFile == null)
+                product = ObjectMapper.Mapper.Map<Product>(productDto);
+
+                using (unitOfWork)
                 {
-                    Product product = ObjectMapper.Mapper.Map<Product>(productDto);
+                    unitOfWork.ProductRepository.Update(product);
 
-                    using (unitOfWork)
-                    {
-                        unitOfWork.ProductRepository.Update(product);
-
-                        await unitOfWork.SaveAsync();
-                    }
-                }
-                else
-                {
-                    Product product = ObjectMapper.Mapper.Map<Product>(productDto);
-
-                    using (unitOfWork)
-                    {
-                        unitOfWork.ProductRepository.UpdateProductWithImage(productDto.ImageFile, product);
-
-                        await unitOfWork.SaveAsync();
-                    }
+                    await unitOfWork.SaveAsync();
                 }
 
-                return true;
+                var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
+
+                return productToReturn;
             }
-            catch
+            else
             {
-                return false;
+                product = ObjectMapper.Mapper.Map<Product>(productDto);
+
+                using (unitOfWork)
+                {
+                    unitOfWork.ProductRepository.UpdateProductWithImage(productDto.ImageFile, product);
+
+                    await unitOfWork.SaveAsync();
+                }
+
+                var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
+
+                return productToReturn;
             }
         }
 
@@ -129,7 +125,7 @@ namespace ApplicationService.Implementations
                 throw new NotFoundException(id, nameof(Product));
             }
 
-            unitOfWork.ProductRepository.Delete(product);
+            unitOfWork.ProductRepository.DeleteProduct(product);
             await unitOfWork.SaveAsync();
         }
     }

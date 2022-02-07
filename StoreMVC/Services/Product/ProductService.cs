@@ -57,11 +57,11 @@ namespace StoreMVC.Service
             }
         }
 
-        public async Task<ProductListVM> GetProductsByParams(GetProductsParams productsParams)
+        public async Task<ProductListVM> GetProductsByParams(ProductParameters productsParams)
         {
             var client = clientFactory.CreateClient("myapi");
 
-            var response = await client.GetAsync($"Product/GetProductsByParams?Category={productsParams.Category}&Ordering={productsParams.Ordering}&PageSize={productsParams.PageSize}");
+            var response = await client.GetAsync($"Product/GetProductsByParams?ProductName={productsParams.ProductName}&Category={productsParams.Category}&Ordering={productsParams.Ordering}&PageSize={productsParams.PageSize}");
 
             if (response.IsSuccessStatusCode)
             {

@@ -19,7 +19,7 @@ namespace ApplicationService.DTOs.ProductDTOs
         public string Image { get; set; }
 
         [NotMapped]
-        [AllowedExtensions(new string[] { ".jpg", ".png" })]
+        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg" })]
         public IFormFile ImageFile { get; set; }
         public int CategoryId { get; set; }
 

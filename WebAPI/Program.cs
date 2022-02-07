@@ -42,6 +42,10 @@ public class Program
 
         builder.Services.ConfigureCors();
 
+       /* builder.Services.ConfigureResponseCaching();
+
+        builder.Services.ConfigureHttpCacheHeaders();*/
+
         builder.Services.ConfigureResponseMessage();
 
         builder.Services.AddHealthChecks()
@@ -72,6 +76,10 @@ public class Program
         app.ConfigureExceptionHandler(logger);
 
         app.UseRouting();
+
+        app.UseCors("CorsPolicy");
+      /*  app.UseResponseCaching();
+        app.UseHttpCacheHeaders();*/
 
         app.UseAuthorization();
 

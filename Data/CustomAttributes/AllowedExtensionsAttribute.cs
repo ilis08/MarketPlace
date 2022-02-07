@@ -27,7 +27,7 @@ namespace Data.CustomAttributes
             return ValidationResult.Success;
         }
 
-        public string GetErrorMessage()
+        public static string GetErrorMessage()
         {
             return $"This file format is not allowed";
         }

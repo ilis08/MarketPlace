@@ -17,29 +17,24 @@ namespace ApplicationService.Implementations
 
         public async Task<IEnumerable<OrderGetDTO>> Get()
         {
-            List<OrderGetDTO> orders = new();
+            List<OrderGetDTO> ordersToReturn = new();
 
             using (unitOfWork)
             {
-                foreach (var item in await unitOfWork.OrderRepository.GetOrders())
-                {
-                    orders.Add(new OrderGetDTO
-                    {
-                        Id = item.Id,
-                        PaymentType = item.PaymentType,
-                        IsCompleted = item.IsCompleted,
-                        TotalPrice = item.TotalPrice
-                    });
-                }
+                var orders = await unitOfWork.OrderRepository.GetOrders();
+
+                var ordersDto = ObjectMapper.Mapper.Map<List<OrderGetDTO>>(orders);
+
+                ordersToReturn.AddRange(ordersDto);
             }
 
-            return orders;
+            return ordersToReturn;
         }
 
 
         public async Task<OrderGetByIdDTO> GetById(int id)
         {
-            OrderGetByIdDTO orderDTO = new OrderGetByIdDTO();
+            OrderGetByIdDTO orderDTO = new();
 
             Order order = await unitOfWork.OrderRepository.GetOrder(id);
 
@@ -48,7 +43,7 @@ namespace ApplicationService.Implementations
                 throw new NotFoundException(id, nameof(Order));
             }
 
-            List<OrderDetailProduct> orderDetailProducts = unitOfWork.OrderRepository.GetOrderDetailProducts(id);
+            List<OrderDetailProduct> orderDetailProducts = await unitOfWork.OrderRepository.GetOrderDetailProducts(id);
 
             var orderDetailProductsDTO = ObjectMapper.Mapper.Map<List<OrderDetailProductByIdDTO>>(orderDetailProducts);
 
@@ -73,7 +68,7 @@ namespace ApplicationService.Implementations
         {
             List<OrderDetailProduct> mapObject = ObjectMapper.Mapper.Map<List<OrderDetailProduct>>(orderDTO.OrderDetailProducts);
 
-            unitOfWork.OrderRepository.ComputeTotalPrice(mapObject);
+            await unitOfWork.OrderRepository.ComputeTotalPriceAsync(mapObject);
 
             try
             { 
@@ -143,24 +138,11 @@ namespace ApplicationService.Implementations
             }      
         }
 
-        public async Task<bool> CompleteOrderAsync(int id)
-        {
-            try
-            {
-                await unitOfWork.OrderRepository.CompleteOrder(id);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-        }
-
+        public async Task CompleteOrderAsync(int id) => await unitOfWork.OrderRepository.CompleteOrder(id);
+        
         public async Task Delete(int id)
         {
-            var order = unitOfWork.OrderRepository.GetOrder(id);
+            var order = await unitOfWork.OrderRepository.GetOrder(id);
 
             if (order is null)
             {

@@ -8,47 +8,47 @@ namespace StoreMVC.ViewModels.Product
     public enum Ordering
     {
         OrderByHighestPrice = 0,
-        OrderByLowestPrice = 1
+        OrderByLowestPrice = 1,
+        OrderByNewest = 2
     }
-    public class GetProductsParams
+    public class ProductParameters : RequestParameters
     {
-        public GetProductsParams(string category)
+        public ProductParameters(string category)
         {
             Category = category;
         }
 
-        public GetProductsParams(string category, Ordering ordering)
+        public ProductParameters(string category, Ordering ordering)
         {
             Category = category;
             Ordering = ordering;
         }
 
-        public GetProductsParams(string category, Ordering ordering, int pageSize)
+        public ProductParameters(string category, Ordering ordering, int pageSize)
         {
             Category = category;
             Ordering = ordering;
             PageSize = pageSize;
         }
 
-        public GetProductsParams(string category, Ordering ordering, int pageSize, int pageNumber)
+        public ProductParameters(string? productName, string category, Ordering? ordering, int pageSize, int pageNumber)
         {
+            ProductName = productName;
             Category = category;
             Ordering = ordering;
             PageSize = pageSize;
             PageNumber = pageNumber;
         }
 
-        public GetProductsParams()
+        public ProductParameters()
         {
 
         }
 
+        public string? ProductName { get; set; }
+
         public string Category { get; set; }
 
-        public Ordering Ordering { get; set; }
-
-        public int PageSize { get; set; } = 4;
-
-        public int PageNumber { get; set; } = 1;
+        public Ordering? Ordering { get; set; }
     }
 }

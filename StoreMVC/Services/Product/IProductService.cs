@@ -13,7 +13,7 @@ namespace StoreMVC.Service
 
         Task GetProductsAsync(string query);
 
-        Task<ProductListVM> GetProductsByParams(GetProductsParams productsParams);
+        Task<ProductListVM> GetProductsByParams(ProductParameters productsParams);
 
         public ProductVM Product { get; set; }
 

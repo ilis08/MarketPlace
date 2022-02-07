@@ -1,53 +1,35 @@
 ﻿using Data.Context;
 using Data.Entitites;
 using Microsoft.EntityFrameworkCore;
+using Repository.Implementations.BaseRepo;
 
 namespace Repository.Implementations.OrderRepo
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
-        private readonly RepositoryContext context;
+        public OrderRepository(RepositoryContext context) : base(context) { }
 
-        public OrderRepository(RepositoryContext context)
-        {
-            this.context = context;
-        }
+        public void Create(Order order) => Create(order);
 
-        public void Create(Order order)
-        {
-            context.Add(order);
-        }
+        public void Delete(Task<Order> entity) => Delete(entity);
 
-        public void Delete(Task<Order> entity)
-        {
-            context.Remove(entity);
-        }
+        public async Task<IEnumerable<Order>> GetOrders() => await FindAll().ToListAsync();
 
-        public async Task<IEnumerable<Order>> GetOrders()
-        {
-            return await context.Orders.ToListAsync();
-        }
+        public async Task<Order> GetOrder(int id) =>
+            await FindByCondition(p => p.Id == id).Include(x => x.OrderDetailUser).Include(o => o.OrderDetailProduct).ThenInclude(p => p.Product).SingleOrDefaultAsync();
 
-        public async Task<Order> GetOrder(int id)
-        {
-            return await context.Orders.Where(p => p.Id == id).Include(x => x.OrderDetailUser).Include(o => o.OrderDetailProduct).ThenInclude(p => p.Product).FirstOrDefaultAsync();
-        }
 
-        public List<OrderDetailProduct> GetOrderDetailProducts(int id)
-        {
-            return context.OrderDetailProducts.Where(p => p.OrderId == id).ToList();
-        }
+        public async Task<List<OrderDetailProduct>> GetOrderDetailProducts(int id) => 
+            await repositoryContext.OrderDetailProducts.Where(p => p.OrderId == id).ToListAsync();
 
-        public void Update(Order entity)
-        {
-            context.Update(entity);
-        }
 
-        public void ComputeTotalPrice(List<OrderDetailProduct> products)
+        public void Update(Order entity) => Update(entity);
+
+        public async Task ComputeTotalPriceAsync(List<OrderDetailProduct> products)
         {
             foreach (var product in products)
             {
-                var price = context.Products.Where(o => o.Id == product.Product.Id).Select(c => c.Price).FirstOrDefault();
+                var price = await repositoryContext.Products.Where(o => o.Id == product.Product.Id).Select(c => c.Price).SingleOrDefaultAsync();
 
                 product.Price = price;
 
@@ -65,23 +47,23 @@ namespace Repository.Implementations.OrderRepo
 
         public virtual void CreateRangeOrder(Order order)
         {
-            context.AttachRange(order.OrderDetailProduct.Select(c => c));
+            repositoryContext.AttachRange(order.OrderDetailProduct.Select(c => c));
         }
 
         public virtual void CreateUserOrder(Order order)
         {
-            context.Attach(order.OrderDetailUser).State = EntityState.Added;
+            repositoryContext.Attach(order.OrderDetailUser).State = EntityState.Added;
         }
 
         public async Task CompleteOrder(int id)
         {
-            var order = await context.Orders.FindAsync(id);
+            var order = await FindByCondition(x => x.Id == id).SingleOrDefaultAsync();
 
             order.IsCompleted = true;
 
-            context.Orders.Attach(order);
-            context.Entry(order).Property(x => x.IsCompleted).IsModified = true;
-            await context.SaveChangesAsync();
+            repositoryContext.Orders.Attach(order);
+            repositoryContext.Entry(order).Property(x => x.IsCompleted).IsModified = true;
+            await repositoryContext.SaveChangesAsync();
         }
     }
 }

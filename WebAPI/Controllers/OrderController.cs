@@ -75,22 +75,11 @@ namespace WebAPI.Controllers
 
         [Route("[action]/{id:int}")]
         [HttpPut]
-        public async Task<JsonResult> CompleteOrder(int id, [FromServices] ResponseMessage responseMessage)
+        public async Task<IActionResult> CompleteOrder(int id)
         {
-            if (id != 0)
-            {
-                if (await _service.CompleteOrderAsync(id))
-                {
-                    responseMessage.Code = 201;
-                    responseMessage.Body = "Order was completed";
-                }
-                else
-                {
-                    responseMessage.Code = 202;
-                    responseMessage.Body = "Order was not completed";
-                }
-            }
-            return Json(responseMessage);
+            await _service.CompleteOrderAsync(id);
+
+            return Ok("Order was updated succesfully");
         }
 
         [Route("[action]/{id:int}")]

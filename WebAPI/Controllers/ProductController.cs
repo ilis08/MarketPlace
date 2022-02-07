@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
 
             if (body.Any())
             {
-                logger.Log(LogLevel.Information, "Succesfully getting list of products");
+                logger.Log(LogLevel.Information, "Succesfully getting a list of products");
                 return Ok(body);
             }
             else
@@ -49,7 +49,7 @@ namespace WebAPI.Controllers
 
         }
 
-        [HttpGet("[action]/{id:int}")]
+        [HttpGet("[action]/{id:int}", Name = "ProductById")]
         public async Task<IActionResult> GetById(int id)
         {
             var product = await service.GetById(id);
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 
-            logger.Log(LogLevel.Information, "Succesfully list of a products by parameters");
+            logger.Log(LogLevel.Information, "Succesfully getting a list of a products by parameters");
 
             return Ok(pagedResult.products);
         }
@@ -74,47 +74,20 @@ namespace WebAPI.Controllers
         [Route("[action]")]
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> Save([FromForm]ProductDTO product, [FromServices] ResponseMessage responseMessage)
+        public async Task<IActionResult> Save([FromForm]ProductDTO product)
         {
-            if (await service.Save(product))
-            {
-                logger.Log(LogLevel.Information, "Product was saved");
-                responseMessage.Code = 201;
-                responseMessage.Body = "Product was saved";
-            }
-            else
-            {
-                logger.Log(LogLevel.Error, "Product was not saved");
-                responseMessage.Code = 202;
-                responseMessage.Body = "Product was not saved";
-            }
+            var productToReturn = await service.Save(product);
 
-            return Json(responseMessage);
+            return CreatedAtRoute("ProductById", new { id = productToReturn.Id }, productToReturn);
         }
 
         [Route("[action]")]
         [HttpPut]
-        public async Task<IActionResult> Update([FromForm]ProductDTO product, [FromServices] ResponseMessage responseMessage)
+        public async Task<IActionResult> Update([FromForm]ProductDTO product)
         {
-            if (product.ProductName == default(string))
-            {
-                return Json(new ResponseMessage { Code = 500, Error = "Data is not valid" });
-            }
+            var productToReturn = await service.Update(product);
 
-            if (await service.Update(product))
-            {
-                logger.Log(LogLevel.Information, "Product was updated");
-                responseMessage.Code = 201;
-                responseMessage.Body = "Product was updated";
-            }
-            else
-            {
-                logger.Log(LogLevel.Error, "Product was not updated");
-                responseMessage.Code = 202;
-                responseMessage.Body = "Product was not updated";
-            }
-
-            return Json(responseMessage);
+            return CreatedAtRoute("ProductById", new { id = productToReturn.Id }, productToReturn);
         }
 
         [Route("[action]/{id:int}")]

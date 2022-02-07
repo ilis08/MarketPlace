@@ -11,19 +11,19 @@ namespace Repository.Implementations.BaseRepo
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-		protected RepositoryContext RepositoryContext;
+		protected RepositoryContext repositoryContext;
 
-		public BaseRepository(RepositoryContext repositoryContext)
-			=> RepositoryContext = repositoryContext;
+		public BaseRepository(RepositoryContext _repositoryContext)
+			=> repositoryContext = _repositoryContext;
 
-		public IQueryable<T> FindAll() => RepositoryContext.Set<T>();
+		public IQueryable<T> FindAll() => repositoryContext.Set<T>();
 
-		public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) => RepositoryContext.Set<T>()
+		public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) => repositoryContext.Set<T>()
 																										.Where(expression);
-		public void Create(T entity) => RepositoryContext.Set<T>().Add(entity);
+		public void Create(T entity) => repositoryContext.Set<T>().Add(entity);
 
-		public void Update(T entity) => RepositoryContext.Set<T>().Update(entity);
+		public void Update(T entity) => repositoryContext.Set<T>().Update(entity);
 
-		public void Delete(T entity) => RepositoryContext.Set<T>().Remove(entity);
+		public void Delete(T entity) => repositoryContext.Set<T>().Remove(entity);
 	}
 }

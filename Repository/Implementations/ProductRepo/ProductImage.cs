@@ -14,7 +14,6 @@ namespace Repository.Implementations.ProductRepo
 
             var imagePathStore = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/", "Images/", imageName);
 
-
             using (var fileStream = new FileStream(imagePath, FileMode.Create))
             {
                 imageFile.CopyTo(fileStream);
@@ -25,25 +24,24 @@ namespace Repository.Implementations.ProductRepo
                 imageFile.CopyTo(fileStream);
             }
 
-
             return imageName;
         }
 
-        public string UpdateImage(IFormFile imageFile, string oldImarePath)
+        public string UpdateImage(IFormFile imageFile, string oldImagePath)
         {
             Parallel.Invoke(
                 () =>
                 {
-                    if (File.Exists(@$"C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/Images/{oldImarePath}"))
+                    if (File.Exists(@$"C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/Images/{oldImagePath}"))
                     {
-                        File.Delete(@$"C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/Images/{oldImarePath}");
+                        File.Delete(@$"C:/DistributedProject/IlisStoreSln/StoreAdminMVC/wwwroot/Images/{oldImagePath}");
                     }
                 },
                 () =>
                 {
-                    if (File.Exists(@$"C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/Images/{oldImarePath}"))
+                    if (File.Exists(@$"C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/Images/{oldImagePath}"))
                     {
-                        File.Delete(@$"C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/Images/{oldImarePath}");
+                        File.Delete(@$"C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/Images/{oldImagePath}");
                     }
                 });
 
@@ -57,15 +55,22 @@ namespace Repository.Implementations.ProductRepo
             var imagePathStore = Path.Combine("C:/DistributedProject/IlisStoreSln/StoreMVC/wwwroot/", "Images/", imageName);
 
 
-            using (var fileStream = new FileStream(imagePath, FileMode.Create))
-            {
-                imageFile.CopyTo(fileStream);
-            }
+            Parallel.Invoke(
+                () =>
+                {
+                    using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        imageFile.CopyTo(fileStream);
+                    }
+                },
+                () =>
+                {
+                    using (var fileStream = new FileStream(imagePathStore, FileMode.Create))
+                    {
+                        imageFile.CopyTo(fileStream);
+                    }
+                });
 
-            using (var fileStream = new FileStream(imagePathStore, FileMode.Create))
-            {
-                imageFile.CopyTo(fileStream);
-            }
 
 
             return imageName;

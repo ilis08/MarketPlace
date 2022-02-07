@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace Repository.Implementations
 {
-    public class UnitOfWork : IDisposable, IEnumerable
+    public class UnitOfWork : IDisposable
     {
         private RepositoryContext context;
 
@@ -68,10 +68,5 @@ namespace Repository.Implementations
             GC.SuppressFinalize(this);
         }
         #endregion
-
-        public IEnumerator GetEnumerator()
-        {
-            yield return new NotImplementedException();
-        }
     }
 }

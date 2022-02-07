@@ -8,9 +8,11 @@
 <br />
 <br />
 
- @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new GetProductsParams("Laptop")))
+ @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new ProductParameters("Laptop")))
 
- @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new GetProductsParams("Phone")))
+ @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new ProductParameters("Phone")))
+
+ @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new ProductParameters("Tablet")))
 
 <script>
     function Details(id) {

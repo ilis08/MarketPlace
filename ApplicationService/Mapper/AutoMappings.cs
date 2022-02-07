@@ -1,4 +1,5 @@
 ﻿using ApplicationService.DTOs;
+using ApplicationService.DTOs.OrderDTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs.GetById;
 using ApplicationService.DTOs.OrderManagementDTOs.OrderSaveDTOs;
@@ -38,6 +39,10 @@ namespace ApplicationService
                dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName)).ForPath(dest =>
                dest.Price, opt => opt.MapFrom(src => src.Product.Price));
 
+            CreateMap<Order, OrderGetDTO>().ReverseMap();
+
+            CreateMap<Order, OrderGetByIdDTO>().ForMember(dest =>
+                dest.FullName, opt => opt.MapFrom(src => src.OrderDetailUser.Name + " " + src.OrderDetailUser.Surname));
 
             /*CreateMap<OrderDetailProductByIdDTO, OrderDetailProduct>().ForPath(dest =>
                 dest.Product.ProductName, opt => opt.MapFrom(src => src.ProductName)).ForMember(dest =>

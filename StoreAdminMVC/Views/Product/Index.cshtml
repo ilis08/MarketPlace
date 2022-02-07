@@ -16,7 +16,14 @@
                 <h3>@product.ProductName</h3>
             </div>
 
-            <img  class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true"/>
+            @if(System.IO.File.Exists(@$"C:\DistributedProject\IlisStoreSln\StoreAdminMVC\wwwroot\Images/{product.Image}"))
+            {
+                <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true"/>
+            }else
+            {
+                <img class="card-img-top imgThumbnail" src="~/Images/NoImage.jpg" asp-append-version="true"/>
+            }
+            
 
             <div class="card-footer text-center">
                 <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary m-1">Details</a>
