@@ -4,14 +4,17 @@
 @{
     ViewData["Title"] = "Products";
 }
-
 <br />
 <br />
 
+ @await Component.InvokeAsync("GetProducts")
+<br />
+<br />
+    <h1><span class="badge bg-success text-white">Laptops</span></h1>
  @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new ProductParameters("Laptop")))
-
+    <h1><span class="badge bg-success text-white">Phones</span></h1>
  @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new ProductParameters("Phone")))
-
+    <h1><span class="badge bg-success text-white">Tablets</span></h1>
  @await Component.InvokeAsync("GetProductsByParams", new ProductListVM(new ProductParameters("Tablet")))
 
 <script>

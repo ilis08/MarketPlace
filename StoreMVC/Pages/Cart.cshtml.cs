@@ -19,11 +19,11 @@ namespace StoreMVC.Pages
     {
         public Cart Cart { get; set; }
 
-        private readonly IProductService productMethods;
+        private readonly IProductService productService;
 
         public CartModel(IProductService product, Cart cart)
         {
-            productMethods = product;
+            productService = product;
             Cart = cart;
         }
 
@@ -33,16 +33,16 @@ namespace StoreMVC.Pages
 
         public async Task OnPostAsync(int id)
         {
-            await productMethods.GetProductAsync(id);
+            var product = await productService.GetProductAsync(id);
 
-            Cart.AddToCart(productMethods.Product);
+            Cart.AddToCart(product);
         }
 
         public async Task OnPostRemoveAsync(int id)
         {
-            await productMethods.GetProductAsync(id);
+            var product = await productService.GetProductAsync(id);
 
-            Cart.RemoveFromCart(productMethods.Product);
+            Cart.RemoveFromCart(product);
         }
 
         public async Task OnPostMinusAsync(int id)
@@ -51,15 +51,15 @@ namespace StoreMVC.Pages
 
             if (cartLine.Count > 1)
             {
-                await productMethods.GetProductAsync(id);
+                var product = await productService.GetProductAsync(id);
 
-                Cart.MinusCount(productMethods.Product);
+                Cart.MinusCount(product);
             }
             else
             {
-                await productMethods.GetProductAsync(id);
+                var product = await productService.GetProductAsync(id);
 
-                Cart.RemoveFromCart(productMethods.Product);
+                Cart.RemoveFromCart(product);
             }
             
         }

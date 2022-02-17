@@ -20,7 +20,7 @@ namespace StoreMVC.Models
 
         [Required]
         [DataType(DataType.PhoneNumber)]
-        [Phone]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Not a valid phone number")]
         public string PhoneNumber { get; set; }
     }
 }

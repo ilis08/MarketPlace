@@ -7,20 +7,19 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand col-1" asp-controller="Home" asp-action="Index"><h3>Store</h3></a>
-
-                <a asp-page="/Cart" class="btn btn-sm btn-success navbar-btn">
-                    <i class="fa fa-shopping-cart fa-2x">
-                    </i>
-                </a>
-            </div>
-        </nav>
-    </header>
+    <div class="bg-light text-dark p-2">
+       <div class="container-fluid">
+           <div class="row">
+               <div class="col navbar-brand"><a class="text-dark" style="text-decoration:none" asp-action="Index" asp-controller="Home">Store</a></div>
+               <div class="col-6 text-right">
+                   <vc:cart-summary />
+               </div>
+           </div>
+       </div>
+    </div>
     <div>
         <div class="bg-success text-white text-center p-3 m-1">
             <div class="text-center">
@@ -60,6 +59,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 

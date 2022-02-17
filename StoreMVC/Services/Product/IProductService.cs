@@ -9,16 +9,10 @@ namespace StoreMVC.Service
 {
     public interface IProductService
     {
-        Task GetProductAsync(int id);
+        Task<ProductVM> GetProductAsync(int id);
 
-        Task GetProductsAsync(string query);
+        Task<List<ProductVM>> GetProductsAsync(string query);
 
         Task<ProductListVM> GetProductsByParams(ProductParameters productsParams);
-
-        public ProductVM Product { get; set; }
-
-        public IEnumerable<ProductVM> Products { get; set; }
-
-        public ProductListVM ProductListVM { get; set; }
     }
 }

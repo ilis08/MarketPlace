@@ -12,7 +12,7 @@
         <div class="card m-1 p-1" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
             <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
 
-            <div class="card-header" style="height:90%">
+            <div class="card-header text-truncate" style="height:90%">
                 <a class="fill-div" asp-action="Details" asp-route-id="@product.Id">@product.ProductName</a>
             </div>
             <div class="row pt-2 pb-2">

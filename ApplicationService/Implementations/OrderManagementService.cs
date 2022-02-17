@@ -64,41 +64,35 @@ namespace ApplicationService.Implementations
             return orderDTO;
         }
 
-        public async Task<bool> Save(OrderDTO orderDTO)
+        public async Task<OrderGetByIdDTO> Save(OrderDTO orderDTO)
         {
             List<OrderDetailProduct> mapObject = ObjectMapper.Mapper.Map<List<OrderDetailProduct>>(orderDTO.OrderDetailProducts);
 
             await unitOfWork.OrderRepository.ComputeTotalPriceAsync(mapObject);
 
-            try
-            { 
-                Order order = new Order()
-                {
-                    Id = orderDTO.OrderId,
-                    PaymentType = orderDTO.PaymentType,
-                    OrderDetailUser = orderDTO.OrderDetailUser,
-                    OrderDetailProduct = mapObject
-                };
-
-                unitOfWork.OrderRepository.ComputeTotalPriceForOrder(order);
-
-                unitOfWork.OrderRepository.CreateUserOrder(order);
-                unitOfWork.OrderRepository.CreateRangeOrder(order);
-
-                if (order.Id == 0)
-                {
-                    unitOfWork.OrderRepository.Create(order);
-                }
-
-                await unitOfWork.SaveAsync();
-
-                return true;
-
-            }
-            catch (Exception)
+            Order order = new Order()
             {
-                throw;
+                Id = orderDTO.OrderId,
+                PaymentType = orderDTO.PaymentType,
+                OrderDetailUser = orderDTO.OrderDetailUser,
+                OrderDetailProduct = mapObject
+            };
+
+            unitOfWork.OrderRepository.ComputeTotalPriceForOrder(order);
+
+            unitOfWork.OrderRepository.CreateUserOrder(order);
+            unitOfWork.OrderRepository.CreateRangeOrder(order);
+
+            if (order.Id == 0)
+            {
+                unitOfWork.OrderRepository.Create(order);
             }
+
+            await unitOfWork.SaveAsync();
+
+            var orderToReturn = ObjectMapper.Mapper.Map<OrderGetByIdDTO>(order);
+
+            return orderToReturn;
         }
 
         public async Task<bool> Update(OrderDTO orderDTO)
@@ -135,11 +129,11 @@ namespace ApplicationService.Implementations
             else
             {
                 return false;
-            }      
+            }
         }
 
         public async Task CompleteOrderAsync(int id) => await unitOfWork.OrderRepository.CompleteOrder(id);
-        
+
         public async Task Delete(int id)
         {
             var order = await unitOfWork.OrderRepository.GetOrder(id);

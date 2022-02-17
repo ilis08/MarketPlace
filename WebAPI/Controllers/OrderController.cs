@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
             return Json(await _service.Get());
         }
 
-        [HttpGet("[action]/{id:int}")]
+        [HttpGet("[action]/{id:int}", Name = "OrderById")]
         public async Task<IActionResult> GetById(int id)
         {
             return Json(await _service.GetById(id));
@@ -37,21 +37,10 @@ namespace WebAPI.Controllers
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Save([FromBody] OrderDTO orderDTO)
-        { 
-            ResponseMessage responseMessage = new ResponseMessage();
+        {
+            var orderToReturn = await _service.Save(orderDTO);
 
-            if (await _service.Save(orderDTO))
-            {
-                responseMessage.Code = 201;
-                responseMessage.Body = "Order was saved";
-            }
-            else
-            {
-                responseMessage.Code = 202;
-                responseMessage.Body = "Order was not saved";
-            }
-
-            return Json(responseMessage);
+            return CreatedAtRoute("OrderById", new { id = orderToReturn.Id }, orderToReturn);
         }
 
         [Route("[action]")]

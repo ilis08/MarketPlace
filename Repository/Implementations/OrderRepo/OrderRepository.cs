@@ -9,10 +9,6 @@ namespace Repository.Implementations.OrderRepo
     {
         public OrderRepository(RepositoryContext context) : base(context) { }
 
-        public void Create(Order order) => Create(order);
-
-        public void Delete(Task<Order> entity) => Delete(entity);
-
         public async Task<IEnumerable<Order>> GetOrders() => await FindAll().ToListAsync();
 
         public async Task<Order> GetOrder(int id) =>
@@ -21,9 +17,6 @@ namespace Repository.Implementations.OrderRepo
 
         public async Task<List<OrderDetailProduct>> GetOrderDetailProducts(int id) => 
             await repositoryContext.OrderDetailProducts.Where(p => p.OrderId == id).ToListAsync();
-
-
-        public void Update(Order entity) => Update(entity);
 
         public async Task ComputeTotalPriceAsync(List<OrderDetailProduct> products)
         {

@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Exceptions.NotFound;
+using Newtonsoft.Json;
 using StoreMVC.ViewModels;
 using StoreMVC.ViewModels.Product;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -12,18 +14,12 @@ namespace StoreMVC.Service
     {
         private readonly IHttpClientFactory clientFactory;
 
-        public ProductVM Product { get; set; }
-
-        public IEnumerable<ProductVM> Products { get; set; }
-
-        public ProductListVM ProductListVM { get; set; }
-
         public ProductService(IHttpClientFactory _factory)
         {
             clientFactory = _factory;
         }
 
-        public async Task GetProductAsync(int id)
+        public async Task<ProductVM> GetProductAsync(int id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
 
@@ -34,11 +30,16 @@ namespace StoreMVC.Service
             if (response.IsSuccessStatusCode)
             {
                 var responseStream = await response.Content.ReadAsStringAsync();
-                Product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
+                var product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
+                return product;
+            }
+            else
+            {
+                throw new NotFoundException(id, nameof(ProductVM));
             }
         }
 
-        public async Task GetProductsAsync(string query)
+        public async Task<List<ProductVM>> GetProductsAsync(string query)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"Product/Get?query={query}");
 
@@ -49,11 +50,12 @@ namespace StoreMVC.Service
             if (response.IsSuccessStatusCode)
             {
                 var responseStream = await response.Content.ReadAsStringAsync();
-                Products = JsonConvert.DeserializeObject<List<ProductVM>>(responseStream);
+                var products = JsonConvert.DeserializeObject<List<ProductVM>>(responseStream);
+                return products;
             }
             else
             {
-                Products = Array.Empty<ProductVM>();
+                return Enumerable.Empty<ProductVM>().ToList();
             }
         }
 
@@ -61,18 +63,17 @@ namespace StoreMVC.Service
         {
             var client = clientFactory.CreateClient("myapi");
 
-            var response = await client.GetAsync($"Product/GetProductsByParams?ProductName={productsParams.ProductName}&Category={productsParams.Category}&Ordering={productsParams.Ordering}&PageSize={productsParams.PageSize}");
+            var response = await client.GetAsync($"Product/GetProductsByParams?ProductName={productsParams.ProductName}&Category={productsParams.Category}&Ordering={productsParams.Ordering}&PageSize={productsParams.PageSize}&PageNumber={productsParams.PageNumber}");
 
             if (response.IsSuccessStatusCode)
             {
-                Products = JsonConvert.DeserializeObject<List<ProductVM>>(await response.Content.ReadAsStringAsync());
+                var productListVM = new ProductListVM();
 
-                ProductListVM = new ProductListVM();
+                productListVM.Products = JsonConvert.DeserializeObject<List<ProductVM>>(await response.Content.ReadAsStringAsync()); 
+                productListVM.Params = productsParams;
+                productListVM.Params.RequestMetaData = JsonConvert.DeserializeObject<RequestMetaData>(response.Headers.GetValues("X-Pagination").FirstOrDefault());
 
-                ProductListVM.Products = Products;
-                ProductListVM.Params = productsParams;
-
-                return ProductListVM;
+                return productListVM;
             }
             else
             {

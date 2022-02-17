@@ -126,3 +126,9 @@ a.fill-div {
     width: 100%;
     text-decoration: none;
 }
+
+.bx-wrapper img {
+    height: 550px;
+    background-position: center;
+    background-size: cover;
+}

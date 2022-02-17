@@ -35,34 +35,34 @@ namespace StoreMVC.Controllers
             }
             else
             {
-                await productService.GetProductsAsync(query);
+                var products = await productService.GetProductsAsync(query);
 
-                if (productService.Products is null)
+                if (products is null)
                 {
                     return View();
                 }
 
-                return View("IndexByQuery", productService.Products);
+                return View("IndexByQuery", products);
             }
         }
 
-        public async Task<IActionResult> GetProductsByCategory(string category, Ordering ordering)
+        public async Task<IActionResult> GetProductsByCategory(string category, Ordering ordering, int pageNumber = 1)
         {
-            var model = await productService.GetProductsByParams(new ProductParameters(category, ordering, 8));
+            var model = await productService.GetProductsByParams(new ProductParameters(category, ordering, 4, pageNumber));
 
             return View(model);
         }
 
         public async Task<IActionResult> Details(int id)
         { 
-            await productService.GetProductAsync(id);
+            var product = await productService.GetProductAsync(id);
 
-            if (productService.Product.Id == 0)
+            if (product is null)
             {
                 return RedirectToAction("Index");
             }
 
-            return View(productService.Product);
+            return View(product);
         }
 
 

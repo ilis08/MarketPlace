@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StoreMVC.Models.Order;
+using StoreMVC.Models.Order.OrderGetModels;
 using StoreMVC.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -49,11 +50,18 @@ namespace StoreMVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                var orderToReturn = JsonConvert.DeserializeObject<OrderGetById>(await response.Content.ReadAsStringAsync());
                 Cart.CleanCart();
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("OrderCompleted", "Order", orderToReturn);
             }
 
-            return View();
+            return View("Checkout", order);
+        }
+
+        [HttpGet]
+        public IActionResult OrderCompleted(OrderGetById order)
+        {
+            return View(order);
         }
 
     }
