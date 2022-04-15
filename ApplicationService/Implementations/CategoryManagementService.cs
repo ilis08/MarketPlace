@@ -1,4 +1,5 @@
-﻿using ApplicationService.DTOs;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs;
 using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
@@ -6,11 +7,11 @@ using Repository.Implementations;
 
 namespace ApplicationService.Implementations
 {
-    public class CategoryManagementService
+    public class CategoryManagementService : ICategoryManagementService
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public CategoryManagementService(UnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
+        public CategoryManagementService(IUnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
 
         public async Task<IEnumerable<CategoryDTO>> Get(string query)
         {
@@ -61,7 +62,7 @@ namespace ApplicationService.Implementations
                 unitOfWork.CategoryRepository.Update(category);
             }
 
-            await unitOfWork.SaveAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var categoryToReturn = ObjectMapper.Mapper.Map<CategoryDTO>(category); 
 
@@ -81,7 +82,7 @@ namespace ApplicationService.Implementations
 
             unitOfWork.CategoryRepository.Delete(category);
 
-            await unitOfWork.SaveAsync();
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

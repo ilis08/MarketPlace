@@ -1,4 +1,5 @@
-﻿using ApplicationService.DTOs;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs;
 using ApplicationService.DTOs.OrderDTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs.GetById;
@@ -9,11 +10,11 @@ using Repository.Implementations;
 
 namespace ApplicationService.Implementations
 {
-    public class OrderManagementService
+    public class OrderManagementService : IOrderManagementService
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public OrderManagementService(UnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
+        public OrderManagementService(IUnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
 
         public async Task<IEnumerable<OrderGetDTO>> Get()
         {
@@ -88,7 +89,7 @@ namespace ApplicationService.Implementations
                 unitOfWork.OrderRepository.Create(order);
             }
 
-            await unitOfWork.SaveAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var orderToReturn = ObjectMapper.Mapper.Map<OrderGetByIdDTO>(order);
 
@@ -116,7 +117,7 @@ namespace ApplicationService.Implementations
                         unitOfWork.OrderRepository.Update(order);
                     }
 
-                    await unitOfWork.SaveAsync();
+                    await unitOfWork.SaveChangesAsync();
 
                     return true;
 
@@ -145,7 +146,7 @@ namespace ApplicationService.Implementations
 
             unitOfWork.OrderRepository.Delete(order);
 
-            await unitOfWork.SaveAsync();
+            await unitOfWork.SaveChangesAsync();
         }
 
     }

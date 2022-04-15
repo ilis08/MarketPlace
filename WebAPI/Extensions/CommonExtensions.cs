@@ -31,7 +31,7 @@ namespace WebAPI.Extensions
 
         public static void ConfigureUnitOfWork(this IServiceCollection services)
         {
-            services.AddTransient<UnitOfWork>();
+            services.AddTransient<IUnitOfWork,UnitOfWork>();
         }
 
         public static void ConfigureResponseMessage(this IServiceCollection services)

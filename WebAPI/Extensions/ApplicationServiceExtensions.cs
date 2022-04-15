@@ -1,4 +1,5 @@
-﻿using ApplicationService.Implementations;
+﻿using ApplicationService.Contracts;
+using ApplicationService.Implementations;
 
 namespace WebAPI.Extensions
 {
@@ -10,7 +11,7 @@ namespace WebAPI.Extensions
         /// <param name="services"></param>
         public static void ConfigureCategoryService(this IServiceCollection services)
         {
-            services.AddTransient<CategoryManagementService>();
+            services.AddScoped<ICategoryManagementService,CategoryManagementService>();
         }
 
         /// <summary>
@@ -19,7 +20,7 @@ namespace WebAPI.Extensions
         /// <param name="services"></param>
         public static void ConfigureProductService(this IServiceCollection services)
         {
-            services.AddTransient<ProductManagementService>();
+            services.AddScoped<IProductManagementService, ProductManagementService>();
         }
 
         /// <summary>
@@ -28,7 +29,7 @@ namespace WebAPI.Extensions
         /// <param name="services"></param>
         public static void ConfigureOrderService(this IServiceCollection services)
         {
-            services.AddTransient<OrderManagementService>();
+            services.AddScoped<IOrderManagementService, OrderManagementService>();
         }
     }
 }

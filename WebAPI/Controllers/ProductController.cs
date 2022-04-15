@@ -1,4 +1,5 @@
-﻿using ApplicationService.DTOs.ProductDTOs;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs.ProductDTOs;
 using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Implementations;
@@ -14,10 +15,10 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ProductController : HomeController
     {
-        private readonly ProductManagementService service = null;
+        private readonly IProductManagementService service;
         private readonly ILogger<ProductController> logger;
 
-        public ProductController(ProductManagementService _service, ILogger<ProductController> _logger)
+        public ProductController(IProductManagementService _service, ILogger<ProductController> _logger)
         {
             service = _service;
             logger = _logger;   

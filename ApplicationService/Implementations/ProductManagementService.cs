@@ -1,4 +1,5 @@
-﻿using ApplicationService.DTOs.ProductDTOs;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs.ProductDTOs;
 using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
@@ -7,11 +8,11 @@ using Repository.RequestFeatures;
 
 namespace ApplicationService.Implementations
 {
-    public class ProductManagementService
+    public class ProductManagementService : IProductManagementService
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public ProductManagementService(UnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
+        public ProductManagementService(IUnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
 
         public async Task<IEnumerable<ProductDTO>> Get(string query)
         {
@@ -72,7 +73,7 @@ namespace ApplicationService.Implementations
                 unitOfWork.ProductRepository.CreateProduct(product, productDto.ImageFile);
             }
 
-            await unitOfWork.SaveAsync();
+            await unitOfWork.SaveChangesAsync();
 
             var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
@@ -91,7 +92,7 @@ namespace ApplicationService.Implementations
                 {
                     unitOfWork.ProductRepository.Update(product);
 
-                    await unitOfWork.SaveAsync();
+                    await unitOfWork.SaveChangesAsync();
                 }
 
                 var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
@@ -106,7 +107,7 @@ namespace ApplicationService.Implementations
                 {
                     unitOfWork.ProductRepository.UpdateProductWithImage(productDto.ImageFile, product);
 
-                    await unitOfWork.SaveAsync();
+                    await unitOfWork.SaveChangesAsync();
                 }
 
                 var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
@@ -126,7 +127,7 @@ namespace ApplicationService.Implementations
             }
 
             unitOfWork.ProductRepository.DeleteProduct(product);
-            await unitOfWork.SaveAsync();
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

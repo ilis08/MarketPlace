@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace Repository.Implementations
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
         private RepositoryContext context;
 
@@ -55,7 +55,7 @@ namespace Repository.Implementations
             }
         }
 
-        public async Task SaveAsync()
+        public async Task SaveChangesAsync()
         {
            await context.SaveChangesAsync();
         }

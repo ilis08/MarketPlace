@@ -1,4 +1,5 @@
-﻿using ApplicationService.DTOs;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs;
 using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Filters;
@@ -14,10 +15,10 @@ namespace WebAPI.Controllers
     [ApiController]
     public class CategoryController : HomeController
     {
-        private readonly CategoryManagementService service;
+        private readonly ICategoryManagementService service;
         private readonly ILogger<CategoryController> logger;
 
-        public CategoryController(CategoryManagementService _service, ILogger<CategoryController> _logger)
+        public CategoryController(ICategoryManagementService _service, ILogger<CategoryController> _logger)
         {
             service = _service;
             logger = _logger;

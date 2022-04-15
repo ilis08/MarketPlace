@@ -1,4 +1,5 @@
-﻿using ApplicationService.DTOs;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs;
 using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Filters;
@@ -11,10 +12,10 @@ namespace WebAPI.Controllers
     [ApiController]
     public class OrderController : HomeController
     {
-        private readonly OrderManagementService _service;
+        private readonly IOrderManagementService _service;
         private readonly ILogger<OrderController> _logger;
 
-        public OrderController(OrderManagementService service, ILogger<OrderController> logger)
+        public OrderController(IOrderManagementService service, ILogger<OrderController> logger)
         {
             _service = service;
             _logger = logger;

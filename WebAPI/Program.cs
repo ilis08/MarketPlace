@@ -26,7 +26,7 @@ public class Program
 
         #endregion
 
-        builder.Services.AddTransient<UnitOfWork>();
+        builder.Services.AddScoped<UnitOfWork>();
 
         #region ApplicationService
         builder.Services.ConfigureCategoryService();
