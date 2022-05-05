@@ -29,11 +29,6 @@ namespace WebAPI.Extensions
               b => b.MigrationsAssembly("WebAPI")));
         }
 
-        public static void ConfigureUnitOfWork(this IServiceCollection services)
-        {
-            services.AddTransient<IUnitOfWork,UnitOfWork>();
-        }
-
         public static void ConfigureResponseMessage(this IServiceCollection services)
         {
             services.AddTransient<ResponseMessage>();
@@ -41,7 +36,7 @@ namespace WebAPI.Extensions
 
         public static void ConfigureProductImageService(this IServiceCollection services)
         {
-            services.AddTransient<ProductImage>();
+            services.AddScoped<ProductImage>();
         }
 
         public static void ConfigureValidationFilterAttribute(this IServiceCollection services)

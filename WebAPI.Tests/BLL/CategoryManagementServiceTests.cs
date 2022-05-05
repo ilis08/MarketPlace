@@ -1,52 +1,51 @@
 ﻿using ApplicationService.Implementations;
-using Data.Context;
 using Data.Entitites;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
 using Repository.Implementations;
-using Repository.Implementations.CategoryRepo;
-using System;
-using System.Collections.Generic;
+using Repository.Implementations.BaseRepo;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using WebAPI.Tests.Helpers;
+
+
 
 namespace WebAPI.Tests.BLL
 {
     [TestFixture]
-    public class CategoryManagementServiceTests
+    public class CategoryManagementServiceTests : TestWithSqlite
     {
-        private ServiceProvider serviceProvider;
-        private Mock<IUnitOfWork> mockUnitOfWork;
-        private RepositoryContext context;
+        private Mock<IRepository> mockUnitOfWork;
 
         [SetUp]
-        public void SetUp()
+        public async Task SetUp()
         {
-            var serviceCollection = new ServiceCollection();
-
-            serviceProvider = serviceCollection.AddScoped<RepositoryContext>().BuildServiceProvider();
-
-            context = serviceProvider.GetRequiredService<RepositoryContext>();
-
-            mockUnitOfWork = new Mock<IUnitOfWork>();
+            await CreateDatabaseAsync();
+            mockUnitOfWork = new Mock<IRepository>();
         }
 
         [Test]
         public async Task Get_When_DatabaseContainsSpecificRecords_Returns_ListOfCategoryDTO_Async()
         {
-            var categories = await JsonDatabaseHelper<Category>.GetItems(@"C:\projects\DistributedStore-ASP.NET-Core\WebAPI.Tests\DatabaseMoq\categories.json");
+            using var context = CreateContext();
 
-            mockUnitOfWork.Setup(x => x.CategoryRepository).Returns(new CategoryRepository(context));
+            var categories = context.Categories.AsQueryable().BuildMock();
+
+            mockUnitOfWork.Setup(x => x.FindAll<Category>()).Returns(categories);
 
             var service = new CategoryManagementService(mockUnitOfWork.Object);
 
             var result = await service.Get("");
 
-            CollectionAssert.AreEqual(categories, result);
+            result.Should().NotBeNullOrEmpty();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            Dispose();
         }
     }
 }

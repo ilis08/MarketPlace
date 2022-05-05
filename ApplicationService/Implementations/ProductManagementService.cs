@@ -3,61 +3,52 @@ using ApplicationService.DTOs.ProductDTOs;
 using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
+using Microsoft.EntityFrameworkCore;
 using Repository.Implementations;
+using Repository.Implementations.ProductRepo;
 using Repository.RequestFeatures;
 
 namespace ApplicationService.Implementations
 {
     public class ProductManagementService : IProductManagementService
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IProductRepository repository;
 
-        public ProductManagementService(IUnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
+        public ProductManagementService(IProductRepository _repository) => repository = _repository;
 
         public async Task<IEnumerable<ProductDTO>> Get(string query)
         {
-            List<ProductDTO> productDto = new();
-
             if (string.IsNullOrWhiteSpace(query))
             {
-                using (unitOfWork)
-                {
-                    var products = unitOfWork.ProductRepository.GetProductsAsync();
+                var products = repository.FindAll<Product>().ToListAsync();
 
-                    productDto = ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
-                }
+                return ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
             }
             else
             {
-                using (unitOfWork)
-                {
-                    var products = unitOfWork.ProductRepository.GetProductByQuery(query);
+                var products = repository.FindByCondition<Product>(x => x.ProductName.Contains(query)).ToListAsync();
 
-                    productDto = ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
-                }
+                return ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
             }
-            return productDto;
         }
 
         public async Task<ProductDTO> GetById(int id)
         {
-            ProductDTO productDto = new();
-
-            Product product = await unitOfWork.ProductRepository.GetProductByIdAsync(id);
+            var product = await repository.FindByCondition<Product>(x => x.Id == id).FirstOrDefaultAsync();
 
             if (product is null)
             {
                 throw new NotFoundException(id, nameof(Product));
             }
 
-            productDto = ObjectMapper.Mapper.Map<ProductDTO>(product);
+            var productDto = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
             return productDto;
         }
 
         public async Task<(IEnumerable<ProductDTO> products, MetaData metaData)> GetProductsByParameters(ProductParameters productsParameters)
         {
-            var productWithMetaData = await unitOfWork.ProductRepository.GetProductsByParametersAsync(productsParameters);
+            var productWithMetaData = await repository.GetProductsByParametersAsync(productsParameters);
 
             var productDTO = ObjectMapper.Mapper.Map<IEnumerable<ProductDTO>>(productWithMetaData);
 
@@ -68,12 +59,9 @@ namespace ApplicationService.Implementations
         {
             Product product = ObjectMapper.Mapper.Map<Product>(productDto);
 
-            if (productDto.Id == 0)
-            {
-                unitOfWork.ProductRepository.CreateProduct(product, productDto.ImageFile);
-            }
+            await repository.CreateProduct(product, productDto.ImageFile);
 
-            await unitOfWork.SaveChangesAsync();
+            await repository.SaveChangesAsync();
 
             var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
@@ -88,12 +76,9 @@ namespace ApplicationService.Implementations
             {
                 product = ObjectMapper.Mapper.Map<Product>(productDto);
 
-                using (unitOfWork)
-                {
-                    unitOfWork.ProductRepository.Update(product);
+                repository.Update(product);
 
-                    await unitOfWork.SaveChangesAsync();
-                }
+                await repository.SaveChangesAsync();
 
                 var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
@@ -103,12 +88,9 @@ namespace ApplicationService.Implementations
             {
                 product = ObjectMapper.Mapper.Map<Product>(productDto);
 
-                using (unitOfWork)
-                {
-                    unitOfWork.ProductRepository.UpdateProductWithImage(productDto.ImageFile, product);
+                repository.UpdateProductWithImage(productDto.ImageFile, product);
 
-                    await unitOfWork.SaveChangesAsync();
-                }
+                await repository.SaveChangesAsync();
 
                 var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
@@ -119,15 +101,16 @@ namespace ApplicationService.Implementations
 
         public async Task Delete(int id)
         {
-            Product product = await unitOfWork.ProductRepository.GetProductByIdAsync(id);
+            Product product = await repository.FindByCondition<Product>(x => x.Id == id).FirstOrDefaultAsync();
 
             if (product is null)
             {
                 throw new NotFoundException(id, nameof(Product));
             }
 
-            unitOfWork.ProductRepository.DeleteProduct(product);
-            await unitOfWork.SaveChangesAsync();
+            repository.Delete(product);
+
+            await repository.SaveChangesAsync();
         }
     }
 }

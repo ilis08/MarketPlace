@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Repository.Extensions;
 using Repository.Implementations;
 using WebAPI.Extensions;
 
@@ -26,8 +27,6 @@ public class Program
 
         #endregion
 
-        builder.Services.AddScoped<UnitOfWork>();
-
         #region ApplicationService
         builder.Services.ConfigureCategoryService();
         builder.Services.ConfigureProductService();
@@ -35,9 +34,7 @@ public class Program
         #endregion
 
         #region Repository
-
-        builder.Services.ConfigureUnitOfWork();
-
+        builder.Services.ConfigureRepository();
         #endregion
 
         builder.Services.ConfigureCors();
