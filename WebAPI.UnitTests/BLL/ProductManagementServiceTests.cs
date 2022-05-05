@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebAPI.Tests.BLL
+namespace WebAPI.UnitTests.BLL
 {
     internal class ProductManagementServiceTests
     {

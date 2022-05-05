@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebAPI.Tests.Helpers
+namespace WebAPI.UnitTests.Helpers
 {
     public class DatabaseInitializer
     {
-        private static readonly string path = @"D:\SelfDevelopment\Programming\CSharp\DistributedStore-ASP.NET-Core\WebAPI.Tests\DatabaseMoq\";
+        private static readonly string path = @"../../../DatabaseMoq\";
         public static async Task InitializeAsync(RepositoryContext context)
         {
             await context.Categories.AddRangeAsync(await GetCategories(path + "categories.json"));

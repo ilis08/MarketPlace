@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace WebAPI.Tests.Helpers
+namespace WebAPI.UnitTests.Helpers
 {
     public class JsonHelper
     {

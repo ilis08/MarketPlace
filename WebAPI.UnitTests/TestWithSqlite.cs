@@ -8,9 +8,9 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebAPI.Tests.Helpers;
+using WebAPI.UnitTests.Helpers;
 
-namespace WebAPI.Tests
+namespace WebAPI.UnitTests
 {
     [TestFixture]
     public abstract class TestWithSqlite : IDisposable
@@ -50,7 +50,7 @@ FROM Categories;";
             }
 
             await DatabaseInitializer.InitializeAsync(context);
-            
+
 
             await context.SaveChangesAsync();
         }

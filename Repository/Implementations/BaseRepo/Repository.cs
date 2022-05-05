@@ -25,6 +25,7 @@ namespace Repository.Implementations.BaseRepo
 
 		public IQueryable<T> FindByCondition<T>(Expression<Func<T, bool>> expression) where T : class => DbSet<T>()
 																										.Where(expression);
+        public async Task<T> FindByIdAsync<T>(int id) where T : class => await DbSet<T>().FindAsync(id);
 		public async Task CreateAsync<T>(T entity) where T : class => await DbSet<T>().AddAsync(entity);
 
 		public void Update<T>(T entity) where T : class => DbSet<T>().Update(entity);
