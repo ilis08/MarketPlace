@@ -9,19 +9,22 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Tests.Helpers
 {
-    public class JsonDatabaseHelper<T> where T : BaseEntity
+    public class JsonHelper
     {
-        public static async Task<IEnumerable<T>> GetItems(string path)
+        private static JsonSerializerOptions options = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        public static async Task<IEnumerable<T>> GetItems<T>(string path) where T : BaseEntity
         {
             try
             {
                 using FileStream stream = File.OpenRead(path);
 
-                return await JsonSerializer.DeserializeAsync<IEnumerable<T>>(stream);
+                return await JsonSerializer.DeserializeAsync<IEnumerable<T>>(stream, options);
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

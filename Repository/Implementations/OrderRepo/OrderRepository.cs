@@ -5,14 +5,9 @@ using Repository.Implementations.BaseRepo;
 
 namespace Repository.Implementations.OrderRepo
 {
-    public class OrderRepository : BaseRepository<Order>, IOrderRepository
+    public class OrderRepository : BaseRepo.Repository, IOrderRepository
     {
         public OrderRepository(RepositoryContext context) : base(context) { }
-
-        public async Task<IEnumerable<Order>> GetOrders() => await FindAll().ToListAsync();
-
-        public async Task<Order> GetOrder(int id) =>
-            await FindByCondition(p => p.Id == id).Include(x => x.OrderDetailUser).Include(o => o.OrderDetailProduct).ThenInclude(p => p.Product).SingleOrDefaultAsync();
 
 
         public async Task<List<OrderDetailProduct>> GetOrderDetailProducts(int id) => 
@@ -50,7 +45,7 @@ namespace Repository.Implementations.OrderRepo
 
         public async Task CompleteOrder(int id)
         {
-            var order = await FindByCondition(x => x.Id == id).SingleOrDefaultAsync();
+            var order = await FindByCondition<Order>(x => x.Id == id).SingleOrDefaultAsync();
 
             order.IsCompleted = true;
 

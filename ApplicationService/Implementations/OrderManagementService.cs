@@ -6,70 +6,98 @@ using ApplicationService.DTOs.OrderManagementDTOs.GetById;
 using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
+using Microsoft.EntityFrameworkCore;
 using Repository.Implementations;
+using Repository.Implementations.OrderRepo;
 
 namespace ApplicationService.Implementations
 {
     public class OrderManagementService : IOrderManagementService
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IOrderRepository repository;
 
-        public OrderManagementService(IUnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
+        public OrderManagementService(IOrderRepository _repository) => repository = _repository;
 
         public async Task<IEnumerable<OrderGetDTO>> Get()
         {
-            List<OrderGetDTO> ordersToReturn = new();
+            var orders = await repository.FindAll<Order>().ToListAsync();
 
-            using (unitOfWork)
-            {
-                var orders = await unitOfWork.OrderRepository.GetOrders();
-
-                var ordersDto = ObjectMapper.Mapper.Map<List<OrderGetDTO>>(orders);
-
-                ordersToReturn.AddRange(ordersDto);
-            }
-
-            return ordersToReturn;
+            return ObjectMapper.Mapper.Map<List<OrderGetDTO>>(orders);
         }
 
 
         public async Task<OrderGetByIdDTO> GetById(int id)
         {
-            OrderGetByIdDTO orderDTO = new();
+            var order = await repository.FindByCondition<Order>(p => p.Id == id)
+                                        .Include(x => x.OrderDetailUser)
+                                        .Include(x => x.OrderDetailProduct)
+                                        .ThenInclude(p => p.Product)
+                                        .SingleOrDefaultAsync();
 
-            Order order = await unitOfWork.OrderRepository.GetOrder(id);
 
             if (order is null)
             {
                 throw new NotFoundException(id, nameof(Order));
             }
 
-            List<OrderDetailProduct> orderDetailProducts = await unitOfWork.OrderRepository.GetOrderDetailProducts(id);
+            var orderDetailProducts = await repository.FindByCondition<OrderDetailProduct>(x => x.OrderId == order.Id).ToListAsync();
 
             var orderDetailProductsDTO = ObjectMapper.Mapper.Map<List<OrderDetailProductByIdDTO>>(orderDetailProducts);
 
-            if (order != null)
+            var orderToReturn = new OrderGetByIdDTO
             {
-                orderDTO = new OrderGetByIdDTO
-                {
-                    Id = order.Id,
-                    PaymentType = order.PaymentType,
-                    IsCompleted = order.IsCompleted,
-                    TotalPrice = order.TotalPrice,
-                    FullName = order.OrderDetailUser.Name + " " + order.OrderDetailUser.Surname,
-                    Phone = order.OrderDetailUser.PhoneNumber,
-                    OrderDetailProducts = orderDetailProductsDTO
-                };
-            }
+                Id = order.Id,
+                PaymentType = order.PaymentType,
+                IsCompleted = order.IsCompleted,
+                TotalPrice = order.TotalPrice,
+                FullName = order.OrderDetailUser.Name + " " + order.OrderDetailUser.Surname,
+                Phone = order.OrderDetailUser.PhoneNumber,
+                OrderDetailProducts = orderDetailProductsDTO
+            };
 
-            return orderDTO;
+
+            return orderToReturn;
         }
 
         public async Task<OrderGetByIdDTO> Save(OrderDTO orderDTO)
         {
             List<OrderDetailProduct> mapObject = ObjectMapper.Mapper.Map<List<OrderDetailProduct>>(orderDTO.OrderDetailProducts);
 
-            await unitOfWork.OrderRepository.ComputeTotalPriceAsync(mapObject);
+            await repository.ComputeTotalPriceAsync(mapObject);
+
+            Order order = new()
+            {
+                Id = orderDTO.OrderId,
+                PaymentType = orderDTO.PaymentType,
+                OrderDetailUser = orderDTO.OrderDetailUser,
+                OrderDetailProduct = mapObject
+            };
+
+            repository.ComputeTotalPriceForOrder(order);
+
+            repository.CreateUserOrder(order);
+            repository.CreateRangeOrder(order);
+
+            if (order.Id == 0)
+            {
+                await repository.CreateAsync(order);
+            }
+
+            await repository.SaveChangesAsync();
+
+            var orderToReturn = ObjectMapper.Mapper.Map<OrderGetByIdDTO>(order);
+
+            return orderToReturn;
+        }
+
+        public async Task<bool> Update(OrderDTO orderDTO)
+        {
+            if (orderDTO is null)
+            {
+                throw new NotFoundException(orderDTO.OrderId, nameof(Order));
+            }
+
+            List<OrderDetailProduct> mapObject = ObjectMapper.Mapper.Map<List<OrderDetailProduct>>(orderDTO.OrderDetailProducts);
 
             Order order = new Order()
             {
@@ -79,74 +107,27 @@ namespace ApplicationService.Implementations
                 OrderDetailProduct = mapObject
             };
 
-            unitOfWork.OrderRepository.ComputeTotalPriceForOrder(order);
+            repository.Update(order);
 
-            unitOfWork.OrderRepository.CreateUserOrder(order);
-            unitOfWork.OrderRepository.CreateRangeOrder(order);
+            await repository.SaveChangesAsync();
 
-            if (order.Id == 0)
-            {
-                unitOfWork.OrderRepository.Create(order);
-            }
-
-            await unitOfWork.SaveChangesAsync();
-
-            var orderToReturn = ObjectMapper.Mapper.Map<OrderGetByIdDTO>(order);
-
-            return orderToReturn;
+            return true;
         }
 
-        public async Task<bool> Update(OrderDTO orderDTO)
-        {
-            if (orderDTO != null)
-            {
-                List<OrderDetailProduct> mapObject = ObjectMapper.Mapper.Map<List<OrderDetailProduct>>(orderDTO.OrderDetailProducts);
-
-                try
-                {
-                    Order order = new Order()
-                    {
-                        Id = orderDTO.OrderId,
-                        PaymentType = orderDTO.PaymentType,
-                        OrderDetailUser = orderDTO.OrderDetailUser,
-                        OrderDetailProduct = mapObject
-                    };
-
-                    if (order.Id == 0)
-                    {
-                        unitOfWork.OrderRepository.Update(order);
-                    }
-
-                    await unitOfWork.SaveChangesAsync();
-
-                    return true;
-
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public async Task CompleteOrderAsync(int id) => await unitOfWork.OrderRepository.CompleteOrder(id);
+        public async Task CompleteOrderAsync(int id) => await repository.CompleteOrder(id);
 
         public async Task Delete(int id)
         {
-            var order = await unitOfWork.OrderRepository.GetOrder(id);
+            var order = await repository.FindByCondition<Order>(x => x.Id == id).FirstOrDefaultAsync();
 
             if (order is null)
             {
                 throw new NotFoundException(id, nameof(Order));
             }
 
-            unitOfWork.OrderRepository.Delete(order);
+            repository.Delete(order);
 
-            await unitOfWork.SaveChangesAsync();
+            await repository.SaveChangesAsync();
         }
 
     }

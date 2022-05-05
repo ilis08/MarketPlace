@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Repository.Implementations.ProductRepo
 {
-    public class ProductRepository : BaseRepository<Product>, IProductRepository
+    public class ProductRepository : BaseRepo.Repository, IProductRepository
     {
         internal ProductImage imageService;
 
@@ -19,25 +19,12 @@ namespace Repository.Implementations.ProductRepo
             imageService = _imageService;
         }
 
-        public void CreateProduct(Product product, IFormFile file)
+        public async Task CreateProduct(Product product, IFormFile file)
         {
             product.Image = imageService.SaveImageAsync(file);
 
-            Create(product);
+            await CreateAsync(product);
         }
-
-        public void DeleteProduct(Product product) => Delete(product);
-
-        public async Task<List<Product>> GetProductByQuery(string query) => 
-            await FindByCondition(c => c.ProductName.Contains(query)).Include(x => x.Category).ToListAsync();
-
-        public async Task<Product> GetProductByIdAsync(int id) =>
-            await FindByCondition(c => c.Id == id).Include(x => x.Category).FirstOrDefaultAsync();
-
-        public async Task<IEnumerable<Product>> GetProductsAsync() =>
-            await FindAll().Include(x => x.Category).OrderBy(x => x.Category.Id).ToListAsync();
-
-        public void UpdateProduct(Product product) => Update(product);
 
         public void UpdateProductWithImage(IFormFile image, Product product)
         {
@@ -53,11 +40,11 @@ namespace Repository.Implementations.ProductRepo
                 throw new PriceRangeBadRequestException();
             }
 
-            var count = await FindByCondition(x => x.Category.Title.Equals(productsParameters.Category))
+            var count = await FindByCondition<Product>(x => x.Category.Title.Equals(productsParameters.Category))
                             .FilterProducts(productsParameters.Ordering, productsParameters.MinPrice, productsParameters.MaxPrice)
                             .CountAsync();
 
-            var products =  await FindAll()
+            var products =  await FindAll<Product>()
                             .FilterProducts(productsParameters.Ordering, productsParameters.MinPrice, productsParameters.MaxPrice)
                             .SearchByName(productsParameters.ProductName)
                             .SearchByCategory(productsParameters.Category)
