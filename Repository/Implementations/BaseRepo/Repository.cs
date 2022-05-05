@@ -23,8 +23,10 @@ namespace Repository.Implementations.BaseRepo
 
 		public IQueryable<T> FindAll<T>() where T : class => DbSet<T>().AsQueryable();
 
-		public IQueryable<T> FindByCondition<T>(Expression<Func<T, bool>> expression) where T : class => DbSet<T>()
-																										.Where(expression);
+        public IQueryable<T> FindByCondition<T>(Expression<Func<T, bool>> expression) where T : class => DbSet<T>()
+                                                                                                        .Where(expression);
+        public async Task<List<T>> FindByConditionAsync<T>(Expression<Func<T, bool>> expression) where T : class => await DbSet<T>()
+                                                                                                        .Where(expression).ToListAsync();
         public async Task<T> FindByIdAsync<T>(int id) where T : class => await DbSet<T>().FindAsync(id);
 		public async Task CreateAsync<T>(T entity) where T : class => await DbSet<T>().AddAsync(entity);
 

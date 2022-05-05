@@ -10,11 +10,11 @@ namespace ApplicationService.Contracts
 {
     public interface IProductManagementService
     {
-        Task<IEnumerable<ProductDTO>> Get(string query);
-        Task<ProductDTO> GetById(int id);
-        Task<(IEnumerable<ProductDTO> products, MetaData metaData)> GetProductsByParameters(ProductParameters productsParameters);
-        Task<ProductDTO> Save(ProductDTO productDto);
-        Task<ProductDTO> Update(ProductDTO productDto);
-        Task Delete(int id);
+        Task<IEnumerable<ProductDTO>> GetAsync(string query);
+        Task<ProductDTO> GetByIdAsync(int id);
+        Task<(IEnumerable<ProductDTO> products, MetaData metaData)> GetProductsByParametersAsync(ProductParameters productsParameters);
+        Task<ProductDTO> SaveAsync(ProductDTO productDto);
+        Task<ProductDTO> UpdateAsync(ProductDTO productDto);
+        Task DeleteAsync(int id);
     }
 }

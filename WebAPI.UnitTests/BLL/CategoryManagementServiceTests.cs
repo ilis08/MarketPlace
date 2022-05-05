@@ -21,13 +21,13 @@ namespace WebAPI.UnitTests.BLL
     [TestFixture]
     public class CategoryManagementServiceTests : TestWithSqlite
     {
-        private Mock<IRepository> mockUnitOfWork;
+        private Mock<IRepository> mockRepository;
 
         [SetUp]
         public async Task SetUp()
         {
             await CreateDatabaseAsync();
-            mockUnitOfWork = new Mock<IRepository>();
+            mockRepository = new Mock<IRepository>();
         }
 
         [Test]
@@ -37,9 +37,9 @@ namespace WebAPI.UnitTests.BLL
 
             var categories = context.Categories.AsQueryable().BuildMock();
 
-            mockUnitOfWork.Setup(x => x.FindAll<Category>()).Returns(categories);
+            mockRepository.Setup(x => x.FindAll<Category>()).Returns(categories);
 
-            var service = new CategoryManagementService(mockUnitOfWork.Object);
+            var service = new CategoryManagementService(mockRepository.Object);
 
             var result = await service.Get("");
 
@@ -55,9 +55,9 @@ namespace WebAPI.UnitTests.BLL
 
             var categories = await context.FindAsync<Category>(id);
 
-            mockUnitOfWork.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(categories);
+            mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(categories);
 
-            var sut = new CategoryManagementService(mockUnitOfWork.Object);
+            var sut = new CategoryManagementService(mockRepository.Object);
 
             var result = await sut.GetById(id);
 
@@ -68,9 +68,9 @@ namespace WebAPI.UnitTests.BLL
         [Test]
         public void GetById_When_DatabaseDoesNotContainsCategoryWithSpecificId_Throws_NotFoundException()
         {
-            mockUnitOfWork.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ThrowsAsync(new NotFoundException(It.IsAny<int>(), nameof(Category)));
+            mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ThrowsAsync(new NotFoundException(It.IsAny<int>(), nameof(Category)));
 
-            var sut = new CategoryManagementService(mockUnitOfWork.Object);
+            var sut = new CategoryManagementService(mockRepository.Object);
 
             Assert.ThrowsAsync<NotFoundException>(() => sut.GetById(It.IsAny<int>()));
         }
@@ -87,10 +87,10 @@ namespace WebAPI.UnitTests.BLL
                 Description = "Description"
             };
 
-            mockUnitOfWork.Setup(x => x.CreateAsync(It.IsAny<Category>())).Callback(() => context.Add(category));
-            mockUnitOfWork.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
+            mockRepository.Setup(x => x.CreateAsync(It.IsAny<Category>())).Callback(() => context.Add(category));
+            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
 
-            var sut = new CategoryManagementService(mockUnitOfWork.Object);
+            var sut = new CategoryManagementService(mockRepository.Object);
 
             var categoryDTO = new CategoryDTO()
             {
@@ -101,8 +101,8 @@ namespace WebAPI.UnitTests.BLL
 
             var result = await sut.Save(categoryDTO);
 
-            mockUnitOfWork.Verify(x => x.CreateAsync(It.IsAny<Category>()), Times.Once());
-            mockUnitOfWork.Verify(x => x.SaveChangesAsync(), Times.Once());
+            mockRepository.Verify(x => x.CreateAsync(It.IsAny<Category>()), Times.Once());
+            mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once());
 
             result.Should().NotBeNull();
         }
@@ -119,10 +119,10 @@ namespace WebAPI.UnitTests.BLL
                 Description = "Description"
             };
 
-            mockUnitOfWork.Setup(x => x.Update(It.IsAny<Category>())).Callback(() => context.Update(category));
-            mockUnitOfWork.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
+            mockRepository.Setup(x => x.Update(It.IsAny<Category>())).Callback(() => context.Update(category));
+            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
 
-            var sut = new CategoryManagementService(mockUnitOfWork.Object);
+            var sut = new CategoryManagementService(mockRepository.Object);
 
             var categoryDTO = new CategoryDTO()
             {
@@ -133,8 +133,8 @@ namespace WebAPI.UnitTests.BLL
 
             var result = await sut.Update(categoryDTO);
 
-            mockUnitOfWork.Verify(x => x.Update(It.IsAny<Category>()), Times.Once());
-            mockUnitOfWork.Verify(x => x.SaveChangesAsync(), Times.Once());
+            mockRepository.Verify(x => x.Update(It.IsAny<Category>()), Times.Once());
+            mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once());
 
             result.Should().NotBeNull();
         }
@@ -148,16 +148,16 @@ namespace WebAPI.UnitTests.BLL
 
             var category = await context.Categories.FindAsync(id);
 
-            mockUnitOfWork.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(category);
-            mockUnitOfWork.Setup(x => x.Delete(It.IsAny<Category>())).Callback(() => context.Remove(category));
-            mockUnitOfWork.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
+            mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(category);
+            mockRepository.Setup(x => x.Delete(It.IsAny<Category>())).Callback(() => context.Remove(category));
+            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
 
-            var sut = new CategoryManagementService(mockUnitOfWork.Object);
+            var sut = new CategoryManagementService(mockRepository.Object);
 
             await sut.Delete(id);
 
-            mockUnitOfWork.Verify(x => x.Delete(It.IsAny<Category>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.SaveChangesAsync(), Times.Once);
+            mockRepository.Verify(x => x.Delete(It.IsAny<Category>()), Times.Once);
+            mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once);
         }
 
 

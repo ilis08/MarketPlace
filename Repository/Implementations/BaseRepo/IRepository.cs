@@ -6,6 +6,7 @@ namespace Repository.Implementations.BaseRepo
     {
         IQueryable<T> FindAll<T>() where T : class;
         IQueryable<T> FindByCondition <T>(Expression<Func<T, bool>> expression) where T : class;
+        Task<List<T>> FindByConditionAsync <T>(Expression<Func<T, bool>> expression) where T : class;
         Task<T> FindByIdAsync <T>(int id) where T : class;
         Task CreateAsync<T>(T entity) where T : class;
         void Update<T>(T entity) where T : class;

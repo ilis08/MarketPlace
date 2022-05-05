@@ -16,7 +16,7 @@ namespace ApplicationService.Implementations
 
         public ProductManagementService(IProductRepository _repository) => repository = _repository;
 
-        public async Task<IEnumerable<ProductDTO>> Get(string query)
+        public async Task<IEnumerable<ProductDTO>> GetAsync(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
             {
@@ -26,15 +26,15 @@ namespace ApplicationService.Implementations
             }
             else
             {
-                var products = repository.FindByCondition<Product>(x => x.ProductName.Contains(query)).ToListAsync();
+                var products = await repository.FindByConditionAsync<Product>(x => x.ProductName.Contains(query));
 
-                return ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
+                return ObjectMapper.Mapper.Map<List<ProductDTO>>(products);
             }
         }
 
-        public async Task<ProductDTO> GetById(int id)
+        public async Task<ProductDTO> GetByIdAsync(int id)
         {
-            var product = await repository.FindByCondition<Product>(x => x.Id == id).FirstOrDefaultAsync();
+            var product = await repository.FindByIdAsync<Product>(id);
 
             if (product is null)
             {
@@ -46,7 +46,7 @@ namespace ApplicationService.Implementations
             return productDto;
         }
 
-        public async Task<(IEnumerable<ProductDTO> products, MetaData metaData)> GetProductsByParameters(ProductParameters productsParameters)
+        public async Task<(IEnumerable<ProductDTO> products, MetaData metaData)> GetProductsByParametersAsync(ProductParameters productsParameters)
         {
             var productWithMetaData = await repository.GetProductsByParametersAsync(productsParameters);
 
@@ -55,7 +55,7 @@ namespace ApplicationService.Implementations
             return (products: productDTO, metaData: productWithMetaData.MetaData);
         }
 
-        public async Task<ProductDTO> Save(ProductDTO productDto)
+        public async Task<ProductDTO> SaveAsync(ProductDTO productDto)
         {
             Product product = ObjectMapper.Mapper.Map<Product>(productDto);
 
@@ -68,7 +68,7 @@ namespace ApplicationService.Implementations
             return productToReturn;
         }
 
-        public async Task<ProductDTO> Update(ProductDTO productDto)
+        public async Task<ProductDTO> UpdateAsync(ProductDTO productDto)
         {
             Product product;
 
@@ -99,9 +99,9 @@ namespace ApplicationService.Implementations
         }
 
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Product product = await repository.FindByCondition<Product>(x => x.Id == id).FirstOrDefaultAsync();
+            Product product = await repository.FindByIdAsync<Product>(id);
 
             if (product is null)
             {

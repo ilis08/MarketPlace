@@ -12,16 +12,16 @@ namespace Repository.Implementations.ProductRepo
 {
     public class ProductRepository : BaseRepo.Repository, IProductRepository
     {
-        internal ProductImage imageService;
+        private readonly IProductImage imageService;
 
-        public ProductRepository(RepositoryContext context, ProductImage _imageService) : base(context)
+        public ProductRepository(RepositoryContext context, IProductImage _imageService) : base(context)
         {
             imageService = _imageService;
         }
 
         public async Task CreateProduct(Product product, IFormFile file)
         {
-            product.Image = imageService.SaveImageAsync(file);
+            product.Image = imageService.SaveImage(file);
 
             await CreateAsync(product);
         }

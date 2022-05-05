@@ -15,6 +15,7 @@ namespace WebAPI.UnitTests.Helpers
         public static async Task InitializeAsync(RepositoryContext context)
         {
             await context.Categories.AddRangeAsync(await GetCategories(path + "categories.json"));
+            await context.Products.AddRangeAsync(await GetProducts(path + "products.json"));
         }
 
         private static async Task<IEnumerable<Category>> GetCategories(string path)
@@ -27,6 +28,19 @@ namespace WebAPI.UnitTests.Helpers
             catch (Exception)
             {
                 return new List<Category>();
+            }
+        }
+
+        private static async Task<IEnumerable<Product>> GetProducts(string path)
+        {
+            try
+            {
+                var products = await JsonHelper.GetItems<Product>(path);
+                return products;
+            }
+            catch (Exception)
+            {
+                return new List<Product>();
             }
         }
     }

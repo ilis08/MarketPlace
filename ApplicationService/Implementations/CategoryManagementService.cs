@@ -18,11 +18,9 @@ namespace ApplicationService.Implementations
         {
             if (string.IsNullOrWhiteSpace(query))
             {
-
                 var categories = await repository.FindAll<Category>().ToListAsync();
 
                 return ObjectMapper.Mapper.Map<List<CategoryDTO>>(categories);
-
             }
             else
             {

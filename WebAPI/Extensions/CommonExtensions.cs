@@ -36,7 +36,7 @@ namespace WebAPI.Extensions
 
         public static void ConfigureProductImageService(this IServiceCollection services)
         {
-            services.AddScoped<ProductImage>();
+            services.AddScoped<IProductImage, ProductImage>();
         }
 
         public static void ConfigureValidationFilterAttribute(this IServiceCollection services)

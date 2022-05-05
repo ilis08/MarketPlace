@@ -2,9 +2,9 @@
 
 namespace Repository.Implementations.ProductRepo
 {
-    public class ProductImage
+    public class ProductImage : IProductImage
     {
-        public string SaveImageAsync(IFormFile imageFile)
+        public string SaveImage(IFormFile imageFile)
         {
             string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
 

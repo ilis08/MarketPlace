@@ -35,6 +35,8 @@ public class Program
 
         #region Repository
         builder.Services.ConfigureRepository();
+
+        builder.Services.ConfigureProductImageService();
         #endregion
 
         builder.Services.ConfigureCors();
@@ -45,11 +47,11 @@ public class Program
 
         builder.Services.ConfigureResponseMessage();
 
-        builder.Services.AddHealthChecks()
-            .AddSqlServer(builder.Configuration.GetConnectionString("IlisStoreDB"),
+        builder.Services.AddHealthChecks();
+            /*.AddSqlServer(builder.Configuration.GetConnectionString("IlisStoreDB"),
               name: "ilisDb-check",
               failureStatus: HealthStatus.Unhealthy,
-              tags: new string[] { "api", "SqlDb" });
+              tags: new string[] { "api", "SqlDb" });*/
 
         builder.Services.ConfigureValidationFilterAttribute();
 
@@ -90,6 +92,7 @@ public class Program
 
         app.UseEndpoints(endpoints =>
         {
+            endpoints.MapHealthChecks("/healthcheck");
             endpoints.MapControllers();
         });
 
