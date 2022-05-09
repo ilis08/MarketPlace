@@ -20,6 +20,8 @@ namespace WebAPI.IntegrationTests.Controllers
 
         }
 
+
+
         [Test]
         public async Task Get_When_DatabaseContainsCategories_Returns_ExpectedJson()
         {

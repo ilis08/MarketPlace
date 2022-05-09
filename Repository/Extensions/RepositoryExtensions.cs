@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Repository.Implementations.BaseRepo;
-using Repository.Implementations.OrderRepo;
-using Repository.Implementations.ProductRepo;
+using Repository.Contracts;
+using Repository.Implementations;
 
 namespace Repository.Extensions
 {
@@ -9,7 +8,7 @@ namespace Repository.Extensions
     {
         public static void ConfigureRepository(this IServiceCollection services)
         {
-            services.AddScoped<IRepository, Implementations.BaseRepo.Repository>();
+            services.AddScoped<IRepository, Implementations.Repository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
         }

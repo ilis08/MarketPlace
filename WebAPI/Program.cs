@@ -41,17 +41,7 @@ public class Program
 
         builder.Services.ConfigureCors();
 
-       /* builder.Services.ConfigureResponseCaching();
-
-        builder.Services.ConfigureHttpCacheHeaders();*/
-
-        builder.Services.ConfigureResponseMessage();
-
         builder.Services.AddHealthChecks();
-            /*.AddSqlServer(builder.Configuration.GetConnectionString("IlisStoreDB"),
-              name: "ilisDb-check",
-              failureStatus: HealthStatus.Unhealthy,
-              tags: new string[] { "api", "SqlDb" });*/
 
         builder.Services.ConfigureValidationFilterAttribute();
 
@@ -77,8 +67,6 @@ public class Program
         app.UseRouting();
 
         app.UseCors("CorsPolicy");
-      /*  app.UseResponseCaching();
-        app.UseHttpCacheHeaders();*/
 
         app.UseAuthorization();
 

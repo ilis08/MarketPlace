@@ -1,7 +1,6 @@
 ﻿using Data.Entitites;
-using Repository.Implementations.BaseRepo;
 
-namespace Repository.Implementations.OrderRepo
+namespace Repository.Contracts
 {
     public interface IOrderRepository : IRepository
     {
@@ -10,6 +9,6 @@ namespace Repository.Implementations.OrderRepo
         void ComputeTotalPriceForOrder(Order order);
         void CreateRangeOrder(Order order);
         void CreateUserOrder(Order order);
-        Task CompleteOrder(int id);
+        Task<Order> CompleteOrder(int id);
     }
 }

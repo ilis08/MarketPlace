@@ -6,14 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
-using Repository.Implementations.BaseRepo;
-using Repository.Implementations.ProductRepo;
-using Repository.RequestFeatures;
+using Repository.Contracts;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WebAPI.UnitTests.BLL

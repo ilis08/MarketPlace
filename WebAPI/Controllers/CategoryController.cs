@@ -1,9 +1,7 @@
 ﻿using ApplicationService.Contracts;
 using ApplicationService.DTOs;
-using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Filters;
-using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
@@ -31,38 +29,39 @@ namespace WebAPI.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<CategoryDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(null, StatusCodes.Status204NoContent)]
         [Route("[action]")]
         public async Task<IActionResult> Get(string query)
         {
-            var body = await service.Get(query);
+            var result = await service.Get(query);
 
-            if (body.Any())
+            if (result.Any())
             {
                 logger.Log(LogLevel.Information, "Succesfully getting list of categories");
-                return Ok(body);
+                return Ok(result);
             }
             else
             {
                 logger.Log(LogLevel.Error, "Cannot load a categories");
                 return NoContent();
             }
-
         }
 
         [HttpGet("[action]/{id:int}", Name = "CategoryById")]
         public async Task<IActionResult> GetById(int id)
         {
-            var body = await service.GetById(id);
+            var result = await service.GetById(id);
 
             logger.Log(LogLevel.Information, "Succesfully getting a category");
-            return Ok(body);
+            return Ok(result);
 
         }
 
         [Route("[action]")]
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> Save([FromBody]CategoryDTO category)
+        public async Task<IActionResult> Save([FromForm]CategoryDTO category)
         {
             var categoryToReturn = await service.Save(category);
 
@@ -81,7 +80,7 @@ namespace WebAPI.Controllers
 
         [Route("[action]/{id:int}")]
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id, [FromServices] ResponseMessage responseMessage)
+        public async Task<IActionResult> Delete(int id)
         {
             await service.Delete(id);
 

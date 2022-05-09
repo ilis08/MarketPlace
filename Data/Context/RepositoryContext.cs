@@ -21,5 +21,10 @@ namespace Data.Context
         {
         }
 
+        public RepositoryContext()
+        {
+
+        }
+
     }
 }

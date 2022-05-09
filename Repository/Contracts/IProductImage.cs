@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Implementations.ProductRepo
+namespace Repository.Contracts
 {
     public interface IProductImage
     {

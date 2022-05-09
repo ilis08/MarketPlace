@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Repository.RequestFeatures;
 using Exceptions;
-using Repository.Implementations.BaseRepo;
 using Repository.Extensions;
 using System.Linq;
+using Repository.Contracts;
 
-namespace Repository.Implementations.ProductRepo
+namespace Repository.Implementations
 {
-    public class ProductRepository : BaseRepo.Repository, IProductRepository
+    public class ProductRepository : Implementations.Repository, IProductRepository
     {
         private readonly IProductImage imageService;
 
@@ -44,7 +44,7 @@ namespace Repository.Implementations.ProductRepo
                             .FilterProducts(productsParameters.Ordering, productsParameters.MinPrice, productsParameters.MaxPrice)
                             .CountAsync();
 
-            var products =  await FindAll<Product>()
+            var products = await FindAll<Product>()
                             .FilterProducts(productsParameters.Ordering, productsParameters.MinPrice, productsParameters.MaxPrice)
                             .SearchByName(productsParameters.ProductName)
                             .SearchByCategory(productsParameters.Category)

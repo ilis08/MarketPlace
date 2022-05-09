@@ -1,16 +1,16 @@
 ﻿using Data.Context;
 using Data.Entitites;
 using Microsoft.EntityFrameworkCore;
-using Repository.Implementations.BaseRepo;
+using Repository.Contracts;
 
-namespace Repository.Implementations.OrderRepo
+namespace Repository.Implementations
 {
-    public class OrderRepository : BaseRepo.Repository, IOrderRepository
+    public class OrderRepository : Implementations.Repository, IOrderRepository
     {
         public OrderRepository(RepositoryContext context) : base(context) { }
 
 
-        public async Task<List<OrderDetailProduct>> GetOrderDetailProducts(int id) => 
+        public async Task<List<OrderDetailProduct>> GetOrderDetailProducts(int id) =>
             await repositoryContext.OrderDetailProducts.Where(p => p.OrderId == id).ToListAsync();
 
         public async Task ComputeTotalPriceAsync(List<OrderDetailProduct> products)
@@ -43,7 +43,7 @@ namespace Repository.Implementations.OrderRepo
             repositoryContext.Attach(order.OrderDetailUser).State = EntityState.Added;
         }
 
-        public async Task CompleteOrder(int id)
+        public async Task<Order> CompleteOrder(int id)
         {
             var order = await FindByCondition<Order>(x => x.Id == id).SingleOrDefaultAsync();
 
@@ -52,6 +52,8 @@ namespace Repository.Implementations.OrderRepo
             repositoryContext.Orders.Attach(order);
             repositoryContext.Entry(order).Property(x => x.IsCompleted).IsModified = true;
             await repositoryContext.SaveChangesAsync();
+
+            return order;
         }
     }
 }

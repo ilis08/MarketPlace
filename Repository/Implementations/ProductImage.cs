@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Repository.Contracts;
 
-namespace Repository.Implementations.ProductRepo
+namespace Repository.Implementations
 {
     public class ProductImage : IProductImage
     {
         public string SaveImage(IFormFile imageFile)
         {
-            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            string imageName = new string(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
 
             imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
 
@@ -46,7 +47,7 @@ namespace Repository.Implementations.ProductRepo
                 });
 
 
-            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            string imageName = new string(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
 
             imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
 

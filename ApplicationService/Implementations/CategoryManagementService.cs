@@ -4,7 +4,7 @@ using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
 using Microsoft.EntityFrameworkCore;
-using Repository.Implementations.BaseRepo;
+using Repository.Contracts;
 
 namespace ApplicationService.Implementations
 {
@@ -50,7 +50,7 @@ namespace ApplicationService.Implementations
 
             await repository.SaveChangesAsync();
 
-            var categoryToReturn = ObjectMapper.Mapper.Map<CategoryDTO>(category); 
+            var categoryToReturn = ObjectMapper.Mapper.Map<CategoryDTO>(category);
 
             return categoryToReturn;
         }

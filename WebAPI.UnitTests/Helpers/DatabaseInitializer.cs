@@ -14,33 +14,25 @@ namespace WebAPI.UnitTests.Helpers
         private static readonly string path = @"../../../DatabaseMoq\";
         public static async Task InitializeAsync(RepositoryContext context)
         {
-            await context.Categories.AddRangeAsync(await GetCategories(path + "categories.json"));
-            await context.Products.AddRangeAsync(await GetProducts(path + "products.json"));
+            await context.Categories.AddRangeAsync(await Load<Category>(path + "categories.json"));
+            await context.Products.AddRangeAsync(await Load<Product>(path + "products.json"));
+
+            await context.OrderDetailProducts.AddRangeAsync(await Load<OrderDetailProduct>(path + "orderDetailProducts.json"));
+            await context.OrderDetailUsers.AddRangeAsync(await Load<OrderDetailUser>(path + "orderDetailUsers.json"));
+            await context.Orders.AddRangeAsync(await Load<Order>(path + "orders.json"));
         }
 
-        private static async Task<IEnumerable<Category>> GetCategories(string path)
+        private static async Task<IEnumerable<T>> Load<T>(string path) where T : class
         {
             try
             {
-                var categories = await JsonHelper.GetItems<Category>(path);
-                return categories;
-            }
-            catch (Exception)
-            {
-                return new List<Category>();
-            }
-        }
+                var items = await JsonHelper.GetItemsFromFile<T>(path);
 
-        private static async Task<IEnumerable<Product>> GetProducts(string path)
-        {
-            try
-            {
-                var products = await JsonHelper.GetItems<Product>(path);
-                return products;
+                return items;
             }
             catch (Exception)
             {
-                return new List<Product>();
+                return new List<T>();
             }
         }
     }

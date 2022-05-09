@@ -1,9 +1,8 @@
 ﻿using Data.Entitites;
 using Microsoft.AspNetCore.Http;
-using Repository.Implementations.BaseRepo;
 using Repository.RequestFeatures;
 
-namespace Repository.Implementations.ProductRepo
+namespace Repository.Contracts
 {
     public interface IProductRepository : IRepository
     {

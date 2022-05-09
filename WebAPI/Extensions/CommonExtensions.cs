@@ -1,10 +1,9 @@
 ﻿using Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Repository.Contracts;
 using Repository.Implementations;
-using Repository.Implementations.ProductRepo;
 using WebAPI.Filters;
-using WebAPI.Messages;
 
 namespace WebAPI.Extensions
 {
@@ -27,11 +26,6 @@ namespace WebAPI.Extensions
             services.AddDbContext<RepositoryContext>(opts =>
               opts.UseSqlServer(configuration.GetConnectionString("IlisStore"),
               b => b.MigrationsAssembly("WebAPI")));
-        }
-
-        public static void ConfigureResponseMessage(this IServiceCollection services)
-        {
-            services.AddTransient<ResponseMessage>();
         }
 
         public static void ConfigureProductImageService(this IServiceCollection services)

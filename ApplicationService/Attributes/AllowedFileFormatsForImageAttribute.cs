@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
-namespace Data.CustomAttributes
+namespace ApplicationService.Attributes
 {
-    public class AllowedExtensionsAttribute : ValidationAttribute
+    public class AllowedFileFormatsForImageAttribute : ValidationAttribute
     {
         private readonly string[] _extensions;
 
-        public AllowedExtensionsAttribute(string[] extensions) => _extensions = extensions;
+        public AllowedFileFormatsForImageAttribute(string[] extensions) => _extensions = extensions;
 
-        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var file = value as IFormFile;
 

@@ -6,12 +6,12 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
         [HttpGet]
-        public JsonResult Version()
+        public IActionResult Version()
         {
-            return Json("REST-API e-Store. Version 1.0");
+            return Ok("REST-API e-Store. Version 1.0");
         }
     }
 }

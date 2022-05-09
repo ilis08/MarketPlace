@@ -7,8 +7,7 @@ using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
 using Microsoft.EntityFrameworkCore;
-using Repository.Implementations;
-using Repository.Implementations.OrderRepo;
+using Repository.Contracts;
 
 namespace ApplicationService.Implementations
 {
@@ -40,9 +39,7 @@ namespace ApplicationService.Implementations
                 throw new NotFoundException(id, nameof(Order));
             }
 
-            var orderDetailProducts = await repository.FindByCondition<OrderDetailProduct>(x => x.OrderId == order.Id).ToListAsync();
-
-            var orderDetailProductsDTO = ObjectMapper.Mapper.Map<List<OrderDetailProductByIdDTO>>(orderDetailProducts);
+            var orderDetailProductsDTO = ObjectMapper.Mapper.Map<List<OrderDetailProductByIdDTO>>(order.OrderDetailProduct);
 
             var orderToReturn = new OrderGetByIdDTO
             {
@@ -90,13 +87,8 @@ namespace ApplicationService.Implementations
             return orderToReturn;
         }
 
-        public async Task<bool> Update(OrderDTO orderDTO)
+        public async Task<OrderGetByIdDTO> Update(OrderDTO orderDTO)
         {
-            if (orderDTO is null)
-            {
-                throw new NotFoundException(orderDTO.OrderId, nameof(Order));
-            }
-
             List<OrderDetailProduct> mapObject = ObjectMapper.Mapper.Map<List<OrderDetailProduct>>(orderDTO.OrderDetailProducts);
 
             Order order = new Order()
@@ -111,14 +103,21 @@ namespace ApplicationService.Implementations
 
             await repository.SaveChangesAsync();
 
-            return true;
+            var orderToReturn = ObjectMapper.Mapper.Map<OrderGetByIdDTO>(order);
+
+            return orderToReturn;
         }
 
-        public async Task CompleteOrderAsync(int id) => await repository.CompleteOrder(id);
+        public async Task<OrderGetByIdDTO> CompleteOrderAsync(int id)
+        {
+            var orderToComplete = await repository.CompleteOrder(id);
+
+            return ObjectMapper.Mapper.Map<OrderGetByIdDTO>(orderToComplete);
+        }
 
         public async Task Delete(int id)
         {
-            var order = await repository.FindByCondition<Order>(x => x.Id == id).FirstOrDefaultAsync();
+            var order = await repository.FindByConditionAsync<Order>(x => x.Id == id);
 
             if (order is null)
             {

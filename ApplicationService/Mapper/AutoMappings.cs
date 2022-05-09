@@ -30,7 +30,7 @@ namespace ApplicationService
                 dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName)).
                 ForMember(dest =>
                 dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
-                .ForMember(dest => 
+                .ForMember(dest =>
                 dest.Count, opt => opt.MapFrom(src => src.Count));
 
 

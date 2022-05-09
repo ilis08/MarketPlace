@@ -48,5 +48,10 @@
     <ProjectReference Include="..\ApplicationService\ApplicationService.csproj" />
   </ItemGroup>
 
+	
+  <ItemGroup>
+    <Folder Include="Messages\" />
+  </ItemGroup>
+
 
 </Project>

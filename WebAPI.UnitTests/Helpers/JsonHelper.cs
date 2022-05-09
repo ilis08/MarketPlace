@@ -15,7 +15,7 @@ namespace WebAPI.UnitTests.Helpers
         {
             PropertyNameCaseInsensitive = true
         };
-        public static async Task<IEnumerable<T>> GetItems<T>(string path) where T : BaseEntity
+        public static async Task<IEnumerable<T>> GetItemsFromFile<T>(string path) where T : class
         {
             try
             {

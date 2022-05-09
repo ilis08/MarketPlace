@@ -14,11 +14,13 @@ namespace Data.Entitites
 
         [BindNever]
         [ScaffoldColumn(false)]
-        public DateTime OrderTime { get; set; } = DateTime.Now;
+        public DateTime OrderTime { get; set; }
 
         public bool IsCompleted { get; set; }
         
         public double TotalPrice { get; set; }
+
+        public int OrderDetailUserId { get; set; }
 
         [BindNever]
         public OrderDetailUser? OrderDetailUser { get; set; }

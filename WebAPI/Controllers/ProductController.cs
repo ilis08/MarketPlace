@@ -1,12 +1,9 @@
 ﻿using ApplicationService.Contracts;
 using ApplicationService.DTOs.ProductDTOs;
-using ApplicationService.Implementations;
 using Microsoft.AspNetCore.Mvc;
-using Repository.Implementations;
 using Repository.RequestFeatures;
 using System.Text.Json;
 using WebAPI.Filters;
-using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {

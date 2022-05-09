@@ -4,8 +4,7 @@ using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
 using Microsoft.EntityFrameworkCore;
-using Repository.Implementations;
-using Repository.Implementations.ProductRepo;
+using Repository.Contracts;
 using Repository.RequestFeatures;
 
 namespace ApplicationService.Implementations
