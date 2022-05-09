@@ -54,16 +54,9 @@ namespace WebAPI.Controllers
         {
             var body = await service.GetById(id);
 
-            if (body.Id > 0)
-            {
-                logger.Log(LogLevel.Information, "Succesfully getting a category");
-                return Ok(body);
-            }
-            else
-            {
-                logger.Log(LogLevel.Error, "Cannot load a specified category");
-                return NoContent();
-            }
+            logger.Log(LogLevel.Information, "Succesfully getting a category");
+            return Ok(body);
+
         }
 
         [Route("[action]")]
@@ -72,6 +65,16 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Save([FromBody]CategoryDTO category)
         {
             var categoryToReturn = await service.Save(category);
+
+            return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
+        }
+
+        [Route("[action]")]
+        [HttpPut]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Update([FromBody] CategoryDTO category)
+        {
+            var categoryToReturn = await service.Update(category);
 
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }

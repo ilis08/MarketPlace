@@ -84,6 +84,7 @@ namespace WebAPI.Controllers
 
         [Route("[action]")]
         [HttpPut]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Update([FromForm]ProductDTO product)
         {
             var productToReturn = await service.UpdateAsync(product);

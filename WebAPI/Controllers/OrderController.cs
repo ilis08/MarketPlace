@@ -45,7 +45,7 @@ namespace WebAPI.Controllers
         }
 
         [Route("[action]")]
-        [HttpPost]
+        [HttpPut]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Update([FromBody] OrderDTO orderDTO, [FromServices]ResponseMessage responseMessage)
         {
@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
         {
             await _service.CompleteOrderAsync(id);
 
-            return Ok("Order was updated succesfully");
+            return Ok("Order was completed succesfully");
         }
 
         [Route("[action]/{id:int}")]
