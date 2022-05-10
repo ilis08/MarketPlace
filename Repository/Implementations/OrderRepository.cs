@@ -5,7 +5,7 @@ using Repository.Contracts;
 
 namespace Repository.Implementations
 {
-    public class OrderRepository : Implementations.Repository, IOrderRepository
+    public class OrderRepository : Repository, IOrderRepository
     {
         public OrderRepository(RepositoryContext context) : base(context) { }
 
@@ -27,10 +27,12 @@ namespace Repository.Implementations
 
         public void ComputeTotalPriceForOrder(Order order)
         {
-            foreach (var item in order.OrderDetailProduct)
+           /* foreach (var item in order.OrderDetailProduct)
             {
                 order.TotalPrice += item.Price;
-            }
+            }*/
+
+            order.TotalPrice = order.OrderDetailProduct.Select(c => c.Price * c.Count).Sum();
         }
 
         public virtual void CreateRangeOrder(Order order)

@@ -14,7 +14,7 @@ namespace ApplicationService.Implementations
 
         public CategoryManagementService(IRepository _repository) => repository = _repository;
 
-        public async Task<IEnumerable<CategoryDTO>> Get(string query)
+        public async Task<IEnumerable<CategoryDTO>> GetAsync(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
             {
@@ -30,7 +30,7 @@ namespace ApplicationService.Implementations
             }
         }
 
-        public async Task<CategoryDTO> GetById(int id)
+        public async Task<CategoryDTO> GetByIdAsync(int id)
         {
             Category category = await repository.FindByIdAsync<Category>(id);
 
@@ -42,7 +42,7 @@ namespace ApplicationService.Implementations
             return ObjectMapper.Mapper.Map<CategoryDTO>(category);
         }
 
-        public async Task<CategoryDTO> Save(CategoryDTO categoryDTO)
+        public async Task<CategoryDTO> SaveAsync(CategoryDTO categoryDTO)
         {
             Category category = ObjectMapper.Mapper.Map<Category>(categoryDTO);
 
@@ -55,7 +55,7 @@ namespace ApplicationService.Implementations
             return categoryToReturn;
         }
 
-        public async Task<CategoryDTO> Update(CategoryDTO categoryDTO)
+        public async Task<CategoryDTO> UpdateAsync(CategoryDTO categoryDTO)
         {
             var category = ObjectMapper.Mapper.Map<Category>(categoryDTO);
 
@@ -68,7 +68,7 @@ namespace ApplicationService.Implementations
             return categoryToReturn;
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             Category category = await repository.FindByIdAsync<Category>(id);
 

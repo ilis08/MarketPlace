@@ -1,8 +1,9 @@
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Repository.Extensions;
-using Repository.Implementations;
 using WebAPI.Extensions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
+namespace WebAPI;
 public class Program
 {
     public static void Main(string [] args)

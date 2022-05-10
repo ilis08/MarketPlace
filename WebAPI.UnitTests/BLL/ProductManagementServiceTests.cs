@@ -1,15 +1,20 @@
-﻿using ApplicationService.Implementations;
+﻿using ApplicationService.DTOs;
+using ApplicationService.DTOs.ProductDTOs;
+using ApplicationService.Implementations;
 using Data.Entitites;
 using Exceptions.NotFound;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
 using Repository.Contracts;
 using System;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WebAPI.UnitTests.BLL
@@ -91,6 +96,138 @@ namespace WebAPI.UnitTests.BLL
         }
 
         [Test]
+        public async Task SaveAsync_Should_AddNewProductToDatabase_Returns_CreatedProduct()
+        {
+            using var context = CreateContext();
+
+            var bytes = Encoding.UTF8.GetBytes("This is a dummy file");
+            IFormFile file = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "Data", "dummy.jpg");
+
+            var productDTO = new ProductDTO
+            {
+                Id = 4,
+                ProductName = "Name",
+                Description = "Description",
+                Price = 500,
+                ImageFile = file,
+                Release = DateTime.Now,
+                CategoryId = 3
+            };
+
+            var product = new Product
+            {
+                Id = productDTO.Id,
+                ProductName = productDTO.ProductName,
+                Description = productDTO.Description,
+                Price = productDTO.Price,
+                CategoryId = productDTO.CategoryId,
+                Release = productDTO.Release,
+            };
+
+            mockRepository.Setup(x => x.CreateProduct(It.IsAny<Product>(), It.IsAny<IFormFile>())).Callback(async () =>
+            {
+                product.Image = productDTO.ImageFile.Name;
+
+                await context.AddAsync(product);
+            });
+
+            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(async () => await context.SaveChangesAsync());
+
+            var sut = new ProductManagementService(mockRepository.Object);
+
+            var result = await sut.SaveAsync(productDTO);
+
+            mockRepository.Verify(x => x.CreateProduct(It.IsAny<Product>(), It.IsAny<IFormFile>()), Times.Once);
+            mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once);
+
+            result.Should().NotBeNull();
+        }
+
+        [Test]
+        public async Task Update_When_ImageFileAreNull_Should_AddNewProductToDatabase_Returns_UpdatedProduct()
+        {
+            using var context = CreateContext();
+
+            var productDTO = new ProductDTO
+            {
+                Id = 3,
+                ProductName = "ACER Laptop",
+                Description = "Description",
+                Price = 500,
+                ImageFile = null,
+                Release = DateTime.Now,
+                CategoryId = 3
+            };
+
+            var product = new Product
+            {
+                Id = productDTO.Id,
+                ProductName = productDTO.ProductName,
+                Description = productDTO.Description,
+                Price = productDTO.Price,
+                CategoryId = productDTO.CategoryId,
+                Release = productDTO.Release,
+            };
+
+            mockRepository.Setup(x => x.Update(It.IsAny<Product>())).Callback(() => context.Update(product));
+            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(async () => await context.SaveChangesAsync());
+
+            var sut = new ProductManagementService(mockRepository.Object);
+
+            var result = await sut.UpdateAsync(productDTO);
+
+            mockRepository.Verify(x => x.Update(It.IsAny<Product>()), Times.Once);
+            mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once);
+
+            result.Should().NotBeNull();
+        }
+
+        [Test]
+        public async Task Update_When_ImageFileAreNotNull_Should_AddNewProductToDatabase_Returns_UpdatedProduct()
+        {
+            using var context = CreateContext();
+
+            var bytes = Encoding.UTF8.GetBytes("This is a dummy file");
+            IFormFile file = new FormFile(new MemoryStream(bytes), 0, bytes.Length, "Data", "dummy.jpg");
+
+            var productDTO = new ProductDTO
+            {
+                Id = 3,
+                ProductName = "ACER Laptop",
+                Description = "Description",
+                Price = 500,
+                ImageFile = file,
+                Image = file.FileName,
+                Release = DateTime.Now,
+                CategoryId = 3
+            };
+
+            var product = new Product
+            {
+                Id = productDTO.Id,
+                ProductName = productDTO.ProductName,
+                Description = productDTO.Description,
+                Price = productDTO.Price,
+                CategoryId = productDTO.CategoryId,
+                Release = productDTO.Release,
+            };
+
+            mockRepository.Setup(x => x.UpdateProductWithImage(It.IsAny<IFormFile>(), It.IsAny<Product>())).Callback(() => context.Update(product));
+
+            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(async () => await context.SaveChangesAsync());
+
+            var sut = new ProductManagementService(mockRepository.Object);
+
+            var result = await sut.UpdateAsync(productDTO);
+
+            mockRepository.Verify(x => x.UpdateProductWithImage(It.IsAny<IFormFile>(), It.IsAny<Product>()), Times.Once);
+            mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once);
+
+            result.Should().NotBeNull();
+            result.Image.Should().BeEquivalentTo(productDTO.ImageFile.FileName);
+        }
+
+        [Test]
         public async Task DeleteAsync_When_DatabaseContainsProductWithSpecificId_Should_RemoveThisProductFromDatabase_Async()
         {
             using var context = CreateContext();
@@ -109,6 +246,16 @@ namespace WebAPI.UnitTests.BLL
 
             mockRepository.Verify(x => x.Delete(It.IsAny<Product>()), Times.Once);
             mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once);
+        }
+
+        [Test]
+        public void DeleteAsync_When_DatabaseDoesNotContainsProductWithSpecificId_Throws_NotFoundException()
+        {
+            mockRepository.Setup(x => x.FindByIdAsync<Product>(It.IsAny<int>())).ReturnsAsync(() => null);
+
+            var sut = new ProductManagementService(mockRepository.Object);
+
+            Assert.ThrowsAsync<NotFoundException>(() => sut.DeleteAsync(It.IsAny<int>()));
         }
     }
 }

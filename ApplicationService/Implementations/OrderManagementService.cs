@@ -17,7 +17,7 @@ namespace ApplicationService.Implementations
 
         public OrderManagementService(IOrderRepository _repository) => repository = _repository;
 
-        public async Task<IEnumerable<OrderGetDTO>> Get()
+        public async Task<IEnumerable<OrderGetDTO>> GetAsync()
         {
             var orders = await repository.FindAll<Order>().ToListAsync();
 
@@ -25,7 +25,7 @@ namespace ApplicationService.Implementations
         }
 
 
-        public async Task<OrderGetByIdDTO> GetById(int id)
+        public async Task<OrderGetByIdDTO> GetByIdAsync(int id)
         {
             var order = await repository.FindByCondition<Order>(p => p.Id == id)
                                         .Include(x => x.OrderDetailUser)
@@ -56,7 +56,7 @@ namespace ApplicationService.Implementations
             return orderToReturn;
         }
 
-        public async Task<OrderGetByIdDTO> Save(OrderDTO orderDTO)
+        public async Task<OrderGetByIdDTO> SaveAsync(OrderDTO orderDTO)
         {
             List<OrderDetailProduct> mapObject = ObjectMapper.Mapper.Map<List<OrderDetailProduct>>(orderDTO.OrderDetailProducts);
 
@@ -87,7 +87,7 @@ namespace ApplicationService.Implementations
             return orderToReturn;
         }
 
-        public async Task<OrderGetByIdDTO> Update(OrderDTO orderDTO)
+        public async Task<OrderGetByIdDTO> UpdateAsync(OrderDTO orderDTO)
         {
             List<OrderDetailProduct> mapObject = ObjectMapper.Mapper.Map<List<OrderDetailProduct>>(orderDTO.OrderDetailProducts);
 
@@ -115,9 +115,9 @@ namespace ApplicationService.Implementations
             return ObjectMapper.Mapper.Map<OrderGetByIdDTO>(orderToComplete);
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var order = await repository.FindByConditionAsync<Order>(x => x.Id == id);
+            Order order = await repository.FindByIdAsync<Order>(id);
 
             if (order is null)
             {

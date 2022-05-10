@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
         [Route("[action]")]
         public async Task<IActionResult> Get()
         {
-            var result = await service.Get();
+            var result = await service.GetAsync();
 
             if (result.Any())
             {
@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
         [HttpGet("[action]/{id:int}", Name = "OrderById")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await service.GetById(id);
+            var result = await service.GetByIdAsync(id);
 
             logger.Log(LogLevel.Information, "Succesfully getting a order");
             return Ok(result);
@@ -51,7 +51,7 @@ namespace WebAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Save([FromBody] OrderDTO orderDTO)
         {
-            var orderToReturn = await service.Save(orderDTO);
+            var orderToReturn = await service.SaveAsync(orderDTO);
 
             return CreatedAtRoute("OrderById", new { id = orderToReturn.Id }, orderToReturn);
         }
@@ -61,7 +61,7 @@ namespace WebAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Update([FromBody] OrderDTO orderDTO)
         {
-            var result = await service.Update(orderDTO);
+            var result = await service.UpdateAsync(orderDTO);
 
             return CreatedAtRoute("OrderById", new { id = result.Id }, result);
         }
@@ -79,7 +79,7 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            await service.Delete(id);
+            await service.DeleteAsync(id);
 
             return Ok("Order was deleted succesfully");
         }

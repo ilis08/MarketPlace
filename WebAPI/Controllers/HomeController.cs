@@ -6,7 +6,7 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class HomeController : ControllerBase
+    public class HomeController : Controller
     {
         [HttpGet]
         public IActionResult Version()

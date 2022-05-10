@@ -6,11 +6,11 @@ namespace ApplicationService.Contracts
 {
     public interface IOrderManagementService
     {
-        Task<IEnumerable<OrderGetDTO>> Get();
-        Task<OrderGetByIdDTO> GetById(int id);
-        Task<OrderGetByIdDTO> Save(OrderDTO orderDTO);
-        Task<OrderGetByIdDTO> Update(OrderDTO orderDTO);
+        Task<IEnumerable<OrderGetDTO>> GetAsync();
+        Task<OrderGetByIdDTO> GetByIdAsync(int id);
+        Task<OrderGetByIdDTO> SaveAsync(OrderDTO orderDTO);
+        Task<OrderGetByIdDTO> UpdateAsync(OrderDTO orderDTO);
         Task<OrderGetByIdDTO> CompleteOrderAsync(int id);
-        Task Delete(int id);
+        Task DeleteAsync(int id);
     }
 }

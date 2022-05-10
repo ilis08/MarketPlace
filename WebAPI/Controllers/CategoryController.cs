@@ -30,11 +30,11 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<CategoryDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(null, StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Route("[action]")]
         public async Task<IActionResult> Get(string query)
         {
-            var result = await service.Get(query);
+            var result = await service.GetAsync(query);
 
             if (result.Any())
             {
@@ -51,7 +51,7 @@ namespace WebAPI.Controllers
         [HttpGet("[action]/{id:int}", Name = "CategoryById")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await service.GetById(id);
+            var result = await service.GetByIdAsync(id);
 
             logger.Log(LogLevel.Information, "Succesfully getting a category");
             return Ok(result);
@@ -63,7 +63,7 @@ namespace WebAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Save([FromForm]CategoryDTO category)
         {
-            var categoryToReturn = await service.Save(category);
+            var categoryToReturn = await service.SaveAsync(category);
 
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
@@ -73,7 +73,7 @@ namespace WebAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Update([FromBody] CategoryDTO category)
         {
-            var categoryToReturn = await service.Update(category);
+            var categoryToReturn = await service.UpdateAsync(category);
 
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
@@ -82,7 +82,7 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            await service.Delete(id);
+            await service.DeleteAsync(id);
 
             logger.Log(LogLevel.Information,"Category was deleted");
 

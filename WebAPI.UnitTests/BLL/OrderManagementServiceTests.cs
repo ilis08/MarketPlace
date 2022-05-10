@@ -1,4 +1,6 @@
-﻿using ApplicationService.Implementations;
+﻿using ApplicationService.DTOs;
+using ApplicationService.DTOs.OrderManagementDTOs;
+using ApplicationService.Implementations;
 using Data.Context;
 using Data.Entitites;
 using Exceptions.NotFound;
@@ -30,7 +32,7 @@ namespace WebAPI.UnitTests.BLL
         }
 
         [Test]
-        public async Task Get_When_DatabaseContainsOrders_Returns_ListOfOrderGetDTO()
+        public async Task GetAsync_When_DatabaseContainsOrders_Returns_ListOfOrderGetDTO()
         {
             using var context = CreateContext();
 
@@ -40,13 +42,13 @@ namespace WebAPI.UnitTests.BLL
 
             var sut = new OrderManagementService(mockRepository.Object);
 
-            var result = await sut.Get();
+            var result = await sut.GetAsync();
 
             result.Should().NotBeNullOrEmpty();
         }
 
         [Test]
-        public async Task Get_When_DatabaseContainsOrderWithSpecificId_Returns_OrderGetByIdDTO()
+        public async Task GetByIdAsync_When_DatabaseContainsOrderWithSpecificId_Returns_OrderGetByIdDTO()
         {
             using var context = CreateContext();
 
@@ -62,14 +64,14 @@ namespace WebAPI.UnitTests.BLL
 
             var sut = new OrderManagementService(mockRepository.Object);
 
-            var result = await sut.GetById(id);
+            var result = await sut.GetByIdAsync(id);
 
             result.Should().NotBeNull();
             result.Id.Should().Be(id);
         }
 
         [Test]
-        public void Get_When_DatabaseDoesNotContainsOrderWithSpecificId_Throws_NotFoundException()
+        public void GetByIdAsync_When_DatabaseDoesNotContainsOrderWithSpecificId_Throws_NotFoundException()
         {
             mockRepository.Setup(x => x.FindByCondition(It.IsAny<Expression<Func<Order, bool>>>()))
                                                     .Throws(new NotFoundException(It.IsAny<int>(), nameof(Order)));
@@ -77,11 +79,67 @@ namespace WebAPI.UnitTests.BLL
 
             var sut = new OrderManagementService(mockRepository.Object);
 
-            Assert.ThrowsAsync<NotFoundException>(() => sut.GetById(It.IsAny<int>()));
+            Assert.ThrowsAsync<NotFoundException>(() => sut.GetByIdAsync(It.IsAny<int>()));
         }
 
         [Test]
-        public async Task CompleteOrder_DatabaseContainsOrderWithSpecificId_MarkIsCompletedPropertyAsTrue()
+        public async Task SaveAsync_Should_AddNewOrderToDatabase_Returns_CreatedOrder()
+        {
+
+        }
+
+        [Test]
+        public async Task UpdateAsync_Should_UpdateExistingOrder_Returns_UpdatedOrder()
+        {
+            using var context = CreateContext();
+
+            var orderDTO = new OrderDTO()
+            {
+                OrderId = 4,
+                PaymentType = PaymentType.ByCash,
+                OrderDetailUser = new OrderDetailUser
+                {
+                    Id = 3,
+                    Name = "Ivan",
+                    Surname = "Ivanov",
+                    PhoneNumber = "068",
+                },
+                OrderDetailProducts = new List<OrderDetailProductsDTO>()
+                {
+                    new OrderDetailProductsDTO
+                    {
+                        Id = 2,
+                        Count = 2,
+                        ProductId = 1
+                    }
+                }
+            };
+
+            Order order = new Order()
+            {
+                Id = orderDTO.OrderId,
+                PaymentType = orderDTO.PaymentType,
+                OrderDetailUser = orderDTO.OrderDetailUser,
+                OrderDetailProduct = orderDTO.OrderDetailProducts.Select(x => new OrderDetailProduct
+                {
+                    Id = x.Id,
+                    Count = x.Count,
+                    ProductId = x.ProductId,
+                })
+            };
+
+            mockRepository.Setup(x => x.Update(It.IsAny<Order>())).Callback(() => context.Update(order));
+            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(async () => await context.SaveChangesAsync());
+
+            var sut = new OrderManagementService(mockRepository.Object);
+
+            var result = await sut.UpdateAsync(orderDTO);
+
+            result.Should().NotBeNull();
+        }
+
+        [Test]
+        public async Task CompleteOrderAsync_DatabaseContainsOrderWithSpecificId_MarkIsCompletedPropertyAsTrue()
         {
             using var context = CreateContext();
 
@@ -89,7 +147,7 @@ namespace WebAPI.UnitTests.BLL
 
             mockRepository.Setup(x => x.CompleteOrder(id))
                 .ReturnsAsync(await context.Orders.FirstOrDefaultAsync(x => x.Id == id))
-                .Callback(async () => await CompleteOrder(id, context));
+                .Callback(async () => await CompleteOrderAsync(id, context));
 
             var sut = new OrderManagementService(mockRepository.Object);
 
@@ -99,7 +157,7 @@ namespace WebAPI.UnitTests.BLL
             result.Id.Should().Be(id);
         }
 
-        private async Task CompleteOrder(int id, RepositoryContext context)
+        private async Task CompleteOrderAsync(int id, RepositoryContext context)
         {
             var order = await context.Orders.SingleOrDefaultAsync(x => x.Id == id);
 
@@ -111,18 +169,16 @@ namespace WebAPI.UnitTests.BLL
         }
 
         [Test]
-        public async Task DeleteOrder_WhenDatabaseContainsOrderWithSpecificId_DeleteThisRecord()
+        public async Task DeleteOrderAsync_WhenDatabaseContainsOrderWithSpecificId_DeleteThisRecord()
         {
             using var context = CreateContext();
 
             int id = 1;
 
-            var orders = await context.Orders.Where(x => x.Id == id).ToListAsync();
+            var orderToDelete = await context.Orders.Where(x => x.Id == id).SingleOrDefaultAsync();
 
-            var orderToDelete = orders.Where(x => x.Id == id).FirstOrDefault();
-
-            mockRepository.Setup(x => x.FindByConditionAsync(It.IsAny<Expression<Func<Order, bool>>>()))
-                                        .ReturnsAsync(orders);
+            mockRepository.Setup(x => x.FindByIdAsync<Order>(It.IsAny<int>()))
+                                        .ReturnsAsync(orderToDelete);
             mockRepository.Setup(x => x.Delete(orderToDelete))
                                         .Callback(() => context.Orders.Remove(orderToDelete));
             mockRepository.Setup(x => x.SaveChangesAsync())
@@ -130,22 +186,20 @@ namespace WebAPI.UnitTests.BLL
 
             var sut = new OrderManagementService(mockRepository.Object);
 
-            await sut.Delete(id);
+            await sut.DeleteAsync(id);
 
             mockRepository.Verify(x => x.Delete(orderToDelete), Times.Once);
             mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once);
         }
 
         [Test]
-        public void DeleteOrder_WhenDatabaseDoesNotContainsOrderWithSpecificId_Throw_NotFoundException()
+        public void DeleteOrderAsync_WhenDatabaseDoesNotContainsOrderWithSpecificId_Throw_NotFoundException()
         {
-            mockRepository.Setup(x => x.FindByConditionAsync(It.IsAny<Expression<Func<Order, bool>>>()))
-                                                    .ThrowsAsync(new NotFoundException(It.IsAny<int>(), nameof(Order)));
-
+            mockRepository.Setup(x => x.FindByIdAsync<Order>(It.IsAny<int>())).ReturnsAsync(() => null);
 
             var sut = new OrderManagementService(mockRepository.Object);
 
-            Assert.ThrowsAsync<NotFoundException>(() => sut.Delete(It.IsAny<int>()));
+            Assert.ThrowsAsync<NotFoundException>(() => sut.DeleteAsync(It.IsAny<int>()));
         }
     }
 }

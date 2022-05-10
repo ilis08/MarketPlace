@@ -4,10 +4,10 @@ namespace ApplicationService.Contracts
 {
     public interface ICategoryManagementService
     {
-        Task<IEnumerable<CategoryDTO>> Get(string query);
-        Task<CategoryDTO> GetById(int id);
-        Task<CategoryDTO> Save(CategoryDTO categoryDTO);
-        Task<CategoryDTO> Update(CategoryDTO categoryDTO);
-        Task Delete(int id);
+        Task<IEnumerable<CategoryDTO>> GetAsync(string query);
+        Task<CategoryDTO> GetByIdAsync(int id);
+        Task<CategoryDTO> SaveAsync(CategoryDTO categoryDTO);
+        Task<CategoryDTO> UpdateAsync(CategoryDTO categoryDTO);
+        Task DeleteAsync(int id);
     }
 }
