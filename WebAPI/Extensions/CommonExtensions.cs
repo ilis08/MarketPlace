@@ -24,8 +24,14 @@ namespace WebAPI.Extensions
         public static void ConfigureDatabaseContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<RepositoryContext>(opts =>
-              opts.UseSqlServer(configuration.GetConnectionString("IlisStore"),
-              b => b.MigrationsAssembly("WebAPI")));
+            {
+                opts.UseSqlServer(configuration.GetConnectionString("IlisStore"),
+                sqlServerOptionsAction: sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure();
+                    sqlOptions.MigrationsAssembly("WebAPI");
+                });
+            });
         }
 
         public static void ConfigureProductImageService(this IServiceCollection services)

@@ -47,13 +47,13 @@ public class Program
         else
         {
             app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();
         }
         app.UseHttpsRedirection();
 
         app.UseStaticFiles();
 
         app.UseSession();
-
 
         app.UseRouting();
 
