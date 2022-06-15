@@ -40,6 +40,10 @@ public class Program
         builder.Services.ConfigureProductImageService();
         #endregion
 
+        builder.Services.AddIdentity();
+
+        builder.Services.AddAuthentication(builder.Configuration);
+
         builder.Services.ConfigureCors();
 
         builder.Services.AddHealthChecks();
@@ -69,6 +73,7 @@ public class Program
 
         app.UseCors("CorsPolicy");
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseSwagger();

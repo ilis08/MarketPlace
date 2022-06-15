@@ -68,6 +68,6 @@ namespace WebAPI.Extensions
                 {
                     validationOpt.MustRevalidate = true;
                 }
-                );
+        );
     }
 }
