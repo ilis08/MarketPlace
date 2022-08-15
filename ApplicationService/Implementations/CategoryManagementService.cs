@@ -1,87 +1,85 @@
-﻿using ApplicationService.DTOs;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs;
 using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
-using Repository.Implementations;
+using Microsoft.EntityFrameworkCore;
+using Repository.Contracts;
 
 namespace ApplicationService.Implementations
 {
-    public class CategoryManagementService
+    public class CategoryManagementService : ICategoryManagementService
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IRepository repository;
 
-        public CategoryManagementService(UnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
+        public CategoryManagementService(IRepository _repository) => repository = _repository;
 
-        public async Task<IEnumerable<CategoryDTO>> Get(string query)
+        public async Task<IEnumerable<CategoryDTO>> GetAsync(string query)
         {
-            List<CategoryDTO> categoriesDto = new();
-
             if (string.IsNullOrWhiteSpace(query))
             {
-                using (unitOfWork)
-                {
-                    var categories = await unitOfWork.CategoryRepository.GetCategoriesAsync();
+                var categories = await repository.FindAll<Category>().ToListAsync();
 
-                    categoriesDto = ObjectMapper.Mapper.Map<List<CategoryDTO>>(categories);
-                }
-            }
-
-            return categoriesDto;
-        }
-
-        public async Task<CategoryDTO> GetById(int id)
-        {
-            CategoryDTO categoryDTO = new CategoryDTO();
-
-            using (unitOfWork)
-            {
-                Category category = await unitOfWork.CategoryRepository.GetCategoryByIdAsync(id);
-
-                if (category is null)
-                {
-                    throw new NotFoundException(id, nameof(Category));
-                }
-
-                categoryDTO = ObjectMapper.Mapper.Map<CategoryDTO>(category);
-            }
-
-            return categoryDTO;
-        }
-
-        public async Task<CategoryDTO> Save(CategoryDTO categoryDTO)
-        {
-            Category category = ObjectMapper.Mapper.Map<Category>(categoryDTO);
-
-            if (categoryDTO.Id == 0)
-            {
-                unitOfWork.CategoryRepository.Create(category);
+                return ObjectMapper.Mapper.Map<List<CategoryDTO>>(categories);
             }
             else
             {
-                unitOfWork.CategoryRepository.Update(category);
+                var categories = await repository.FindAll<Category>().Where(x => x.Title.Contains(query)).ToListAsync();
+
+                return ObjectMapper.Mapper.Map<List<CategoryDTO>>(categories);
             }
-
-            await unitOfWork.SaveAsync();
-
-            var categoryToReturn = ObjectMapper.Mapper.Map<CategoryDTO>(category); 
-
-            return categoryToReturn;
         }
 
-
-
-        public async Task Delete(int id)
+        public async Task<CategoryDTO> GetByIdAsync(int id)
         {
-            Category category = await unitOfWork.CategoryRepository.GetCategoryByIdAsync(id);
+            Category category = await repository.FindByIdAsync<Category>(id);
 
             if (category is null)
             {
                 throw new NotFoundException(id, nameof(Category));
             }
 
-            unitOfWork.CategoryRepository.Delete(category);
+            return ObjectMapper.Mapper.Map<CategoryDTO>(category);
+        }
 
-            await unitOfWork.SaveAsync();
+        public async Task<CategoryDTO> SaveAsync(CategoryDTO categoryDTO)
+        {
+            Category category = ObjectMapper.Mapper.Map<Category>(categoryDTO);
+
+            await repository.CreateAsync(category);
+
+            await repository.SaveChangesAsync();
+
+            var categoryToReturn = ObjectMapper.Mapper.Map<CategoryDTO>(category);
+
+            return categoryToReturn;
+        }
+
+        public async Task<CategoryDTO> UpdateAsync(CategoryDTO categoryDTO)
+        {
+            var category = ObjectMapper.Mapper.Map<Category>(categoryDTO);
+
+            repository.Update(category);
+
+            await repository.SaveChangesAsync();
+
+            var categoryToReturn = ObjectMapper.Mapper.Map<CategoryDTO>(category);
+
+            return categoryToReturn;
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            Category category = await repository.FindByIdAsync<Category>(id);
+
+            if (category is null)
+            {
+                throw new NotFoundException(id, nameof(Category));
+            }
+
+            repository.Delete(category);
+
+            await repository.SaveChangesAsync();
         }
     }
 }

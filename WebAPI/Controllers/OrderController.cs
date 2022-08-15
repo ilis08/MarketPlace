@@ -1,8 +1,7 @@
-﻿using ApplicationService.DTOs;
-using ApplicationService.Implementations;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Filters;
-using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
@@ -11,26 +10,40 @@ namespace WebAPI.Controllers
     [ApiController]
     public class OrderController : HomeController
     {
-        private readonly OrderManagementService _service;
-        private readonly ILogger<OrderController> _logger;
+        private readonly IOrderManagementService service;
+        private readonly ILogger<OrderController> logger;
 
-        public OrderController(OrderManagementService service, ILogger<OrderController> logger)
+        public OrderController(IOrderManagementService _service, ILogger<OrderController> _logger)
         {
-            _service = service;
-            _logger = logger;
+            service = _service;
+            logger = _logger;
         }
 
         [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> Get()
         {
-            return Json(await _service.Get());
+            var result = await service.GetAsync();
+
+            if (result.Any())
+            {
+                logger.Log(LogLevel.Information, "Succesfully getting list of orders");
+                return Ok(result);
+            }
+            else
+            {
+                logger.Log(LogLevel.Error, "Cannot load a orders");
+                return NoContent();
+            }
         }
 
         [HttpGet("[action]/{id:int}", Name = "OrderById")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Json(await _service.GetById(id));
+            var result = await service.GetByIdAsync(id);
+
+            logger.Log(LogLevel.Information, "Succesfully getting a order");
+            return Ok(result);
         }
 
         [Route("[action]")]
@@ -38,44 +51,35 @@ namespace WebAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Save([FromBody] OrderDTO orderDTO)
         {
-            var orderToReturn = await _service.Save(orderDTO);
+            var orderToReturn = await service.SaveAsync(orderDTO);
 
             return CreatedAtRoute("OrderById", new { id = orderToReturn.Id }, orderToReturn);
         }
 
         [Route("[action]")]
-        [HttpPost]
+        [HttpPut]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> Update([FromBody] OrderDTO orderDTO, [FromServices]ResponseMessage responseMessage)
+        public async Task<IActionResult> Update([FromBody] OrderDTO orderDTO)
         {
-            if (await _service.Update(orderDTO))
-            {
-                responseMessage.Code = 201;
-                responseMessage.Body = "Order was updated";
-            }
-            else
-            {
-                responseMessage.Code = 202;
-                responseMessage.Body = "Order was not updated";
-            }
+            var result = await service.UpdateAsync(orderDTO);
 
-            return Json(responseMessage);
+            return CreatedAtRoute("OrderById", new { id = result.Id }, result);
         }
 
         [Route("[action]/{id:int}")]
         [HttpPut]
         public async Task<IActionResult> CompleteOrder(int id)
         {
-            await _service.CompleteOrderAsync(id);
+            await service.CompleteOrderAsync(id);
 
-            return Ok("Order was updated succesfully");
+            return Ok("Order was completed succesfully");
         }
 
         [Route("[action]/{id:int}")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.Delete(id);
+            await service.DeleteAsync(id);
 
             return Ok("Order was deleted succesfully");
         }

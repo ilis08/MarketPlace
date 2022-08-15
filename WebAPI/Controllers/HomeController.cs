@@ -9,9 +9,9 @@ namespace WebAPI.Controllers
     public class HomeController : Controller
     {
         [HttpGet]
-        public JsonResult Version()
+        public IActionResult Version()
         {
-            return Json("REST-API e-Store. Version 1.0");
+            return Ok("REST-API e-Store. Version 1.0");
         }
     }
 }

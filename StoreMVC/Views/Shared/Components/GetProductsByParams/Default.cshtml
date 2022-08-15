@@ -6,6 +6,11 @@
 
 <hr />
 
+@if (Model.Products.Count() <= 0)
+{
+    <h1>Products NOT FOUND</h1>
+}
+
 <div class="card-deck">
     @foreach (var product in Model.Products)
     {

@@ -1,7 +1,9 @@
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Repository.Implementations;
+using Repository.Extensions;
 using WebAPI.Extensions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
+namespace WebAPI;
 public class Program
 {
     public static void Main(string [] args)
@@ -26,8 +28,6 @@ public class Program
 
         #endregion
 
-        builder.Services.AddTransient<UnitOfWork>();
-
         #region ApplicationService
         builder.Services.ConfigureCategoryService();
         builder.Services.ConfigureProductService();
@@ -35,24 +35,18 @@ public class Program
         #endregion
 
         #region Repository
+        builder.Services.ConfigureRepository();
 
-        builder.Services.ConfigureUnitOfWork();
-
+        builder.Services.ConfigureProductImageService();
         #endregion
+
+        builder.Services.AddIdentity();
+
+        builder.Services.AddAuthentication(builder.Configuration);
 
         builder.Services.ConfigureCors();
 
-       /* builder.Services.ConfigureResponseCaching();
-
-        builder.Services.ConfigureHttpCacheHeaders();*/
-
-        builder.Services.ConfigureResponseMessage();
-
-        builder.Services.AddHealthChecks()
-            .AddSqlServer(builder.Configuration.GetConnectionString("IlisStoreDB"),
-              name: "ilisDb-check",
-              failureStatus: HealthStatus.Unhealthy,
-              tags: new string[] { "api", "SqlDb" });
+        builder.Services.AddHealthChecks();
 
         builder.Services.ConfigureValidationFilterAttribute();
 
@@ -78,9 +72,8 @@ public class Program
         app.UseRouting();
 
         app.UseCors("CorsPolicy");
-      /*  app.UseResponseCaching();
-        app.UseHttpCacheHeaders();*/
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseSwagger();
@@ -93,6 +86,7 @@ public class Program
 
         app.UseEndpoints(endpoints =>
         {
+            endpoints.MapHealthChecks("/healthcheck");
             endpoints.MapControllers();
         });
 

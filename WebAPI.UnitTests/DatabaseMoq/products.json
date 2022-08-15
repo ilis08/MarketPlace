@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "productName": "ASUS Laptop",
+    "description": "Decription",
+    "release": "2012-04-23T18:25:43.511Z",
+    "price": 1000,
+    "image": "image",
+    "categoryId": 3
+  },
+  {
+    "id": 2,
+    "productName": "DELL Laptop",
+    "description": "Decription",
+    "release": "2012-04-23T18:25:43.511Z",
+    "price": 1000,
+    "image": "image",
+    "categoryId": 3
+  },
+  {
+    "id": 3,
+    "productName": "ACER Laptop",
+    "description": "Decription",
+    "release": "2012-04-23T18:25:43.511Z",
+    "price": 1000,
+    "image": "image",
+    "categoryId": 3
+  }
+]

@@ -1,8 +1,9 @@
-﻿using ApplicationService.DTOs;
-using ApplicationService.Implementations;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs;
+using Data.Entitites.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Filters;
-using WebAPI.Messages;
 
 namespace WebAPI.Controllers
 {
@@ -14,10 +15,10 @@ namespace WebAPI.Controllers
     [ApiController]
     public class CategoryController : HomeController
     {
-        private readonly CategoryManagementService service;
+        private readonly ICategoryManagementService service;
         private readonly ILogger<CategoryController> logger;
 
-        public CategoryController(CategoryManagementService _service, ILogger<CategoryController> _logger)
+        public CategoryController(ICategoryManagementService _service, ILogger<CategoryController> _logger)
         {
             service = _service;
             logger = _logger;
@@ -30,56 +31,61 @@ namespace WebAPI.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<CategoryDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Route("[action]")]
         public async Task<IActionResult> Get(string query)
         {
-            var body = await service.Get(query);
+            var result = await service.GetAsync(query);
 
-            if (body.Any())
+            if (result.Any())
             {
                 logger.Log(LogLevel.Information, "Succesfully getting list of categories");
-                return Ok(body);
+                return Ok(result);
             }
             else
             {
                 logger.Log(LogLevel.Error, "Cannot load a categories");
                 return NoContent();
             }
-
         }
 
         [HttpGet("[action]/{id:int}", Name = "CategoryById")]
         public async Task<IActionResult> GetById(int id)
         {
-            var body = await service.GetById(id);
+            var result = await service.GetByIdAsync(id);
 
-            if (body.Id > 0)
-            {
-                logger.Log(LogLevel.Information, "Succesfully getting a category");
-                return Ok(body);
-            }
-            else
-            {
-                logger.Log(LogLevel.Error, "Cannot load a specified category");
-                return NoContent();
-            }
+            logger.Log(LogLevel.Information, "Succesfully getting a category");
+            return Ok(result);
+
         }
 
+        [Authorize("Admin")]
         [Route("[action]")]
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> Save([FromBody]CategoryDTO category)
+        public async Task<IActionResult> Save([FromForm]CategoryDTO category)
         {
-            var categoryToReturn = await service.Save(category);
+            var categoryToReturn = await service.SaveAsync(category);
+
+            return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
+        }
+
+        [Route("[action]")]
+        [HttpPut]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Update([FromBody] CategoryDTO category)
+        {
+            var categoryToReturn = await service.UpdateAsync(category);
 
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
 
         [Route("[action]/{id:int}")]
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id, [FromServices] ResponseMessage responseMessage)
+        public async Task<IActionResult> Delete(int id)
         {
-            await service.Delete(id);
+            await service.DeleteAsync(id);
 
             logger.Log(LogLevel.Information,"Category was deleted");
 

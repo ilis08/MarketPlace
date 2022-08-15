@@ -1,4 +1,4 @@
-﻿using Data.CustomAttributes;
+﻿using ApplicationService.Attributes;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,7 +19,7 @@ namespace ApplicationService.DTOs.ProductDTOs
         public string Image { get; set; }
 
         [NotMapped]
-        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg" })]
+        [AllowedFileFormatsForImage(new string[] { ".jpg", ".png", ".jpeg" })]
         public IFormFile ImageFile { get; set; }
         public int CategoryId { get; set; }
 

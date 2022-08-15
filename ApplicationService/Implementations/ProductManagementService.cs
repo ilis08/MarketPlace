@@ -1,85 +1,73 @@
-﻿using ApplicationService.DTOs.ProductDTOs;
+﻿using ApplicationService.Contracts;
+using ApplicationService.DTOs.ProductDTOs;
 using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
-using Repository.Implementations;
+using Microsoft.EntityFrameworkCore;
+using Repository.Contracts;
 using Repository.RequestFeatures;
 
 namespace ApplicationService.Implementations
 {
-    public class ProductManagementService
+    public class ProductManagementService : IProductManagementService
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly IProductRepository repository;
 
-        public ProductManagementService(UnitOfWork _unitOfWork) => unitOfWork = _unitOfWork;
+        public ProductManagementService(IProductRepository _repository) => repository = _repository;
 
-        public async Task<IEnumerable<ProductDTO>> Get(string query)
+        public async Task<IEnumerable<ProductDTO>> GetAsync(string query)
         {
-            List<ProductDTO> productDto = new();
-
             if (string.IsNullOrWhiteSpace(query))
             {
-                using (unitOfWork)
-                {
-                    var products = unitOfWork.ProductRepository.GetProductsAsync();
+                var products = repository.FindAll<Product>().ToListAsync();
 
-                    productDto = ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
-                }
+                return ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
             }
             else
             {
-                using (unitOfWork)
-                {
-                    var products = unitOfWork.ProductRepository.GetProductByQuery(query);
+                var products = await repository.FindByConditionAsync<Product>(x => x.ProductName.Contains(query));
 
-                    productDto = ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
-                }
+                return ObjectMapper.Mapper.Map<List<ProductDTO>>(products);
             }
-            return productDto;
         }
 
-        public async Task<ProductDTO> GetById(int id)
+        public async Task<ProductDTO> GetByIdAsync(int id)
         {
-            ProductDTO productDto = new();
-
-            Product product = await unitOfWork.ProductRepository.GetProductByIdAsync(id);
+            var product = await repository.FindByIdAsync<Product>(id);
 
             if (product is null)
             {
                 throw new NotFoundException(id, nameof(Product));
             }
 
-            productDto = ObjectMapper.Mapper.Map<ProductDTO>(product);
+            var productDto = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
             return productDto;
         }
 
-        public async Task<(IEnumerable<ProductDTO> products, MetaData metaData)> GetProductsByParameters(ProductParameters productsParameters)
+        public async Task<(IEnumerable<ProductDTO> products, MetaData metaData)> GetProductsByParametersAsync(ProductParameters productsParameters)
         {
-            var productWithMetaData = await unitOfWork.ProductRepository.GetProductsByParametersAsync(productsParameters);
+            var productWithMetaData = await repository.GetProductsByParametersAsync(productsParameters);
 
             var productDTO = ObjectMapper.Mapper.Map<IEnumerable<ProductDTO>>(productWithMetaData);
 
             return (products: productDTO, metaData: productWithMetaData.MetaData);
         }
 
-        public async Task<ProductDTO> Save(ProductDTO productDto)
+        public async Task<ProductDTO> SaveAsync(ProductDTO productDto)
         {
             Product product = ObjectMapper.Mapper.Map<Product>(productDto);
 
-            if (productDto.Id == 0)
-            {
-                unitOfWork.ProductRepository.CreateProduct(product, productDto.ImageFile);
-            }
+            await repository.CreateProduct(product, productDto.ImageFile);
 
-            await unitOfWork.SaveAsync();
+            await repository.SaveChangesAsync();
 
             var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
             return productToReturn;
         }
 
-        public async Task<ProductDTO> Update(ProductDTO productDto)
+        public async Task<ProductDTO> UpdateAsync(ProductDTO productDto)
         {
             Product product;
 
@@ -87,12 +75,9 @@ namespace ApplicationService.Implementations
             {
                 product = ObjectMapper.Mapper.Map<Product>(productDto);
 
-                using (unitOfWork)
-                {
-                    unitOfWork.ProductRepository.Update(product);
+                repository.Update(product);
 
-                    await unitOfWork.SaveAsync();
-                }
+                await repository.SaveChangesAsync();
 
                 var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
@@ -102,12 +87,9 @@ namespace ApplicationService.Implementations
             {
                 product = ObjectMapper.Mapper.Map<Product>(productDto);
 
-                using (unitOfWork)
-                {
-                    unitOfWork.ProductRepository.UpdateProductWithImage(productDto.ImageFile, product);
+                repository.UpdateProductWithImage(productDto.ImageFile, product);
 
-                    await unitOfWork.SaveAsync();
-                }
+                await repository.SaveChangesAsync();
 
                 var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
 
@@ -116,17 +98,18 @@ namespace ApplicationService.Implementations
         }
 
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Product product = await unitOfWork.ProductRepository.GetProductByIdAsync(id);
+            Product product = await repository.FindByIdAsync<Product>(id);
 
             if (product is null)
             {
                 throw new NotFoundException(id, nameof(Product));
             }
 
-            unitOfWork.ProductRepository.DeleteProduct(product);
-            await unitOfWork.SaveAsync();
+            repository.Delete(product);
+
+            await repository.SaveChangesAsync();
         }
     }
 }

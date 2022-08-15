@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data.Entitites
 {
@@ -14,5 +15,8 @@ namespace Data.Entitites
         [Phone]
         [Required]
         public string? PhoneNumber { get; set; }
+
+        [BindNever]
+        public IEnumerable<Order>? Order { get; set; }
     }
 }

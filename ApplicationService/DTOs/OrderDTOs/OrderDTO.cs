@@ -7,7 +7,7 @@ namespace ApplicationService.DTOs
     {
         public int OrderId { get; set; }
 
-        public PaymentType PaymentType { get; set; } 
+        public PaymentType PaymentType { get; set; }
 
         public double TotalPrice { get; set; }
 

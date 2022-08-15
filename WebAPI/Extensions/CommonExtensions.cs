@@ -1,10 +1,9 @@
 ﻿using Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Repository.Contracts;
 using Repository.Implementations;
-using Repository.Implementations.ProductRepo;
 using WebAPI.Filters;
-using WebAPI.Messages;
 
 namespace WebAPI.Extensions
 {
@@ -25,23 +24,19 @@ namespace WebAPI.Extensions
         public static void ConfigureDatabaseContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<RepositoryContext>(opts =>
-              opts.UseSqlServer(configuration.GetConnectionString("IlisStore"),
-              b => b.MigrationsAssembly("WebAPI")));
-        }
-
-        public static void ConfigureUnitOfWork(this IServiceCollection services)
-        {
-            services.AddTransient<UnitOfWork>();
-        }
-
-        public static void ConfigureResponseMessage(this IServiceCollection services)
-        {
-            services.AddTransient<ResponseMessage>();
+            {
+                opts.UseSqlServer(configuration.GetConnectionString("IlisStore"),
+                sqlServerOptionsAction: sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure();
+                    sqlOptions.MigrationsAssembly("WebAPI");
+                });
+            });
         }
 
         public static void ConfigureProductImageService(this IServiceCollection services)
         {
-            services.AddTransient<ProductImage>();
+            services.AddScoped<IProductImage, ProductImage>();
         }
 
         public static void ConfigureValidationFilterAttribute(this IServiceCollection services)
@@ -73,6 +68,6 @@ namespace WebAPI.Extensions
                 {
                     validationOpt.MustRevalidate = true;
                 }
-                );
+        );
     }
 }
