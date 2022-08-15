@@ -1,4 +1,5 @@
-﻿using Data.Context;
+﻿using Azure.Storage.Blobs;
+using Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Repository.Contracts;
@@ -69,5 +70,11 @@ namespace WebAPI.Extensions
                     validationOpt.MustRevalidate = true;
                 }
         );
+
+        public static void ConfigureBlobService(this IServiceCollection services, IConfiguration configuration) {
+            services.AddSingleton(x => new BlobServiceClient(configuration.GetConnectionString("AzureBlobStorage")));
+
+            services.AddScoped<IBlobService, BlobService>();
+        }
     }
 }

@@ -40,6 +40,8 @@ public class Program
         builder.Services.ConfigureProductImageService();
         #endregion
 
+        builder.Services.ConfigureBlobService(builder.Configuration);
+
         builder.Services.AddIdentity();
 
         builder.Services.AddAuthentication(builder.Configuration);

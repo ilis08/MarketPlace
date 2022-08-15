@@ -13,15 +13,17 @@ namespace Repository.Implementations
     public class ProductRepository : Implementations.Repository, IProductRepository
     {
         private readonly IProductImage imageService;
+        private readonly IBlobService blobService;
 
-        public ProductRepository(RepositoryContext context, IProductImage _imageService) : base(context)
+        public ProductRepository(IProductImage imageService, IBlobService blobService, RepositoryContext context) : base(context)
         {
-            imageService = _imageService;
+            this.imageService = imageService;
+            this.blobService = blobService;
         }
 
         public async Task CreateProduct(Product product, IFormFile file)
         {
-            product.Image = imageService.SaveImage(file);
+            product.Image = await blobService.UploadFileBlobAsync(file);
 
             await CreateAsync(product);
         }
