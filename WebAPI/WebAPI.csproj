@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 	  <ImplicitUsings>enable</ImplicitUsings>
 	  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	  <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
@@ -18,6 +18,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Messages\**" />
+    <Content Remove="Messages\**" />
+    <EmbeddedResource Remove="Messages\**" />
+    <None Remove="Messages\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings.Production.json" />
   </ItemGroup>
 
@@ -28,40 +35,28 @@
 	
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="6.0.2" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.46.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.51.0" />
     <PackageReference Include="Marvin.Cache.Headers" Version="6.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.6">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.6">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.3.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
   </ItemGroup>
 
 	
   <ItemGroup>
     <ProjectReference Include="..\ApplicationService\ApplicationService.csproj" />
-  </ItemGroup>
-
-	
-  <ItemGroup>
-    <Folder Include="Messages\" />
-  </ItemGroup>
-
-	
-  <ItemGroup>
-    <Protobuf Include="..\FilesService\Protos\greet.proto" GrpcServices="Client">
-      <Link>Protos\greet.proto</Link>
-    </Protobuf>
   </ItemGroup>
 
 

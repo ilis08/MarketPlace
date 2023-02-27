@@ -57,7 +57,6 @@ namespace WebAPI.Controllers
 
             logger.Log(LogLevel.Information, "Succesfully getting a category");
             return Ok(result);
-
         }
 
         [Authorize("Admin")]
@@ -71,6 +70,7 @@ namespace WebAPI.Controllers
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
 
+        [Authorize("Admin")]
         [Route("[action]")]
         [HttpPut]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -81,6 +81,7 @@ namespace WebAPI.Controllers
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
 
+        [Authorize("Admin")]
         [Route("[action]/{id:int}")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
@@ -90,8 +91,6 @@ namespace WebAPI.Controllers
             logger.Log(LogLevel.Information,"Category was deleted");
 
             return Ok("Category was deleted succesfully");
-        }
-
-      
+        }     
     }
 }

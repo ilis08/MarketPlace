@@ -29,7 +29,7 @@ namespace WebAPI.Extensions
                 opts.UseSqlServer(configuration.GetConnectionString("IlisStore"),
                 sqlServerOptionsAction: sqlOptions =>
                 {
-                    sqlOptions.EnableRetryOnFailure();
+                    sqlOptions.EnableRetryOnFailure(3);
                     sqlOptions.MigrationsAssembly("WebAPI");
                 });
             });
