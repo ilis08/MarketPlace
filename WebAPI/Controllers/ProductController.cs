@@ -29,6 +29,8 @@ namespace WebAPI.Controllers
         /// 
         
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ProductDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Route("[action]")]
         public async Task<IActionResult> Get(string query)
         {

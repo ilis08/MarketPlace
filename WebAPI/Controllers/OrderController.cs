@@ -1,5 +1,6 @@
 ﻿using ApplicationService.Contracts;
 using ApplicationService.DTOs;
+using ApplicationService.DTOs.OrderDTOs.OrderManagementDTOs;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Filters;
 
@@ -20,6 +21,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<OrderGetDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Route("[action]")]
         public async Task<IActionResult> Get()
         {
