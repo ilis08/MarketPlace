@@ -4,17 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Data.Entitites
 {
-    public class Order
+    public class Order : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         public PaymentType PaymentType { get; set; }
-
-        [BindNever]
-        [ScaffoldColumn(false)]
-        public DateTime OrderTime { get; set; }
 
         public bool IsCompleted { get; set; }
         
@@ -27,7 +20,6 @@ namespace Data.Entitites
 
         [BindNever]
         public IEnumerable<OrderDetailProduct>? OrderDetailProduct { get; set; }
-
     }
 
     public enum PaymentType

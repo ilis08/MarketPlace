@@ -4,7 +4,7 @@ namespace ApplicationService.DTOs
 {
     public class CategoryDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         [Required(ErrorMessage = "Category Title is a required field.")]
         [MinLength(2, ErrorMessage = "Minimum length for the Title is 2 character.")]
         [MaxLength(20, ErrorMessage = "Maximum length for the Title is 20 characters")]

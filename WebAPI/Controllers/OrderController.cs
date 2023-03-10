@@ -40,8 +40,8 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("[action]/{id:int}", Name = "OrderById")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("[action]/{id:long}", Name = "OrderById")]
+        public async Task<IActionResult> GetById(long id)
         {
             var result = await service.GetByIdAsync(id);
 

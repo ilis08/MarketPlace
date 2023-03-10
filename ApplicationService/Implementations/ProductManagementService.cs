@@ -31,7 +31,7 @@ namespace ApplicationService.Implementations
             }
         }
 
-        public async Task<ProductDTO> GetByIdAsync(int id)
+        public async Task<ProductDTO> GetByIdAsync(long id)
         {
             var product = await repository.FindByIdAsync<Product>(id);
 
@@ -98,7 +98,7 @@ namespace ApplicationService.Implementations
         }
 
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(long id)
         {
             Product product = await repository.FindByIdAsync<Product>(id);
 

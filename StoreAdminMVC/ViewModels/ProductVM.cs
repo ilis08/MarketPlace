@@ -12,7 +12,7 @@ namespace StoreAdminMVC.ViewModels
     public class ProductVM
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [Required(ErrorMessage = "Please, enter the product name.")]
         [StringLength(40)]
         public string ProductName { get; set; }
@@ -32,7 +32,7 @@ namespace StoreAdminMVC.ViewModels
 
         [Display(Name = "Category")]
         [Required(ErrorMessage = "Please, choose a category")]
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
         public CategoryVM Category { get; set; }
 
         public SelectList CategoryList { get; set; }

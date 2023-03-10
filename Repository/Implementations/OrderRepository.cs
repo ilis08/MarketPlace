@@ -10,7 +10,7 @@ namespace Repository.Implementations
         public OrderRepository(RepositoryContext context) : base(context) { }
 
 
-        public async Task<List<OrderDetailProduct>> GetOrderDetailProducts(int id) =>
+        public async Task<List<OrderDetailProduct>> GetOrderDetailProducts(long id) =>
             await repositoryContext.OrderDetailProducts.Where(p => p.OrderId == id).ToListAsync();
 
         public async Task ComputeTotalPriceAsync(List<OrderDetailProduct> products)
@@ -45,7 +45,7 @@ namespace Repository.Implementations
             repositoryContext.Attach(order.OrderDetailUser).State = EntityState.Added;
         }
 
-        public async Task<Order> CompleteOrder(int id)
+        public async Task<Order> CompleteOrder(long id)
         {
             var order = await FindByCondition<Order>(x => x.Id == id).SingleOrDefaultAsync();
 

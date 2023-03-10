@@ -7,10 +7,10 @@ namespace ApplicationService.Contracts
     public interface IOrderManagementService
     {
         Task<IEnumerable<OrderGetDTO>> GetAsync();
-        Task<OrderGetByIdDTO> GetByIdAsync(int id);
+        Task<OrderGetByIdDTO> GetByIdAsync(long id);
         Task<OrderGetByIdDTO> SaveAsync(OrderDTO orderDTO);
         Task<OrderGetByIdDTO> UpdateAsync(OrderDTO orderDTO);
-        Task<OrderGetByIdDTO> CompleteOrderAsync(int id);
-        Task DeleteAsync(int id);
+        Task<OrderGetByIdDTO> CompleteOrderAsync(long id);
+        Task DeleteAsync(long id);
     }
 }

@@ -5,7 +5,7 @@ namespace ApplicationService.DTOs.OrderManagementDTOs
 {
     public class OrderGetByIdDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public PaymentType PaymentType { get; set; }
 

@@ -12,7 +12,7 @@ namespace StoreMVC.ViewModels
     public class ProductVM
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
         [Display(Name = "Date of release")]
@@ -22,7 +22,7 @@ namespace StoreMVC.ViewModels
         public string Image { get; set; }
 
         [Display(Name = "Category")]
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
         public CategoryVM Category { get; set; }
 
         public ProductVM()

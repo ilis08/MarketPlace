@@ -25,7 +25,7 @@ namespace ApplicationService.Implementations
         }
 
 
-        public async Task<OrderGetByIdDTO> GetByIdAsync(int id)
+        public async Task<OrderGetByIdDTO> GetByIdAsync(long id)
         {
             var order = await repository.FindByCondition<Order>(p => p.Id == id)
                                         .Include(x => x.OrderDetailUser)
@@ -108,14 +108,14 @@ namespace ApplicationService.Implementations
             return orderToReturn;
         }
 
-        public async Task<OrderGetByIdDTO> CompleteOrderAsync(int id)
+        public async Task<OrderGetByIdDTO> CompleteOrderAsync(long id)
         {
             var orderToComplete = await repository.CompleteOrder(id);
 
             return ObjectMapper.Mapper.Map<OrderGetByIdDTO>(orderToComplete);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(long id)
         {
             Order order = await repository.FindByIdAsync<Order>(id);
 

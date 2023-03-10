@@ -30,7 +30,7 @@ namespace ApplicationService.Implementations
             }
         }
 
-        public async Task<CategoryDTO> GetByIdAsync(int id)
+        public async Task<CategoryDTO> GetByIdAsync(long id)
         {
             Category category = await repository.FindByIdAsync<Category>(id);
 
@@ -68,7 +68,7 @@ namespace ApplicationService.Implementations
             return categoryToReturn;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(long id)
         {
             Category category = await repository.FindByIdAsync<Category>(id);
 

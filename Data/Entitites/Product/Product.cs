@@ -14,7 +14,7 @@ namespace Data.Entitites
         public double Price { get; set; }
         public string? Image { get; set; }
         [Required]
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
         public virtual Category? Category { get; set; }
     }
 }
