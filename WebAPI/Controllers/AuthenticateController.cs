@@ -1,4 +1,4 @@
-﻿using Data.Entitites.User;
+﻿using Data.Entitites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

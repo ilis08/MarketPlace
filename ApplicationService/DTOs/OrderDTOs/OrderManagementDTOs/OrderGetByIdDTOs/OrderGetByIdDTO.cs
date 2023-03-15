@@ -13,9 +13,7 @@ namespace ApplicationService.DTOs.OrderManagementDTOs
 
         public double TotalPrice { get; set; }
 
-        public string FullName { get; set; }
-
-        public string Phone { get; set; }
+        public long UserId { get; set; }
 
         public List<OrderDetailProductByIdDTO> OrderDetailProducts { get; set; }
     }

@@ -11,9 +11,9 @@ namespace ApplicationService.DTOs
 
         public double TotalPrice { get; set; }
 
-        public OrderDetailUser OrderDetailUser { get; set; }
+        public long UserId { get; set; }
 
-        public IEnumerable<OrderDetailProductsDTO> OrderDetailProducts { get; set; }
+        public ICollection<OrderDetailProductsDTO>? OrderDetailProducts { get; set; }
 
     }
 }

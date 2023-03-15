@@ -55,7 +55,6 @@ namespace WebAPI.UnitTests.BLL
             int id = 1;
 
             var order = context.Orders.Where(x => x.Id == id)
-                                                .Include(x => x.OrderDetailUser)
                                                 .Include(x => x.OrderDetailProduct)
                                                 .ThenInclude(p => p.Product)
                                                 .ToList();
@@ -97,13 +96,7 @@ namespace WebAPI.UnitTests.BLL
             {
                 OrderId = 4,
                 PaymentType = PaymentType.ByCash,
-                OrderDetailUser = new OrderDetailUser
-                {
-                    Id = 3,
-                    Name = "Ivan",
-                    Surname = "Ivanov",
-                    PhoneNumber = "068",
-                },
+                UserId = 1,
                 OrderDetailProducts = new List<OrderDetailProductsDTO>()
                 {
                     new OrderDetailProductsDTO
@@ -115,12 +108,12 @@ namespace WebAPI.UnitTests.BLL
                 }
             };
 
-            Order order = new Order()
+            var order = new Order()
             {
                 Id = orderDTO.OrderId,
                 PaymentType = orderDTO.PaymentType,
-                OrderDetailUser = orderDTO.OrderDetailUser,
-                OrderDetailProduct = orderDTO.OrderDetailProducts.Select(x => new OrderDetailProduct
+                UserId = orderDTO.UserId,
+                OrderDetailProduct = (ICollection<OrderDetailProduct>)orderDTO.OrderDetailProducts.Select(x => new OrderDetailProduct
                 {
                     Id = x.Id,
                     Count = x.Count,

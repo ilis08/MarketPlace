@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Entitites.User
+namespace Data.Entitites
 {
     public class Response
     {

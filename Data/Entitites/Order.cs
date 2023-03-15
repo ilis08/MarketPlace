@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
 
 namespace Data.Entitites
@@ -8,18 +7,12 @@ namespace Data.Entitites
     {
         [Required]
         public PaymentType PaymentType { get; set; }
-
         public bool IsCompleted { get; set; }
-        
         public double TotalPrice { get; set; }
-
-        public int OrderDetailUserId { get; set; }
-
-        [BindNever]
-        public OrderDetailUser? OrderDetailUser { get; set; }
-
-        [BindNever]
-        public IEnumerable<OrderDetailProduct>? OrderDetailProduct { get; set; }
+        [Required]
+        public long UserId { get; set; }
+        public ApplicationUser User { get; set; }
+        public virtual ICollection<OrderDetailProduct>? OrderDetailProduct { get; set; }
     }
 
     public enum PaymentType

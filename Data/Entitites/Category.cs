@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Data.Entitites
 {
@@ -13,6 +12,8 @@ namespace Data.Entitites
         [MinLength(5)]
         [MaxLength(100)]
         public string? Description { get; set; }
+        [Required]
+        public string Image { get; set; }
 
         public virtual ICollection<Product>? Products { get; set; }
     }

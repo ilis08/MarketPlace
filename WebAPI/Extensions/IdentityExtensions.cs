@@ -1,4 +1,5 @@
 ﻿using Data.Context;
+using Data.Entitites;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +11,7 @@ namespace WebAPI.Extensions
     {
         public static void AddIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole<long>>()
                 .AddEntityFrameworkStores<RepositoryContext>()
                 .AddDefaultTokenProviders();
         }

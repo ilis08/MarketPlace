@@ -40,11 +40,6 @@ namespace Repository.Implementations
             repositoryContext.AttachRange(order.OrderDetailProduct.Select(c => c));
         }
 
-        public virtual void CreateUserOrder(Order order)
-        {
-            repositoryContext.Attach(order.OrderDetailUser).State = EntityState.Added;
-        }
-
         public async Task<Order> CompleteOrder(long id)
         {
             var order = await FindByCondition<Order>(x => x.Id == id).SingleOrDefaultAsync();

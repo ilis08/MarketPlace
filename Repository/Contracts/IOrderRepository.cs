@@ -8,7 +8,6 @@ namespace Repository.Contracts
         Task ComputeTotalPriceAsync(List<OrderDetailProduct> products);
         void ComputeTotalPriceForOrder(Order order);
         void CreateRangeOrder(Order order);
-        void CreateUserOrder(Order order);
         Task<Order> CompleteOrder(long id);
     }
 }

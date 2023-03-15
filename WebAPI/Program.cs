@@ -85,12 +85,8 @@ public class Program
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "IlisStore V1");
         });
 
-
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapHealthChecks("/healthcheck");
-            endpoints.MapControllers();
-        });
+        app.MapHealthChecks("/healthcheck");
+        app.MapControllers();
 
         app.Run();
     }

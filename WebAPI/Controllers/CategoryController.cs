@@ -1,6 +1,5 @@
 ﻿using ApplicationService.Contracts;
 using ApplicationService.DTOs;
-using Data.Entitites.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Filters;

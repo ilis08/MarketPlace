@@ -18,7 +18,6 @@ namespace WebAPI.UnitTests.Helpers
             await context.Products.AddRangeAsync(await Load<Product>(path + "products.json"));
 
             await context.OrderDetailProducts.AddRangeAsync(await Load<OrderDetailProduct>(path + "orderDetailProducts.json"));
-            await context.OrderDetailUsers.AddRangeAsync(await Load<OrderDetailUser>(path + "orderDetailUsers.json"));
             await context.Orders.AddRangeAsync(await Load<Order>(path + "orders.json"));
         }
 

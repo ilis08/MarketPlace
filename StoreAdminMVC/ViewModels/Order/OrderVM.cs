@@ -17,8 +17,7 @@ namespace StoreAdminMVC.ViewModels.Order
 
         public double TotalPrice { get; set; }
 
-        [BindNever]
-        public OrderDetailUser OrderDetailUser { get; set; }
+        public long UserId { get; set; }
 
         [BindNever]
         public IEnumerable<OrderDetailProductsDTO> OrderDetailProducts { get; set; }

@@ -28,7 +28,6 @@ namespace ApplicationService.Implementations
         public async Task<OrderGetByIdDTO> GetByIdAsync(long id)
         {
             var order = await repository.FindByCondition<Order>(p => p.Id == id)
-                                        .Include(x => x.OrderDetailUser)
                                         .Include(x => x.OrderDetailProduct)
                                         .ThenInclude(p => p.Product)
                                         .SingleOrDefaultAsync();
@@ -47,8 +46,7 @@ namespace ApplicationService.Implementations
                 PaymentType = order.PaymentType,
                 IsCompleted = order.IsCompleted,
                 TotalPrice = order.TotalPrice,
-                FullName = order.OrderDetailUser.Name + " " + order.OrderDetailUser.Surname,
-                Phone = order.OrderDetailUser.PhoneNumber,
+                UserId = order.UserId,
                 OrderDetailProducts = orderDetailProductsDTO
             };
 
@@ -66,13 +64,12 @@ namespace ApplicationService.Implementations
             {
                 Id = orderDTO.OrderId,
                 PaymentType = orderDTO.PaymentType,
-                OrderDetailUser = orderDTO.OrderDetailUser,
+                UserId = orderDTO.UserId,
                 OrderDetailProduct = mapObject
             };
 
             repository.ComputeTotalPriceForOrder(order);
 
-            repository.CreateUserOrder(order);
             repository.CreateRangeOrder(order);
 
             if (order.Id == 0)
@@ -95,7 +92,7 @@ namespace ApplicationService.Implementations
             {
                 Id = orderDTO.OrderId,
                 PaymentType = orderDTO.PaymentType,
-                OrderDetailUser = orderDTO.OrderDetailUser,
+                UserId = orderDTO.UserId,
                 OrderDetailProduct = mapObject
             };
 

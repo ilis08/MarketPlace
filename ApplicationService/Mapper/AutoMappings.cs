@@ -41,9 +41,9 @@ namespace ApplicationService
 
             CreateMap<Order, OrderGetDTO>().ReverseMap();
 
-            CreateMap<Order, OrderGetByIdDTO>().ForMember(dest =>
+/*            CreateMap<Order, OrderGetByIdDTO>().ForMember(dest =>
                 dest.FullName, opt => opt.MapFrom(src => src.OrderDetailUser.Name + " " + src.OrderDetailUser.Surname)).
-                ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.OrderDetailUser.PhoneNumber));
+                ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.OrderDetailUser.PhoneNumber));*/
 
             /*CreateMap<OrderDetailProductByIdDTO, OrderDetailProduct>().ForPath(dest =>
                 dest.Product.ProductName, opt => opt.MapFrom(src => src.ProductName)).ForMember(dest =>

@@ -1,5 +1,4 @@
-﻿using Data.Entitites;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
 using System;
@@ -9,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
 using System.Net;
+using Data.Entitites;
 
 namespace WebAPI.IntegrationTests.Controllers
 {
