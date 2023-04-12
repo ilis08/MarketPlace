@@ -1,11 +1,13 @@
 ﻿using ApplicationService.Contracts;
 using ApplicationService.DTOs;
 using ApplicationService.DTOs.OrderDTOs.OrderManagementDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Filters;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]

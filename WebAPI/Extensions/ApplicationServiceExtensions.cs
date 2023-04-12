@@ -31,5 +31,10 @@ namespace WebAPI.Extensions
         {
             services.AddScoped<IOrderManagementService, OrderManagementService>();
         }
+
+        public static void ConfigureTokenService(this IServiceCollection services)
+        {
+            services.AddScoped<ITokenService, TokenService>();
+        }
     }
 }

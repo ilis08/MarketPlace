@@ -32,6 +32,7 @@ public class Program
         builder.Services.ConfigureCategoryService();
         builder.Services.ConfigureProductService();
         builder.Services.ConfigureOrderService();
+        builder.Services.ConfigureTokenService();
         #endregion
 
         #region Repository

@@ -58,7 +58,7 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [Authorize("Admin")]
+        [Authorize("Admin, Market")]
         [Route("[action]")]
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
 
-        [Authorize("Admin")]
+        [Authorize("Admin, Market")]
         [Route("[action]")]
         [HttpPut]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
 
-        [Authorize("Admin")]
+        [Authorize("Admin, Market")]
         [Route("[action]/{id:int}")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
