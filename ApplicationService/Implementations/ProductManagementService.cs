@@ -4,6 +4,7 @@ using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Repository.Contracts;
 using Repository.RequestFeatures;
 
@@ -15,25 +16,23 @@ namespace ApplicationService.Implementations
 
         public ProductManagementService(IProductRepository _repository) => repository = _repository;
 
-        public async Task<IEnumerable<ProductDTO>> GetAsync(string query)
+        public async Task<IEnumerable<ProductDTO>> GetAsync(string query = " ")
         {
+            IQueryable<Product> productsQuery = repository.FindAll<Product>();
+
             if (string.IsNullOrWhiteSpace(query))
             {
-                var products = repository.FindAll<Product>().ToListAsync();
-
-                return ObjectMapper.Mapper.Map<List<ProductDTO>>(await products);
+                productsQuery = productsQuery.Where(x => x.ProductName.Contains(query));
             }
-            else
-            {
-                var products = await repository.FindByConditionAsync<Product>(x => x.ProductName.Contains(query));
 
-                return ObjectMapper.Mapper.Map<List<ProductDTO>>(products);
-            }
+            var products = await productsQuery.ToListAsync();
+
+            return ObjectMapper.Mapper.Map<List<ProductDTO>>(products);
         }
 
         public async Task<ProductDTO> GetByIdAsync(long id)
         {
-            var product = await repository.FindByIdAsync<Product>(id);
+            Product product = await repository.FindByIdAsync<Product>(id);
 
             if (product is null)
             {
@@ -47,9 +46,9 @@ namespace ApplicationService.Implementations
 
         public async Task<(IEnumerable<ProductDTO> products, MetaData metaData)> GetProductsByParametersAsync(ProductParameters productsParameters)
         {
-            var productWithMetaData = await repository.GetProductsByParametersAsync(productsParameters);
+            PagedList<Product> productWithMetaData = await repository.GetProductsByParametersAsync(productsParameters);
 
-            var productDTO = ObjectMapper.Mapper.Map<IEnumerable<ProductDTO>>(productWithMetaData);
+            IEnumerable<ProductDTO> productDTO = ObjectMapper.Mapper.Map<IEnumerable<ProductDTO>>(productWithMetaData);
 
             return (products: productDTO, metaData: productWithMetaData.MetaData);
         }
@@ -69,32 +68,22 @@ namespace ApplicationService.Implementations
 
         public async Task<ProductDTO> UpdateAsync(ProductDTO productDto)
         {
-            Product product;
+            Product product = ObjectMapper.Mapper.Map<Product>(productDto);
 
             if (productDto.ImageFile == null)
             {
-                product = ObjectMapper.Mapper.Map<Product>(productDto);
-
                 repository.Update(product);
-
-                await repository.SaveChangesAsync();
-
-                var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
-
-                return productToReturn;
             }
             else
             {
-                product = ObjectMapper.Mapper.Map<Product>(productDto);
-
                 repository.UpdateProductWithImage(productDto.ImageFile, product);
-
-                await repository.SaveChangesAsync();
-
-                var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
-
-                return productToReturn;
             }
+
+            await repository.SaveChangesAsync();
+
+            var productToReturn = ObjectMapper.Mapper.Map<ProductDTO>(product);
+
+            return productToReturn;
         }
 
 

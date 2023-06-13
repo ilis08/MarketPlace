@@ -22,7 +22,6 @@ namespace ApplicationService.DTOs.ProductDTOs
         [AllowedFileFormatsForImage(new string[] { ".jpg", ".png", ".jpeg" })]
         public IFormFile ImageFile { get; set; }
         public int CategoryId { get; set; }
-
-        public virtual CategoryDTO Category { get; set; }
+        public int SellerId { get; set; }
     }
 }

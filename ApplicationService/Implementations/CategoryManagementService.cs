@@ -1,5 +1,6 @@
 ﻿using ApplicationService.Contracts;
 using ApplicationService.DTOs;
+using ApplicationService.DTOs.ProductDTOs;
 using ApplicationService.Mapper;
 using Data.Entitites;
 using Exceptions.NotFound;
@@ -16,7 +17,14 @@ namespace ApplicationService.Implementations
 
         public async Task<IEnumerable<CategoryDTO>> GetAsync(string query = "")
         {
-            var categories = await repository.FindAll<Category>().Where(x => x.Title.Contains(query)).ToListAsync();
+            IQueryable<Category> categoriesQuery = repository.FindAll<Category>();
+
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                categoriesQuery = categoriesQuery.Where(x => x.Title.Contains(query));
+            }
+
+            var categories = await categoriesQuery.ToListAsync();
 
             return ObjectMapper.Mapper.Map<List<CategoryDTO>>(categories);
         }
