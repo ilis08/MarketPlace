@@ -4,6 +4,7 @@ using ApplicationService.DTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs.GetById;
 using ApplicationService.DTOs.OrderManagementDTOs.OrderSaveDTOs;
 using ApplicationService.DTOs.ProductDTOs;
+using ApplicationService.DTOs.SellerDTOs;
 using AutoMapper;
 using Data.Entitites;
 
@@ -51,6 +52,7 @@ namespace ApplicationService
 
             CreateMap<Product, ProductDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<Seller, SellerDTO>().ReverseMap();
         }
     }
 }
