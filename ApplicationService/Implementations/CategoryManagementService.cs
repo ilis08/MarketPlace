@@ -14,20 +14,11 @@ namespace ApplicationService.Implementations
 
         public CategoryManagementService(IRepository _repository) => repository = _repository;
 
-        public async Task<IEnumerable<CategoryDTO>> GetAsync(string query)
+        public async Task<IEnumerable<CategoryDTO>> GetAsync(string query = "")
         {
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                var categories = await repository.FindAll<Category>().ToListAsync();
+            var categories = await repository.FindAll<Category>().Where(x => x.Title.Contains(query)).ToListAsync();
 
-                return ObjectMapper.Mapper.Map<List<CategoryDTO>>(categories);
-            }
-            else
-            {
-                var categories = await repository.FindAll<Category>().Where(x => x.Title.Contains(query)).ToListAsync();
-
-                return ObjectMapper.Mapper.Map<List<CategoryDTO>>(categories);
-            }
+            return ObjectMapper.Mapper.Map<List<CategoryDTO>>(categories);
         }
 
         public async Task<CategoryDTO> GetByIdAsync(long id)
