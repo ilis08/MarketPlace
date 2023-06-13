@@ -12,12 +12,12 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ProductController : HomeController
     {
-        private readonly IProductManagementService service;
+        private readonly IProductManagementService productService;
         private readonly ILogger<ProductController> logger;
 
         public ProductController(IProductManagementService _service, ILogger<ProductController> _logger)
         {
-            service = _service;
+            productService = _service;
             logger = _logger;   
         }
 
@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
         [Route("[action]")]
         public async Task<IActionResult> Get(string query = "")
         {
-            var body = await service.GetAsync(query);
+            var body = await productService.GetAsync(query);
 
             if (body.Any())
             {
@@ -52,7 +52,7 @@ namespace WebAPI.Controllers
         [HttpGet("[action]/{id:int}", Name = "ProductById")]
         public async Task<IActionResult> GetById(int id)
         {
-            var product = await service.GetByIdAsync(id);
+            var product = await productService.GetByIdAsync(id);
 
             logger.Log(LogLevel.Information, "Succesfully getting a product");
 
@@ -62,7 +62,7 @@ namespace WebAPI.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> GetProductsByParams([FromQuery]ProductParameters productsParameters)
         {
-            var pagedResult = await service.GetProductsByParametersAsync(productsParameters);
+            var pagedResult = await productService.GetProductsByParametersAsync(productsParameters);
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 
@@ -76,7 +76,7 @@ namespace WebAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Save([FromForm]ProductDTO product)
         {
-            var productToReturn = await service.SaveAsync(product);
+            var productToReturn = await productService.SaveAsync(product);
 
             return CreatedAtRoute("ProductById", new { id = productToReturn.Id }, productToReturn);
         }
@@ -86,7 +86,7 @@ namespace WebAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Update([FromForm]ProductDTO product)
         {
-            var productToReturn = await service.UpdateAsync(product);
+            var productToReturn = await productService.UpdateAsync(product);
 
             return CreatedAtRoute("ProductById", new { id = productToReturn.Id }, productToReturn);
         }
@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            await service.DeleteAsync(id);
+            await productService.DeleteAsync(id);
 
             logger.Log(LogLevel.Information, "Product was deleted succesfully");
 

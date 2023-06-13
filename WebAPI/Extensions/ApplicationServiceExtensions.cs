@@ -32,6 +32,15 @@ namespace WebAPI.Extensions
             services.AddScoped<IOrderManagementService, OrderManagementService>();
         }
 
+        /// <summary>
+        /// Service for CRUD of Seller class
+        /// </summary>
+        /// <param name="services"></param>
+        public static void ConfigureSellerService(this IServiceCollection services)
+        {
+            services.AddScoped<ISellerManagementService, SellerManagementService>();
+        }
+
         public static void ConfigureTokenService(this IServiceCollection services)
         {
             services.AddScoped<ITokenService, TokenService>();

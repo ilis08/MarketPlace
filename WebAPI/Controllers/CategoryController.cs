@@ -14,12 +14,12 @@ namespace WebAPI.Controllers
     [ApiController]
     public class CategoryController : HomeController
     {
-        private readonly ICategoryManagementService service;
+        private readonly ICategoryManagementService categoryService;
         private readonly ILogger<CategoryController> logger;
 
         public CategoryController(ICategoryManagementService _service, ILogger<CategoryController> _logger)
         {
-            service = _service;
+            categoryService = _service;
             logger = _logger;
         }
 
@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
         [Route("[action]")]
         public async Task<IActionResult> Get(string query)
         {
-            var result = await service.GetAsync(query);
+            var result = await categoryService.GetAsync(query);
 
             if (result.Any())
             {
@@ -52,7 +52,7 @@ namespace WebAPI.Controllers
         [HttpGet("[action]/{id:int}", Name = "CategoryById")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await service.GetByIdAsync(id);
+            var result = await categoryService.GetByIdAsync(id);
 
             logger.Log(LogLevel.Information, "Succesfully getting a category");
             return Ok(result);
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Save([FromForm]CategoryDTO category)
         {
-            var categoryToReturn = await service.SaveAsync(category);
+            var categoryToReturn = await categoryService.SaveAsync(category);
 
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
@@ -75,7 +75,7 @@ namespace WebAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Update([FromBody] CategoryDTO category)
         {
-            var categoryToReturn = await service.UpdateAsync(category);
+            var categoryToReturn = await categoryService.UpdateAsync(category);
 
             return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
         }
@@ -85,7 +85,7 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            await service.DeleteAsync(id);
+            await categoryService.DeleteAsync(id);
 
             logger.Log(LogLevel.Information,"Category was deleted");
 

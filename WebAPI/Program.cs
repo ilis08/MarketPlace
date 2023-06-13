@@ -10,11 +10,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Host.ConfigureLogging(logging =>
-        {
-            logging.AddConsole();
-            logging.AddDebug();
-        });
+        builder.Logging.AddConsole().AddDebug();
 
         #region Swagger
 
