@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,21 @@ namespace Data.Context
         public RepositoryContext(DbContextOptions<RepositoryContext> options)
             : base(options)
         {
+            var dbCreater = Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+            if (dbCreater != null)
+            {
+                // Create Database 
+                if (!dbCreater.CanConnect())
+                {
+                    dbCreater.Create();
+                }
+
+                // Create Tables
+                if (!dbCreater.HasTables())
+                {
+                    dbCreater.CreateTables();
+                }
+            }
         }
 
         public RepositoryContext()

@@ -5,6 +5,7 @@
 	  <ImplicitUsings>enable</ImplicitUsings>
 	  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	  <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+	  <UserSecretsId>536b4d46-71bb-417f-a425-ad69150b8839</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -22,14 +23,6 @@
     <Content Remove="Messages\**" />
     <EmbeddedResource Remove="Messages\**" />
     <None Remove="Messages\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="appsettings.Production.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="appsettings.Production.json" />
   </ItemGroup>
 
 	

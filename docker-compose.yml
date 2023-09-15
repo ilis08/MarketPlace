@@ -1,17 +1,20 @@
-version: '3.4'
+version: "3.4"
 
 services:
-  webapi:
-    image: ${DOCKER_REGISTRY-}webapi
-    build:
-      context: .
-      dockerfile: WebAPI/Dockerfile
-    depends_on:
-        - sqlserver
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    environment:
-    - ACCEPT_EULA=Y
-    - SA_PASSWORD=MyDatabaseSecret123
-    ports:
-    - "1433:1433"
+    WebAPI:
+        build:
+          context: .
+          dockerfile: WebAPI/Dockerfile
+        ports:
+          - "8080:80"
+        depends_on:
+          - SqlServerDb
+
+    SqlServerDb:
+        image: "mcr.microsoft.com/mssql/server:2022-latest"
+        ports:
+          - "8001:80"
+
+        environment:
+            SA_PASSWORD: "S3cur3P@ssW0rd!"
+            ACCEPT_EULA: "Y"
