@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using MediatR;
+using FluentValidation;
 
 namespace MarketPlace.Application
 {
@@ -12,6 +13,7 @@ namespace MarketPlace.Application
 
             services.AddAutoMapper(assembly);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+            services.AddValidatorsFromAssembly(assembly);
 
             return services;
         }
