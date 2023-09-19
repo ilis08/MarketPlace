@@ -10,8 +10,8 @@
 
 <div class="card-deck">
     @foreach (var product in Model)
-    {
-        <div class="card m-3" style="min-width: 18rem; max-width:30.5%;">
+{
+    <div class="card m-3" style="min-width: 18rem; max-width:30.5%;">
             <div class="card-header">
                 <h3>@product.ProductName</h3>
             </div>
@@ -24,5 +24,5 @@
                 <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger m-1">Delete</a>
             </div>
         </div>
-    }
+}
 </div>

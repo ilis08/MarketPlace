@@ -11,7 +11,7 @@
 {
     <a class="btn btn-block
        @(category == ViewBag.SelectedCategory
-       ? "btn-primary": "btn-outline-secondary")"
+   ? "btn-primary": "btn-outline-secondary")"
        asp-action="GetProductsByCategory" asp-controller="Home"
        asp-route-category="@category.Title">
         @category.Title

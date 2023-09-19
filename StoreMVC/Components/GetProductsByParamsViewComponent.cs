@@ -8,28 +8,27 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace StoreMVC.Components
+namespace StoreMVC.Components;
+
+public class GetProductsByParamsViewComponent : ViewComponent
 {
-    public class GetProductsByParamsViewComponent : ViewComponent
+    private IHttpClientFactory clientFactory;
+
+    public GetProductsByParamsViewComponent(IHttpClientFactory _factory)
     {
-        private IHttpClientFactory clientFactory;
+        clientFactory = _factory;
+    }
 
-        public GetProductsByParamsViewComponent(IHttpClientFactory _factory)
-        {
-            clientFactory = _factory;
-        }
+    public async Task<IViewComponentResult> InvokeAsync(ProductListVM productsParams)
+    {
+        var client = clientFactory.CreateClient("myapi");
 
-        public async Task<IViewComponentResult> InvokeAsync(ProductListVM productsParams)
-        {
-            var client = clientFactory.CreateClient("myapi");
+        var response = await client.GetAsync($"Product/GetProductsByParams?Category={productsParams.Params.Category}");
 
-            var response = await client.GetAsync($"Product/GetProductsByParams?Category={productsParams.Params.Category}");
+        var products = JsonConvert.DeserializeObject<IEnumerable<ProductVM>>(await response.Content.ReadAsStringAsync());
 
-            var products = JsonConvert.DeserializeObject<IEnumerable<ProductVM>>(await response.Content.ReadAsStringAsync());
+        productsParams.Products = products;
 
-            productsParams.Products = products;
-
-            return View(productsParams);
-        }
+        return View(productsParams);
     }
 }

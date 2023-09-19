@@ -8,32 +8,31 @@ using Newtonsoft.Json;
 using StoreMVC.ViewModels;
 using StoreMVC.ViewModels.Product;
 
-namespace StoreMVC.Components
+namespace StoreMVC.Components;
+
+public class NavigationCategoryViewComponent : ViewComponent
 {
-    public class NavigationCategoryViewComponent : ViewComponent
+    private IHttpClientFactory clientFactory;
+
+    public NavigationCategoryViewComponent(IHttpClientFactory _factory)
     {
-        private IHttpClientFactory clientFactory;
+        clientFactory = _factory;
+    }
 
-        public NavigationCategoryViewComponent(IHttpClientFactory _factory)
-        {
-            clientFactory = _factory;
-        }
+    public async Task<IViewComponentResult> InvokeAsync()
+    {
+        var client = clientFactory.CreateClient("myapi");
 
-        public async Task<IViewComponentResult> InvokeAsync()
-        {
-            var client = clientFactory.CreateClient("myapi");
+        var response = await client.GetAsync("Category/Get");
 
-            var response = await client.GetAsync("Category/Get");
+        var category = JsonConvert.DeserializeObject<IEnumerable<CategoryVM>>(await response.Content.ReadAsStringAsync());
 
-            var category = JsonConvert.DeserializeObject<IEnumerable<CategoryVM>>(await response.Content.ReadAsStringAsync());
+        ViewBag.SelectedCategory = RouteData?.Values["category"];
 
-            ViewBag.SelectedCategory = RouteData?.Values["category"];
+        ProductListVM product = new();
 
-            ProductListVM product = new();
+        product.Categories = category;
 
-            product.Categories = category;
-
-            return View(product);
-        }
+        return View(product);
     }
 }

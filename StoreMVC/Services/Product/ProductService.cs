@@ -8,77 +8,76 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace StoreMVC.Service
+namespace StoreMVC.Service;
+
+public class ProductService : IProductService
 {
-    public class ProductService : IProductService
+    private readonly IHttpClientFactory clientFactory;
+
+    public ProductService(IHttpClientFactory _factory)
     {
-        private readonly IHttpClientFactory clientFactory;
+        clientFactory = _factory;
+    }
 
-        public ProductService(IHttpClientFactory _factory)
+    public async Task<ProductVM> GetProductAsync(int id)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
+
+        var client = clientFactory.CreateClient("myapi");
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
         {
-            clientFactory = _factory;
+            var responseStream = await response.Content.ReadAsStringAsync();
+            var product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
+            return product;
         }
-
-        public async Task<ProductVM> GetProductAsync(int id)
+        else
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/GetById/{id}");
-
-            var client = clientFactory.CreateClient("myapi");
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                var product = JsonConvert.DeserializeObject<ProductVM>(responseStream);
-                return product;
-            }
-            else
-            {
-                throw new NotFoundException(id, nameof(ProductVM));
-            }
+            throw new NotFoundException(id, nameof(ProductVM));
         }
+    }
 
-        public async Task<List<ProductVM>> GetProductsAsync(string query)
+    public async Task<List<ProductVM>> GetProductsAsync(string query)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"Product/Get?query={query}");
+
+        var client = clientFactory.CreateClient("myapi");
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"Product/Get?query={query}");
-
-            var client = clientFactory.CreateClient("myapi");
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                var products = JsonConvert.DeserializeObject<List<ProductVM>>(responseStream);
-                return products;
-            }
-            else
-            {
-                return Enumerable.Empty<ProductVM>().ToList();
-            }
+            var responseStream = await response.Content.ReadAsStringAsync();
+            var products = JsonConvert.DeserializeObject<List<ProductVM>>(responseStream);
+            return products;
         }
-
-        public async Task<ProductListVM> GetProductsByParams(ProductParameters productsParams)
+        else
         {
-            var client = clientFactory.CreateClient("myapi");
+            return Enumerable.Empty<ProductVM>().ToList();
+        }
+    }
 
-            var response = await client.GetAsync($"Product/GetProductsByParams?ProductName={productsParams.ProductName}&Category={productsParams.Category}&Ordering={productsParams.Ordering}&PageSize={productsParams.PageSize}&PageNumber={productsParams.PageNumber}");
+    public async Task<ProductListVM> GetProductsByParams(ProductParameters productsParams)
+    {
+        var client = clientFactory.CreateClient("myapi");
 
-            if (response.IsSuccessStatusCode)
-            {
-                var productListVM = new ProductListVM();
+        var response = await client.GetAsync($"Product/GetProductsByParams?ProductName={productsParams.ProductName}&Category={productsParams.Category}&Ordering={productsParams.Ordering}&PageSize={productsParams.PageSize}&PageNumber={productsParams.PageNumber}");
 
-                productListVM.Products = JsonConvert.DeserializeObject<List<ProductVM>>(await response.Content.ReadAsStringAsync()); 
-                productListVM.Params = productsParams;
-                productListVM.Params.RequestMetaData = JsonConvert.DeserializeObject<RequestMetaData>(response.Headers.GetValues("X-Pagination").FirstOrDefault());
+        if (response.IsSuccessStatusCode)
+        {
+            var productListVM = new ProductListVM();
 
-                return productListVM;
-            }
-            else
-            {
-                return null;
-            }
+            productListVM.Products = JsonConvert.DeserializeObject<List<ProductVM>>(await response.Content.ReadAsStringAsync()); 
+            productListVM.Params = productsParams;
+            productListVM.Params.RequestMetaData = JsonConvert.DeserializeObject<RequestMetaData>(response.Headers.GetValues("X-Pagination").FirstOrDefault());
+
+            return productListVM;
+        }
+        else
+        {
+            return null;
         }
     }
 }

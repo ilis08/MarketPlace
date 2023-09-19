@@ -5,14 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoreMVC.Service
+namespace StoreMVC.Service;
+
+public interface IProductService
 {
-    public interface IProductService
-    {
-        Task<ProductVM> GetProductAsync(int id);
+    Task<ProductVM> GetProductAsync(int id);
 
-        Task<List<ProductVM>> GetProductsAsync(string query);
+    Task<List<ProductVM>> GetProductsAsync(string query);
 
-        Task<ProductListVM> GetProductsByParams(ProductParameters productsParams);
-    }
+    Task<ProductListVM> GetProductsByParams(ProductParameters productsParams);
 }

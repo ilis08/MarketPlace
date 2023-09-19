@@ -7,13 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Contracts
+namespace Repository.Contracts;
+
+public interface IBlobService
 {
-    public interface IBlobService
-    {
-        Task<Blob> GetBlobAsync(string name);
-        Task<IEnumerable<BlobInfo>> ListBlobAsync();
-        Task<string> UploadFileBlobAsync(IFormFile file);
-        Task DeleteFileBlobAsync(string blobFileName);
-    }
+    Task<Blob> GetBlobAsync(string name);
+    Task<IEnumerable<BlobInfo>> ListBlobAsync();
+    Task<string> UploadFileBlobAsync(IFormFile file);
+    Task DeleteFileBlobAsync(string blobFileName);
 }

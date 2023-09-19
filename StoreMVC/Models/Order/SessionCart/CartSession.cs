@@ -7,47 +7,46 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace StoreMVC.Models.Order.SessionCart
+namespace StoreMVC.Models.Order.SessionCart;
+
+public class CartSession : Cart
 {
-    public class CartSession : Cart
+    public static Cart GetCart(IServiceProvider service)
     {
-        public static Cart GetCart(IServiceProvider service)
-        {
-            ISession session = service.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
+        ISession session = service.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
 
-            CartSession cart = session?.GetJson<CartSession>("Cart") ?? new CartSession();
+        CartSession cart = session?.GetJson<CartSession>("Cart") ?? new CartSession();
 
-            cart.Session = session;
+        cart.Session = session;
 
-            return cart;
-        }
+        return cart;
+    }
 
-        [JsonIgnore]
-        public ISession Session { get; set; }
+    [JsonIgnore]
+    public ISession Session { get; set; }
 
 
-        public override void AddToCart(ProductVM product)
-        {
-            base.AddToCart(product);
-            Session.SetJson("Cart", this);
-        }
+    public override void AddToCart(ProductVM product)
+    {
+        base.AddToCart(product);
+        Session.SetJson("Cart", this);
+    }
 
-        public override void RemoveFromCart(ProductVM product)
-        {
-            base.RemoveFromCart(product);
-            Session.SetJson("Cart", this);
-        }
+    public override void RemoveFromCart(ProductVM product)
+    {
+        base.RemoveFromCart(product);
+        Session.SetJson("Cart", this);
+    }
 
-        public override void MinusCount(ProductVM product)
-        {
-            base.MinusCount(product);
-            Session.SetJson("Cart", this);
-        }
+    public override void MinusCount(ProductVM product)
+    {
+        base.MinusCount(product);
+        Session.SetJson("Cart", this);
+    }
 
-        public override void CleanCart()
-        {
-            base.CleanCart();
-            Session.SetJson("Cart", this); 
-        }
+    public override void CleanCart()
+    {
+        base.CleanCart();
+        Session.SetJson("Cart", this); 
     }
 }

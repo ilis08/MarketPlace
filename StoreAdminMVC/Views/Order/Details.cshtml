@@ -11,19 +11,19 @@
     <div class="col-sm-8">
         <div class="card">
             @if (Model.IsCompleted)
-            {
-                <div class="card-header">
+        {
+            <div class="card-header">
                     <p>№ @Model.Id</p>
                     <p>Order is completed <i class="fa fa-check" aria-hidden="true"></i></p>
                 </div>
-            }
-            else
-            {
-                <div class="card-header">
+        }
+        else
+        {
+            <div class="card-header">
                     <p>№ @Model.Id</p>
                     <p>Order is in process <i class="fas fa-sync-alt"></i></p>
                 </div>
-            }
+        }
 
 
             <br />
@@ -40,9 +40,9 @@
                 <div class="my-3 p-3">
                     <ul class="list-group">
                         @foreach (var item in Model.OrderDetailProducts)
-                        {
-                            <li class="list-group-item">Product : <a asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark">@item.ProductName</a>. Count : @item.Count</li>
-                        }
+                    {
+                        <li class="list-group-item">Product : <a asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark">@item.ProductName</a>. Count : @item.Count</li>
+                    }
                     </ul>
                 </div>
             </div>
@@ -52,9 +52,9 @@
             <div class="card-footer text-center">
                 <a asp-controller="Order" asp-action="Index" class="btn btn-primary">Back</a>
                 @if (!Model.IsCompleted)
-                {
-                    <a asp-controller="Order" asp-action="CompleteOrder" asp-route-id="@Model.Id">Complete Order</a>
-                }
+            {
+                <a asp-controller="Order" asp-action="CompleteOrder" asp-route-id="@Model.Id">Complete Order</a>
+            }
             </div>
         </div>
     </div>

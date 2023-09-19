@@ -2,7 +2,7 @@
 @model StoreMVC.ViewModels.OrderVM
 @{
     Layout = "_OrderLayout";
-    ViewData["Title"] = "Checkout";
+ViewData["Title"] = "Checkout";
 }
 
 <div class="mt-4 col-12">
@@ -53,8 +53,8 @@
                         <br />
 
                         @foreach (var item in Model.OrderDetailProducts)
-                        {
-                            <div class="row">
+                    {
+                        <div class="row">
                                 <div class="col-3">
                                     <img src="~/Images/@item.Product.Image" width="150" height="160" />
                                 </div>
@@ -77,15 +77,15 @@
                                     <p>@((item.Count * item.Product.Price).ToString("c", CultureInfo.CreateSpecificCulture("en-US")))</p>
                                 </div>
                             </div>
-                            <hr />
-                        }
+                        <hr />
+                    }
 
                         <h5>Payment Type</h5>
                         <br />
                         <div>
                             @foreach (var type in Enum.GetValues(Model.PaymentType.GetType()))
-                            {
-                               <div class="bg-success text-white rounded">
+                        {
+                           <div class="bg-success text-white rounded">
                                 <div class="form-check m-1 pb-4">
                                     <br>
                                     <label class="form-check-label" for="flexRadioDefault1">
@@ -94,7 +94,7 @@
                                     </label>
                                 </div> 
                                 </div>
-                            }
+                        }
                         </div>
                     </main>
 

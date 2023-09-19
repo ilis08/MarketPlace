@@ -1,9 +1,8 @@
-﻿namespace StoreMVC.ViewModels
-{
-    public class RequestParameters
-    {
-        public int PageNumber { get; set; }
+﻿namespace StoreMVC.ViewModels;
 
-        public int PageSize { get; set; }
-    }
+public class RequestParameters
+{
+    public int PageNumber { get; set; }
+
+    public int PageSize { get; set; }
 }

@@ -8,37 +8,36 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using StoreMVC.ViewModels;
 
-namespace StoreMVC.Pages
+namespace StoreMVC.Pages;
+
+public class CategoriesModel : PageModel
 {
-    public class CategoriesModel : PageModel
+    private readonly IHttpClientFactory clientFactory;
+    public IEnumerable<CategoryVM> Categories { get; private set; }
+
+    public CategoriesModel(IHttpClientFactory factory)
     {
-        private readonly IHttpClientFactory clientFactory;
-        public IEnumerable<CategoryVM> Categories { get; private set; }
+        clientFactory = factory;
+    }
 
-        public CategoriesModel(IHttpClientFactory factory)
+    public async Task<IActionResult> OnGetAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "Category/Get/");
+
+        var client = clientFactory.CreateClient("myapi");
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
         {
-            clientFactory = factory;
+            var responseStream = await response.Content.ReadAsStringAsync();
+            Categories = JsonConvert.DeserializeObject<List<CategoryVM>>(responseStream);
+        }
+        else
+        {
+            Categories = Array.Empty<CategoryVM>();
         }
 
-        public async Task<IActionResult> OnGetAsync()
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "Category/Get/");
-
-            var client = clientFactory.CreateClient("myapi");
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseStream = await response.Content.ReadAsStringAsync();
-                Categories = JsonConvert.DeserializeObject<List<CategoryVM>>(responseStream);
-            }
-            else
-            {
-                Categories = Array.Empty<CategoryVM>();
-            }
-
-            return Page();
-        }
+        return Page();
     }
 }

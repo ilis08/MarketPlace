@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Exceptions
+namespace Exceptions;
+
+public sealed class PriceRangeBadRequestException : Exception
 {
-    public sealed class PriceRangeBadRequestException : Exception
+    public PriceRangeBadRequestException() : base("Min price cannot be greater than the Max price.")
     {
-        public PriceRangeBadRequestException() : base("Min price cannot be greater than the Max price.")
-        {
-        }
     }
 }

@@ -5,101 +5,100 @@ using Repository.RequestFeatures;
 using System.Text.Json;
 using WebAPI.Filters;
 
-namespace WebAPI.Controllers
+namespace WebAPI.Controllers;
+
+[Produces("application/json")]
+[Route("api/[controller]")]
+[ApiController]
+public class ProductController : HomeController
 {
-    [Produces("application/json")]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductController : HomeController
+    private readonly IProductManagementService productService;
+    private readonly ILogger<ProductController> logger;
+
+    public ProductController(IProductManagementService _service, ILogger<ProductController> _logger)
     {
-        private readonly IProductManagementService productService;
-        private readonly ILogger<ProductController> logger;
+        productService = _service;
+        logger = _logger;   
+    }
 
-        public ProductController(IProductManagementService _service, ILogger<ProductController> _logger)
+    /// <summary>
+    /// Returns all Categories if query==null, or if query!=null return Categories which contains 'query' 
+    /// </summary>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    /// 
+    
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<ProductDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [Route("[action]")]
+    public async Task<IActionResult> Get(string query = "")
+    {
+        var body = await productService.GetAsync(query);
+
+        if (body.Any())
         {
-            productService = _service;
-            logger = _logger;   
+            logger.Log(LogLevel.Information, "Succesfully getting a list of products");
+            return Ok(body);
+        }
+        else
+        {
+            logger.Log(LogLevel.Error, "Cannot load a products");
+            return NoContent();
         }
 
-        /// <summary>
-        /// Returns all Categories if query==null, or if query!=null return Categories which contains 'query' 
-        /// </summary>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        /// 
-        
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ProductDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [Route("[action]")]
-        public async Task<IActionResult> Get(string query = "")
-        {
-            var body = await productService.GetAsync(query);
+    }
 
-            if (body.Any())
-            {
-                logger.Log(LogLevel.Information, "Succesfully getting a list of products");
-                return Ok(body);
-            }
-            else
-            {
-                logger.Log(LogLevel.Error, "Cannot load a products");
-                return NoContent();
-            }
+    [HttpGet("[action]/{id:int}", Name = "ProductById")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var product = await productService.GetByIdAsync(id);
 
-        }
+        logger.Log(LogLevel.Information, "Succesfully getting a product");
 
-        [HttpGet("[action]/{id:int}", Name = "ProductById")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var product = await productService.GetByIdAsync(id);
+        return Ok(product);
+    }
 
-            logger.Log(LogLevel.Information, "Succesfully getting a product");
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetProductsByParams([FromQuery]ProductParameters productsParameters)
+    {
+        var pagedResult = await productService.GetProductsByParametersAsync(productsParameters);
 
-            return Ok(product);
-        }
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 
-        [HttpGet("[action]")]
-        public async Task<IActionResult> GetProductsByParams([FromQuery]ProductParameters productsParameters)
-        {
-            var pagedResult = await productService.GetProductsByParametersAsync(productsParameters);
+        logger.Log(LogLevel.Information, "Succesfully getting a list of a products by parameters");
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+        return Ok(pagedResult.products);
+    }
 
-            logger.Log(LogLevel.Information, "Succesfully getting a list of a products by parameters");
+    [Route("[action]")]
+    [HttpPost]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    public async Task<IActionResult> Save([FromForm]ProductDTO product)
+    {
+        var productToReturn = await productService.SaveAsync(product);
 
-            return Ok(pagedResult.products);
-        }
+        return CreatedAtRoute("ProductById", new { id = productToReturn.Id }, productToReturn);
+    }
 
-        [Route("[action]")]
-        [HttpPost]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> Save([FromForm]ProductDTO product)
-        {
-            var productToReturn = await productService.SaveAsync(product);
+    [Route("[action]")]
+    [HttpPut]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    public async Task<IActionResult> Update([FromForm]ProductDTO product)
+    {
+        var productToReturn = await productService.UpdateAsync(product);
 
-            return CreatedAtRoute("ProductById", new { id = productToReturn.Id }, productToReturn);
-        }
+        return CreatedAtRoute("ProductById", new { id = productToReturn.Id }, productToReturn);
+    }
 
-        [Route("[action]")]
-        [HttpPut]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> Update([FromForm]ProductDTO product)
-        {
-            var productToReturn = await productService.UpdateAsync(product);
+    [Route("[action]/{id:int}")]
+    [HttpDelete]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await productService.DeleteAsync(id);
 
-            return CreatedAtRoute("ProductById", new { id = productToReturn.Id }, productToReturn);
-        }
+        logger.Log(LogLevel.Information, "Product was deleted succesfully");
 
-        [Route("[action]/{id:int}")]
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await productService.DeleteAsync(id);
-
-            logger.Log(LogLevel.Information, "Product was deleted succesfully");
-
-            return Ok("Product was deleted succesfully");
-        }
+        return Ok("Product was deleted succesfully");
     }
 }

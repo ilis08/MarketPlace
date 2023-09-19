@@ -12,90 +12,89 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApplicationService.Implementations
+namespace ApplicationService.Implementations;
+
+public class SellerManagementService : ISellerManagementService
 {
-    public class SellerManagementService : ISellerManagementService
+    private readonly IRepository repository;
+    public SellerManagementService(IRepository _repository) => repository = _repository;
+
+    public async Task<IEnumerable<SellerDTO>> GetAsync(string query)
     {
-        private readonly IRepository repository;
-        public SellerManagementService(IRepository _repository) => repository = _repository;
+        IQueryable<Seller> sellersQuery = repository.FindAll<Seller>();
 
-        public async Task<IEnumerable<SellerDTO>> GetAsync(string query)
+        if (string.IsNullOrWhiteSpace(query))
         {
-            IQueryable<Seller> sellersQuery = repository.FindAll<Seller>();
-
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                sellersQuery = sellersQuery.Where(x => x.Name.Contains(query));
-            }
-
-            var sellers = await sellersQuery.ToListAsync();
-
-            return ObjectMapper.Mapper.Map<List<SellerDTO>>(sellers);
+            sellersQuery = sellersQuery.Where(x => x.Name.Contains(query));
         }
 
-        public async Task<SellerDTO> GetByIdAsync(long id)
+        var sellers = await sellersQuery.ToListAsync();
+
+        return ObjectMapper.Mapper.Map<List<SellerDTO>>(sellers);
+    }
+
+    public async Task<SellerDTO> GetByIdAsync(long id)
+    {
+        Seller seller = await repository.FindByIdAsync<Seller>(id);
+
+        if (seller is null)
         {
-            Seller seller = await repository.FindByIdAsync<Seller>(id);
-
-            if (seller is null)
-            {
-                throw new NotFoundException(id, nameof(Seller));
-            }
-
-            return ObjectMapper.Mapper.Map<SellerDTO>(seller);
-        }
-        public async Task<SellerDTO> SaveAsync(SellerDTO sellerDTO)
-        {
-            Seller seller = ObjectMapper.Mapper.Map<Seller>(sellerDTO);
-
-            var user = await repository.FindByIdAsync<ApplicationUser>(seller.UserId);
-
-            if (user is null)
-            {
-                throw new Exception($"User with id : {seller.UserId} not found when SaveAsync() seller in SellerManagementService");
-            }
-
-            await repository.CreateAsync(seller);
-
-            await repository.SaveChangesAsync();
-
-            var sellerToReturn = ObjectMapper.Mapper.Map<SellerDTO>(seller);
-
-            return sellerToReturn;
+            throw new NotFoundException(id, nameof(Seller));
         }
 
-        public async Task<SellerDTO> UpdateAsync(SellerDTO sellerDTO)
+        return ObjectMapper.Mapper.Map<SellerDTO>(seller);
+    }
+    public async Task<SellerDTO> SaveAsync(SellerDTO sellerDTO)
+    {
+        Seller seller = ObjectMapper.Mapper.Map<Seller>(sellerDTO);
+
+        var user = await repository.FindByIdAsync<ApplicationUser>(seller.UserId);
+
+        if (user is null)
         {
-            Seller seller = ObjectMapper.Mapper.Map<Seller>(sellerDTO);
-
-            var user = await repository.FindByIdAsync<ApplicationUser>(seller.UserId);
-
-            if (user is null)
-            {
-                throw new Exception($"User with id : {seller.UserId} not found when UpdateAsync() seller in SellerManagementService");
-            }
-
-            repository.Update(seller);
-
-            await repository.SaveChangesAsync();
-
-            var sellerToReturn = ObjectMapper.Mapper.Map<SellerDTO>(seller);
-
-            return sellerToReturn;
+            throw new Exception($"User with id : {seller.UserId} not found when SaveAsync() seller in SellerManagementService");
         }
 
-        public async Task DeleteAsync(long id)
+        await repository.CreateAsync(seller);
+
+        await repository.SaveChangesAsync();
+
+        var sellerToReturn = ObjectMapper.Mapper.Map<SellerDTO>(seller);
+
+        return sellerToReturn;
+    }
+
+    public async Task<SellerDTO> UpdateAsync(SellerDTO sellerDTO)
+    {
+        Seller seller = ObjectMapper.Mapper.Map<Seller>(sellerDTO);
+
+        var user = await repository.FindByIdAsync<ApplicationUser>(seller.UserId);
+
+        if (user is null)
         {
-            Seller seller = await repository.FindByIdAsync<Seller>(id);
-
-            if (seller is null)
-            {
-                throw new NotFoundException(id, nameof(Seller));
-            }
-
-            repository.Delete(seller);
-
-            await repository.SaveChangesAsync();
+            throw new Exception($"User with id : {seller.UserId} not found when UpdateAsync() seller in SellerManagementService");
         }
+
+        repository.Update(seller);
+
+        await repository.SaveChangesAsync();
+
+        var sellerToReturn = ObjectMapper.Mapper.Map<SellerDTO>(seller);
+
+        return sellerToReturn;
+    }
+
+    public async Task DeleteAsync(long id)
+    {
+        Seller seller = await repository.FindByIdAsync<Seller>(id);
+
+        if (seller is null)
+        {
+            throw new NotFoundException(id, nameof(Seller));
+        }
+
+        repository.Delete(seller);
+
+        await repository.SaveChangesAsync();
     }
 }

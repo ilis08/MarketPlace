@@ -4,51 +4,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoreMVC.Models.Order
+namespace StoreMVC.Models.Order;
+
+public class Cart
 {
-    public class Cart
+    public List<CartLine> Lines { get; set; } = new List<CartLine>();
+
+    public virtual void AddToCart(ProductVM product)
     {
-        public List<CartLine> Lines { get; set; } = new List<CartLine>();
+        CartLine line = Lines.Where(p => p.Product.Id == product.Id).FirstOrDefault();
 
-        public virtual void AddToCart(ProductVM product)
+        if (line == null)
         {
-            CartLine line = Lines.Where(p => p.Product.Id == product.Id).FirstOrDefault();
-
-            if (line == null)
+            Lines.Add(new CartLine
             {
-                Lines.Add(new CartLine
-                {
-                    Product = product,
-                    Count = 1
-                });
-            }
-            else
-            {
-                line.Count += 1;
-            }
+                Product = product,
+                Count = 1
+            });
         }
-
-        public virtual void RemoveFromCart(ProductVM product)
+        else
         {
-            Lines.RemoveAll(p => p.Product.Id == product.Id);
+            line.Count += 1;
         }
+    }
 
-        public virtual void MinusCount(ProductVM product)
-        {
-            foreach (var item in Lines.Where(p => p.Product.Id == product.Id))
-            {
-                item.Count -= 1;
-            }
-        }
+    public virtual void RemoveFromCart(ProductVM product)
+    {
+        Lines.RemoveAll(p => p.Product.Id == product.Id);
+    }
 
-        public double ComputeTotalPrice()
+    public virtual void MinusCount(ProductVM product)
+    {
+        foreach (var item in Lines.Where(p => p.Product.Id == product.Id))
         {
-            return Lines.Sum(e => e.Count * e.Product.Price);
+            item.Count -= 1;
         }
+    }
 
-        public virtual void CleanCart()
-        {
-            Lines.Clear();
-        }
+    public double ComputeTotalPrice()
+    {
+        return Lines.Sum(e => e.Count * e.Product.Price);
+    }
+
+    public virtual void CleanCart()
+    {
+        Lines.Clear();
     }
 }

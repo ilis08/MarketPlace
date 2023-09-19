@@ -3,24 +3,23 @@ using NUnit.Framework;
 using System;
 using System.Net.Http;
 
-namespace WebAPI.IntegrationTests.Controllers
+namespace WebAPI.IntegrationTests.Controllers;
+
+[TestFixture]
+public abstract class ControllerTestsBase
 {
-    [TestFixture]
-    public abstract class ControllerTestsBase
+    private readonly WebApplicationFactory<Program> applicationFactory;
+    protected readonly HttpClient client;
+
+    public ControllerTestsBase()
     {
-        private readonly WebApplicationFactory<Program> applicationFactory;
-        protected readonly HttpClient client;
+        applicationFactory = new();
+        client = applicationFactory.CreateDefaultClient(new Uri("http://localhost/api/"));
+    }
 
-        public ControllerTestsBase()
-        {
-            applicationFactory = new();
-            client = applicationFactory.CreateDefaultClient(new Uri("http://localhost/api/"));
-        }
-
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            client.Dispose();
-        }
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+        client.Dispose();
     }
 }

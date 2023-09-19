@@ -9,27 +9,26 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Repository.RequestFeatures
+namespace Repository.RequestFeatures;
+
+public enum Ordering
 {
-    public enum Ordering
-    {
-        OrderByHighestPrice,
-        OrderByLowestPrice,
-        OrderByNewest
-    }
+    OrderByHighestPrice,
+    OrderByLowestPrice,
+    OrderByNewest
+}
 
-    public class ProductParameters : RequestParameters
-    {
-        public string? ProductName { get; set; }
-        [Required]
-        public string Category { get; set; }
+public class ProductParameters : RequestParameters
+{
+    public string? ProductName { get; set; }
+    [Required]
+    public string Category { get; set; }
 
-        public Ordering Ordering { get; set; } = Ordering.OrderByLowestPrice;
+    public Ordering Ordering { get; set; } = Ordering.OrderByLowestPrice;
 
-        public double MinPrice { get; set; } = 1.0;
+    public double MinPrice { get; set; } = 1.0;
 
-        public double MaxPrice { get; set; } = double.MaxValue;
+    public double MaxPrice { get; set; } = double.MaxValue;
 
-        internal bool ValidPriceRange => MinPrice < MaxPrice;
-    }
+    internal bool ValidPriceRange => MinPrice < MaxPrice;
 }

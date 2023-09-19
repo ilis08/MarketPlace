@@ -2,15 +2,14 @@
 using ApplicationService.DTOs.OrderDTOs.OrderManagementDTOs;
 using ApplicationService.DTOs.OrderManagementDTOs;
 
-namespace ApplicationService.Contracts
+namespace ApplicationService.Contracts;
+
+public interface IOrderManagementService
 {
-    public interface IOrderManagementService
-    {
-        Task<IEnumerable<OrderGetDTO>> GetAsync();
-        Task<OrderGetByIdDTO> GetByIdAsync(long id);
-        Task<OrderGetByIdDTO> SaveAsync(OrderDTO orderDTO);
-        Task<OrderGetByIdDTO> UpdateAsync(OrderDTO orderDTO);
-        Task<OrderGetByIdDTO> CompleteOrderAsync(long id);
-        Task DeleteAsync(long id);
-    }
+    Task<IEnumerable<OrderGetDTO>> GetAsync();
+    Task<OrderGetByIdDTO> GetByIdAsync(long id);
+    Task<OrderGetByIdDTO> SaveAsync(OrderDTO orderDTO);
+    Task<OrderGetByIdDTO> UpdateAsync(OrderDTO orderDTO);
+    Task<OrderGetByIdDTO> CompleteOrderAsync(long id);
+    Task DeleteAsync(long id);
 }

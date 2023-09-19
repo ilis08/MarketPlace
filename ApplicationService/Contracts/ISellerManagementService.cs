@@ -7,14 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApplicationService.Contracts
+namespace ApplicationService.Contracts;
+
+public interface ISellerManagementService
 {
-    public interface ISellerManagementService
-    {
-        Task<IEnumerable<SellerDTO>> GetAsync(string query);
-        Task<SellerDTO> GetByIdAsync(long id);
-        Task<SellerDTO> SaveAsync(SellerDTO seller);
-        Task<SellerDTO> UpdateAsync(SellerDTO seller);
-        Task DeleteAsync(long id);
-    }
+    Task<IEnumerable<SellerDTO>> GetAsync(string query);
+    Task<SellerDTO> GetByIdAsync(long id);
+    Task<SellerDTO> SaveAsync(SellerDTO seller);
+    Task<SellerDTO> UpdateAsync(SellerDTO seller);
+    Task DeleteAsync(long id);
 }

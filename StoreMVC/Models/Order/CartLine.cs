@@ -5,14 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoreMVC.Models.Order
-{
-    public class CartLine
-    {
-        public int CartLineId { get; set; }
-        [BindNever]
-        public ProductVM Product { get; set; }
+namespace StoreMVC.Models.Order;
 
-        public int Count { get; set; }
-    }
+public class CartLine
+{
+    public int CartLineId { get; set; }
+    [BindNever]
+    public ProductVM Product { get; set; }
+
+    public int Count { get; set; }
 }

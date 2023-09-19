@@ -16,164 +16,163 @@ using System.Threading.Tasks;
 
 
 
-namespace WebAPI.UnitTests.BLL
+namespace WebAPI.UnitTests.BLL;
+
+[TestFixture]
+public class CategoryManagementServiceTests : TestWithSqlite
 {
-    [TestFixture]
-    public class CategoryManagementServiceTests : TestWithSqlite
+    private Mock<IRepository> mockRepository;
+
+    [SetUp]
+    public async Task SetUp()
     {
-        private Mock<IRepository> mockRepository;
+        await CreateDatabaseAsync();
+        mockRepository = new Mock<IRepository>();
+    }
 
-        [SetUp]
-        public async Task SetUp()
+    [Test]
+    public async Task GetAsync_When_DatabaseContainsSpecificRecords_Returns_ListOfCategoryDTO_Async()
+    {
+        using var context = CreateContext();
+
+        var categories = context.Categories.AsQueryable().BuildMock();
+
+        mockRepository.Setup(x => x.FindAll<Category>()).Returns(categories);
+
+        var service = new CategoryManagementService(mockRepository.Object);
+
+        var result = await service.GetAsync("");
+
+        result.Should().NotBeNullOrEmpty();
+    }
+
+    [Test]
+    public async Task GetByIdAsync_When_DatabaseContainsCategoryWithSpecificId_Returns_CategoryDTO_Async()
+    {
+        using var context = CreateContext();
+
+        int id = 3;
+
+        var categories = await context.FindAsync<Category>(id);
+
+        mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(categories);
+
+        var sut = new CategoryManagementService(mockRepository.Object);
+
+        var result = await sut.GetByIdAsync(id);
+
+        result.Should().NotBeNull();
+        result.Id.Should().Be(id);
+    }
+
+    [Test]
+    public void GetByIdAsync_When_DatabaseDoesNotContainsCategoryWithSpecificId_Throws_NotFoundException()
+    {
+        mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(() => null);
+
+        var sut = new CategoryManagementService(mockRepository.Object);
+
+        Assert.ThrowsAsync<NotFoundException>(() => sut.GetByIdAsync(It.IsAny<int>()));
+    }
+
+    [Test]
+    public async Task SaveAsync_When_NewCategoryWasAddedToDatabase_Returns_CategoryDTO_Async()
+    {
+        using var context = CreateContext();
+
+        var category = new Category()
         {
-            await CreateDatabaseAsync();
-            mockRepository = new Mock<IRepository>();
-        }
+            Id = 5,
+            Title = "Monitors",
+            Description = "Description"
+        };
 
-        [Test]
-        public async Task GetAsync_When_DatabaseContainsSpecificRecords_Returns_ListOfCategoryDTO_Async()
+        mockRepository.Setup(x => x.CreateAsync(It.IsAny<Category>())).Callback(() => context.Add(category));
+        mockRepository.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
+
+        var sut = new CategoryManagementService(mockRepository.Object);
+
+        var categoryDTO = new CategoryDTO()
         {
-            using var context = CreateContext();
+            Id = category.Id,
+            Title = category.Title,
+            Description = category.Description
+        };
 
-            var categories = context.Categories.AsQueryable().BuildMock();
+        var result = await sut.SaveAsync(categoryDTO);
 
-            mockRepository.Setup(x => x.FindAll<Category>()).Returns(categories);
+        mockRepository.Verify(x => x.CreateAsync(It.IsAny<Category>()), Times.Once());
+        mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once());
 
-            var service = new CategoryManagementService(mockRepository.Object);
+        result.Should().NotBeNull();
+    }
 
-            var result = await service.GetAsync("");
+    [Test]
+    public async Task UpdateAsync_When_CategoryWasUpdates_Returns_CategoryDTO_Async()
+    {
+        using var context = CreateContext();
 
-            result.Should().NotBeNullOrEmpty();
-        }
-
-        [Test]
-        public async Task GetByIdAsync_When_DatabaseContainsCategoryWithSpecificId_Returns_CategoryDTO_Async()
+        var category = new Category()
         {
-            using var context = CreateContext();
+            Id = 4,
+            Title = "Monitors",
+            Description = "Description"
+        };
 
-            int id = 3;
+        mockRepository.Setup(x => x.Update(It.IsAny<Category>())).Callback(() => context.Update(category));
+        mockRepository.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
 
-            var categories = await context.FindAsync<Category>(id);
+        var sut = new CategoryManagementService(mockRepository.Object);
 
-            mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(categories);
-
-            var sut = new CategoryManagementService(mockRepository.Object);
-
-            var result = await sut.GetByIdAsync(id);
-
-            result.Should().NotBeNull();
-            result.Id.Should().Be(id);
-        }
-
-        [Test]
-        public void GetByIdAsync_When_DatabaseDoesNotContainsCategoryWithSpecificId_Throws_NotFoundException()
+        var categoryDTO = new CategoryDTO()
         {
-            mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(() => null);
+            Id = category.Id,
+            Title = category.Title,
+            Description = category.Description
+        };
 
-            var sut = new CategoryManagementService(mockRepository.Object);
+        var result = await sut.UpdateAsync(categoryDTO);
 
-            Assert.ThrowsAsync<NotFoundException>(() => sut.GetByIdAsync(It.IsAny<int>()));
-        }
+        mockRepository.Verify(x => x.Update(It.IsAny<Category>()), Times.Once());
+        mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once());
 
-        [Test]
-        public async Task SaveAsync_When_NewCategoryWasAddedToDatabase_Returns_CategoryDTO_Async()
-        {
-            using var context = CreateContext();
+        result.Should().NotBeNull();
+    }
 
-            var category = new Category()
-            {
-                Id = 5,
-                Title = "Monitors",
-                Description = "Description"
-            };
+    [Test]
+    public async Task DeleteAsync_When_DatabaseContainsCategoryWithSpecificId_Should_DeleteThisCategory()
+    {
+        using var context = CreateContext();
 
-            mockRepository.Setup(x => x.CreateAsync(It.IsAny<Category>())).Callback(() => context.Add(category));
-            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
+        var id = 3;
 
-            var sut = new CategoryManagementService(mockRepository.Object);
+        var category = await context.Categories.FindAsync(id);
 
-            var categoryDTO = new CategoryDTO()
-            {
-                Id = category.Id,
-                Title = category.Title,
-                Description = category.Description
-            };
+        mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(category);
+        mockRepository.Setup(x => x.Delete(It.IsAny<Category>())).Callback(() => context.Remove(category));
+        mockRepository.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
 
-            var result = await sut.SaveAsync(categoryDTO);
+        var sut = new CategoryManagementService(mockRepository.Object);
 
-            mockRepository.Verify(x => x.CreateAsync(It.IsAny<Category>()), Times.Once());
-            mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once());
+        await sut.DeleteAsync(id);
 
-            result.Should().NotBeNull();
-        }
+        mockRepository.Verify(x => x.Delete(It.IsAny<Category>()), Times.Once);
+        mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once);
+    }
 
-        [Test]
-        public async Task UpdateAsync_When_CategoryWasUpdates_Returns_CategoryDTO_Async()
-        {
-            using var context = CreateContext();
+    [Test]
+    public void DeleteAsync_When_DatabaseDoesNotContainsCategoryWithSpecificId_Throws_NotFoundException()
+    {
+        mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(() => null);
 
-            var category = new Category()
-            {
-                Id = 4,
-                Title = "Monitors",
-                Description = "Description"
-            };
+        var sut = new CategoryManagementService(mockRepository.Object);
 
-            mockRepository.Setup(x => x.Update(It.IsAny<Category>())).Callback(() => context.Update(category));
-            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
+        Assert.ThrowsAsync<NotFoundException>(() => sut.DeleteAsync(It.IsAny<int>()));
+    }
 
-            var sut = new CategoryManagementService(mockRepository.Object);
-
-            var categoryDTO = new CategoryDTO()
-            {
-                Id = category.Id,
-                Title = category.Title,
-                Description = category.Description
-            };
-
-            var result = await sut.UpdateAsync(categoryDTO);
-
-            mockRepository.Verify(x => x.Update(It.IsAny<Category>()), Times.Once());
-            mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once());
-
-            result.Should().NotBeNull();
-        }
-
-        [Test]
-        public async Task DeleteAsync_When_DatabaseContainsCategoryWithSpecificId_Should_DeleteThisCategory()
-        {
-            using var context = CreateContext();
-
-            var id = 3;
-
-            var category = await context.Categories.FindAsync(id);
-
-            mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(category);
-            mockRepository.Setup(x => x.Delete(It.IsAny<Category>())).Callback(() => context.Remove(category));
-            mockRepository.Setup(x => x.SaveChangesAsync()).Callback(() => context.SaveChangesAsync());
-
-            var sut = new CategoryManagementService(mockRepository.Object);
-
-            await sut.DeleteAsync(id);
-
-            mockRepository.Verify(x => x.Delete(It.IsAny<Category>()), Times.Once);
-            mockRepository.Verify(x => x.SaveChangesAsync(), Times.Once);
-        }
-
-        [Test]
-        public void DeleteAsync_When_DatabaseDoesNotContainsCategoryWithSpecificId_Throws_NotFoundException()
-        {
-            mockRepository.Setup(x => x.FindByIdAsync<Category>(It.IsAny<int>())).ReturnsAsync(() => null);
-
-            var sut = new CategoryManagementService(mockRepository.Object);
-
-            Assert.ThrowsAsync<NotFoundException>(() => sut.DeleteAsync(It.IsAny<int>()));
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            Dispose();
-        }
+    [TearDown]
+    public void TearDown()
+    {
+        Dispose();
     }
 }

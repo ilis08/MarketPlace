@@ -15,122 +15,121 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 
-namespace StoreAdminMVC.Controllers
+namespace StoreAdminMVC.Controllers;
+
+[ResourceFilter]
+public class CategoryController : Controller
 {
-    [ResourceFilter]
-    public class CategoryController : Controller
+    private readonly IHttpClientFactory clientFactory;
+    private ILogger<CategoryController> logger;
+
+    public CategoryController(ILogger<CategoryController> _logger, IHttpClientFactory _client)
     {
-        private readonly IHttpClientFactory clientFactory;
-        private ILogger<CategoryController> logger;
+        logger = _logger;
+        clientFactory = _client;
+    }
 
-        public CategoryController(ILogger<CategoryController> _logger, IHttpClientFactory _client)
+    public async Task<ActionResult> Index(string query)
+    {
+        var client = clientFactory.CreateClient("myapi");
+
+        HttpResponseMessage response = await client.GetAsync("Category/Get");
+
+        var responseData = JsonConvert.DeserializeObject<List<CategoryVM>>(await response.Content.ReadAsStringAsync());
+
+        return View(responseData);
+
+    }
+
+    [HttpGet]
+    public ActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Create(CategoryVM categoryVM)
+    {
+        try
         {
-            logger = _logger;
-            clientFactory = _client;
+            if (ModelState.IsValid)
+            {
+                var client = clientFactory.CreateClient("myapi");
+
+                HttpResponseMessage response = await client.PostAsJsonAsync("Category/Save", categoryVM);
+
+                var body = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
+
+                return RedirectToAction("Details", new { id = body.Id });
+            }
+            else
+            {
+                return View(categoryVM);
+            }        
         }
-
-        public async Task<ActionResult> Index(string query)
-        {
-            var client = clientFactory.CreateClient("myapi");
-
-            HttpResponseMessage response = await client.GetAsync("Category/Get");
-
-            var responseData = JsonConvert.DeserializeObject<List<CategoryVM>>(await response.Content.ReadAsStringAsync());
-
-            return View(responseData);
-
-        }
-
-        [HttpGet]
-        public ActionResult Create()
+        catch (Exception)
         {
             return View();
         }
+    }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CategoryVM categoryVM)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var client = clientFactory.CreateClient("myapi");
+    [HttpGet]
+    public async Task<ActionResult> Edit(int id)
+    {
+        var client = clientFactory.CreateClient("myapi");
 
-                    HttpResponseMessage response = await client.PostAsJsonAsync("Category/Save", categoryVM);
+        var response = await client.GetAsync("Category/GetById/" + id);
 
-                    var body = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
+        var responseData = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
 
-                    return RedirectToAction("Details", new { id = body.Id });
-                }
-                else
-                {
-                    return View(categoryVM);
-                }        
-            }
-            catch (Exception)
-            {
-                return View();
-            }
-        }
+        return View(responseData);
+    }     
 
-        [HttpGet]
-        public async Task<ActionResult> Edit(int id)
-        {
-            var client = clientFactory.CreateClient("myapi");
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Edit(CategoryVM categoryVM)
+    {
+        var client = clientFactory.CreateClient("myapi");
 
-            var response = await client.GetAsync("Category/GetById/" + id);
+        var response = await client.PostAsJsonAsync("Category/Save", categoryVM);
 
-            var responseData = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
+        var body = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
 
-            return View(responseData);
-        }     
+        return RedirectToAction("Details", new {id = body.Id});
+    }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(CategoryVM categoryVM)
-        {
-            var client = clientFactory.CreateClient("myapi");
+    public async Task<ActionResult> Details(int id)
+    {
+        var client = clientFactory.CreateClient("myapi");
 
-            var response = await client.PostAsJsonAsync("Category/Save", categoryVM);
+        var response = await client.GetAsync("Category/GetById/" + id);
 
-            var body = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
+        var body = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
 
-            return RedirectToAction("Details", new {id = body.Id});
-        }
+        return View(body);
+    }
 
-        public async Task<ActionResult> Details(int id)
-        {
-            var client = clientFactory.CreateClient("myapi");
+    [HttpGet]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var client = clientFactory.CreateClient("myapi");
 
-            var response = await client.GetAsync("Category/GetById/" + id);
+        var response = await client.GetAsync("Category/GetById/" + id);
 
-            var body = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
+        var responseData = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
 
-            return View(body);
-        }
+        return View(responseData);
+    }
 
-        [HttpGet]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var client = clientFactory.CreateClient("myapi");
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> DeleteConfirmed(int id)
+    {
+        var client = clientFactory.CreateClient("myapi");
 
-            var response = await client.GetAsync("Category/GetById/" + id);
+        var response = await client.DeleteAsync("Category/Delete/" + id);
 
-            var responseData = JsonConvert.DeserializeObject<CategoryVM>(await response.Content.ReadAsStringAsync());
-
-            return View(responseData);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
-        {
-            var client = clientFactory.CreateClient("myapi");
-
-            var response = await client.DeleteAsync("Category/Delete/" + id);
-
-            return RedirectToAction("Index");
-        }
+        return RedirectToAction("Index");
     }
 }

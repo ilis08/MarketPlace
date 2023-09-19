@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Contracts
+namespace Repository.Contracts;
+
+public interface IProductImage
 {
-    public interface IProductImage
-    {
-        string SaveImage(IFormFile imageFile);
-        string UpdateImage(IFormFile imageFile, string oldImagePath);
-    }
+    string SaveImage(IFormFile imageFile);
+    string UpdateImage(IFormFile imageFile, string oldImagePath);
 }

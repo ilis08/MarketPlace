@@ -2,16 +2,15 @@
 using System.Diagnostics;
 using WebAPI.Models;
 
-namespace WebAPI.Controllers
+namespace WebAPI.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class HomeController : Controller
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class HomeController : Controller
+    [HttpGet]
+    public IActionResult Version()
     {
-        [HttpGet]
-        public IActionResult Version()
-        {
-            return Ok("REST-API e-Store. Version 1.0");
-        }
+        return Ok("REST-API e-Store. Version 1.0");
     }
 }

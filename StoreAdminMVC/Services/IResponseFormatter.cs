@@ -4,25 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoreAdminMVC.Services
+namespace StoreAdminMVC.Services;
+
+public interface IResponseFormatter
 {
-    public interface IResponseFormatter
+    string Format();
+}
+
+public class TimeResponseFormatter : IResponseFormatter
+{
+    private IWeatherEndpoint endpoint;
+
+    public TimeResponseFormatter(IWeatherEndpoint endpoint)
     {
-        string Format();
+        this.endpoint = endpoint;
     }
 
-    public class TimeResponseFormatter : IResponseFormatter
+    public string Format()
     {
-        private IWeatherEndpoint endpoint;
-
-        public TimeResponseFormatter(IWeatherEndpoint endpoint)
-        {
-            this.endpoint = endpoint;
-        }
-
-        public string Format()
-        {
-            return endpoint.TimeStamp.ToString();
-        }
+        return endpoint.TimeStamp.ToString();
     }
 }

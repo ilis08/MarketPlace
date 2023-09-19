@@ -5,8 +5,8 @@
 
     <div class="card-deck">
         @foreach (var product in Model)
-        {
-            <div class="card m-1 p-1" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
+    {
+        <div class="card m-1 p-1" onclick="Details(@product.Id)" style="min-width: 18rem; max-width:30.5%;">
                 <img class="card-img-top imgThumbnail" src="~/Images/@product.Image" asp-append-version="true" />
 
                 <div class="card-header">
@@ -22,7 +22,7 @@
                 </div>
 
             </div>
-        }
+    }
     </div>
 
     <script>

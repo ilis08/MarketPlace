@@ -1,13 +1,12 @@
-﻿namespace StoreMVC.ViewModels
-{
-    public class RequestMetaData
-    {
-        public int CurrentPage { get; set; }
-        public int TotalPages { get; set; }
-        public int PageSize { get; set; }
-        public int TotalCount { get; set; }
+﻿namespace StoreMVC.ViewModels;
 
-        public bool HasPrevious => CurrentPage > 1;
-        public bool HasNext => CurrentPage < TotalPages;
-    }
+public class RequestMetaData
+{
+    public int CurrentPage { get; set; }
+    public int TotalPages { get; set; }
+    public int PageSize { get; set; }
+    public int TotalCount { get; set; }
+
+    public bool HasPrevious => CurrentPage > 1;
+    public bool HasNext => CurrentPage < TotalPages;
 }

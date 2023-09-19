@@ -6,10 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApplicationService.Contracts
+namespace ApplicationService.Contracts;
+
+public interface ITokenService
 {
-    public interface ITokenService
-    {
-        string CreateToken(ApplicationUser user, List<IdentityRole<long>> role);
-    }
+    string CreateToken(ApplicationUser user, List<IdentityRole<long>> role);
 }

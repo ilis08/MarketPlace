@@ -2,14 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Repository.RequestFeatures;
 
-namespace Repository.Contracts
+namespace Repository.Contracts;
+
+public interface IProductRepository : IRepository
 {
-    public interface IProductRepository : IRepository
-    {
-        Task<PagedList<Product>> GetProductsByParametersAsync(ProductParameters productsParameters);
+    Task<PagedList<Product>> GetProductsByParametersAsync(ProductParameters productsParameters);
 
-        Task CreateProduct(Product entity, IFormFile file);
+    Task CreateProduct(Product entity, IFormFile file);
 
-        void UpdateProductWithImage(IFormFile file, Product product);
-    }
+    void UpdateProductWithImage(IFormFile file, Product product);
 }

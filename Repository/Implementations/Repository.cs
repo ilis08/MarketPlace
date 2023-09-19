@@ -8,46 +8,45 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Implementations
+namespace Repository.Implementations;
+
+public class Repository : IRepository
 {
-    public class Repository : IRepository
+    protected RepositoryContext repositoryContext;
+
+    public Repository(RepositoryContext _repositoryContext)
+        => repositoryContext = _repositoryContext;
+
+    public DbSet<T> DbSet<T>() where T : class
     {
-        protected RepositoryContext repositoryContext;
+        return repositoryContext.Set<T>();
+    }
 
-        public Repository(RepositoryContext _repositoryContext)
-            => repositoryContext = _repositoryContext;
+    public IQueryable<T> FindAll<T>() where T : class => DbSet<T>().AsQueryable();
 
-        public DbSet<T> DbSet<T>() where T : class
-        {
-            return repositoryContext.Set<T>();
-        }
+    public IQueryable<T> FindByCondition<T>(Expression<Func<T, bool>> expression) where T : class => DbSet<T>()
+                                                                                                    .Where(expression);
+    public async Task<List<T>> FindByConditionAsync<T>(Expression<Func<T, bool>> expression) where T : class => await DbSet<T>()
+                                                                                                    .Where(expression).ToListAsync();
+    public async Task<T> FindByIdAsync<T>(long id) where T : class => await DbSet<T>().FindAsync(id);
+    public async Task CreateAsync<T>(T entity) where T : class => await DbSet<T>().AddAsync(entity);
 
-        public IQueryable<T> FindAll<T>() where T : class => DbSet<T>().AsQueryable();
+    public void Update<T>(T entity) where T : class => DbSet<T>().Update(entity);
 
-        public IQueryable<T> FindByCondition<T>(Expression<Func<T, bool>> expression) where T : class => DbSet<T>()
-                                                                                                        .Where(expression);
-        public async Task<List<T>> FindByConditionAsync<T>(Expression<Func<T, bool>> expression) where T : class => await DbSet<T>()
-                                                                                                        .Where(expression).ToListAsync();
-        public async Task<T> FindByIdAsync<T>(long id) where T : class => await DbSet<T>().FindAsync(id);
-        public async Task CreateAsync<T>(T entity) where T : class => await DbSet<T>().AddAsync(entity);
+    public void Delete<T>(T entity) where T : class => DbSet<T>().Remove(entity);
 
-        public void Update<T>(T entity) where T : class => DbSet<T>().Update(entity);
+    public async Task SaveChangesAsync()
+    {
+        await repositoryContext.SaveChangesAsync();
+    }
 
-        public void Delete<T>(T entity) where T : class => DbSet<T>().Remove(entity);
+    public void SaveChanges()
+    {
+        repositoryContext.SaveChanges();
+    }
 
-        public async Task SaveChangesAsync()
-        {
-            await repositoryContext.SaveChangesAsync();
-        }
-
-        public void SaveChanges()
-        {
-            repositoryContext.SaveChanges();
-        }
-
-        public void Dispose()
-        {
-            repositoryContext.Dispose();
-        }
+    public void Dispose()
+    {
+        repositoryContext.Dispose();
     }
 }

@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoreMVC.ViewModels.Product
+namespace StoreMVC.ViewModels.Product;
+
+public class ProductListVM
 {
-    public class ProductListVM
+    public ProductListVM()
     {
-        public ProductListVM()
-        {
 
-        }
-
-        public ProductListVM(ProductParameters parameters)
-        {
-            Params = parameters;
-        }
-
-        public IEnumerable<ProductVM> Products { get; set; }
-
-        public IEnumerable<CategoryVM> Categories { get; set; }
-
-        public ProductParameters Params { get; set; }
     }
+
+    public ProductListVM(ProductParameters parameters)
+    {
+        Params = parameters;
+    }
+
+    public IEnumerable<ProductVM> Products { get; set; }
+
+    public IEnumerable<CategoryVM> Categories { get; set; }
+
+    public ProductParameters Params { get; set; }
 }

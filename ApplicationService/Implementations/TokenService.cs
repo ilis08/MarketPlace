@@ -10,25 +10,24 @@ using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Extensions;
 
-namespace ApplicationService.Implementations
+namespace ApplicationService.Implementations;
+
+public class TokenService : ITokenService
 {
-    public class TokenService : ITokenService
+    private readonly IConfiguration configuration;
+
+    public TokenService(IConfiguration _configuration)
     {
-        private readonly IConfiguration configuration;
+        configuration = _configuration;
+    }
 
-        public TokenService(IConfiguration _configuration)
-        {
-            configuration = _configuration;
-        }
+    public string CreateToken(ApplicationUser user, List<IdentityRole<long>> roles)
+    {
+        var token = user
+            .CreateClaims(roles)
+            .CreateJwtToken(configuration);
+        var tokenHandler = new JwtSecurityTokenHandler();
 
-        public string CreateToken(ApplicationUser user, List<IdentityRole<long>> roles)
-        {
-            var token = user
-                .CreateClaims(roles)
-                .CreateJwtToken(configuration);
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            return tokenHandler.WriteToken(token);
-        }
+        return tokenHandler.WriteToken(token);
     }
 }

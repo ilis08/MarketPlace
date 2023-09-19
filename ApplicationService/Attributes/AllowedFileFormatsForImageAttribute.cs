@@ -1,34 +1,33 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
-namespace ApplicationService.Attributes
+namespace ApplicationService.Attributes;
+
+public class AllowedFileFormatsForImageAttribute : ValidationAttribute
 {
-    public class AllowedFileFormatsForImageAttribute : ValidationAttribute
+    private readonly string[] _extensions;
+
+    public AllowedFileFormatsForImageAttribute(string[] extensions) => _extensions = extensions;
+
+    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        private readonly string[] _extensions;
+        var file = value as IFormFile;
 
-        public AllowedFileFormatsForImageAttribute(string[] extensions) => _extensions = extensions;
-
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        if (file is not null)
         {
-            var file = value as IFormFile;
+            var extension = Path.GetExtension(file.FileName);
 
-            if (file is not null)
+            if (!_extensions.Contains(extension.ToLower()))
             {
-                var extension = Path.GetExtension(file.FileName);
-
-                if (!_extensions.Contains(extension.ToLower()))
-                {
-                    return new ValidationResult(GetErrorMessage());
-                }
+                return new ValidationResult(GetErrorMessage());
             }
-
-            return ValidationResult.Success;
         }
 
-        public static string GetErrorMessage()
-        {
-            return $"This file format is not allowed";
-        }
+        return ValidationResult.Success;
+    }
+
+    public static string GetErrorMessage()
+    {
+        return $"This file format is not allowed";
     }
 }

@@ -5,18 +5,17 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace StoreAdminMVC.Filters
-{
-    public class LoopOverProductVM
-    {
-        public LoopOverProductVM(string name)
-        {
-            ShowConsole(name);
-        }
+namespace StoreAdminMVC.Filters;
 
-        public void ShowConsole(string name)
-        {
-            Console.WriteLine($"Aboba is {name}");
-        }
+public class LoopOverProductVM
+{
+    public LoopOverProductVM(string name)
+    {
+        ShowConsole(name);
+    }
+
+    public void ShowConsole(string name)
+    {
+        Console.WriteLine($"Aboba is {name}");
     }
 }

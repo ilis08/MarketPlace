@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Exceptions.NotFound
+namespace Exceptions.NotFound;
+
+public class NotFoundException : Exception
 {
-    public class NotFoundException : Exception
+    public NotFoundException(long id, string className) : base($"The {className} with id {id} doesn't exist in the database.")
     {
-        public NotFoundException(long id, string className) : base($"The {className} with id {id} doesn't exist in the database.")
-        {
-        }
     }
 }

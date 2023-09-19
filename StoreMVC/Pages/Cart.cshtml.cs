@@ -12,56 +12,55 @@ using StoreMVC.Models.Order;
 using StoreMVC.Models.Order.SessionCart;
 using StoreMVC.Service;
 
-namespace StoreMVC.Pages
+namespace StoreMVC.Pages;
+
+[ValidateAntiForgeryToken]
+public class CartModel : PageModel
 {
-    [ValidateAntiForgeryToken]
-    public class CartModel : PageModel
+    public Cart Cart { get; set; }
+
+    private readonly IProductService productService;
+
+    public CartModel(IProductService product, Cart cart)
     {
-        public Cart Cart { get; set; }
+        productService = product;
+        Cart = cart;
+    }
 
-        private readonly IProductService productService;
+    public void OnGet()
+    {
+    }
 
-        public CartModel(IProductService product, Cart cart)
-        {
-            productService = product;
-            Cart = cart;
-        }
+    public async Task OnPostAsync(int id)
+    {
+        var product = await productService.GetProductAsync(id);
 
-        public void OnGet()
-        {
-        }
+        Cart.AddToCart(product);
+    }
 
-        public async Task OnPostAsync(int id)
+    public async Task OnPostRemoveAsync(int id)
+    {
+        var product = await productService.GetProductAsync(id);
+
+        Cart.RemoveFromCart(product);
+    }
+
+    public async Task OnPostMinusAsync(int id)
+    {
+        var cartLine = Cart.Lines.Where(p => p.Product.Id == id).FirstOrDefault();
+
+        if (cartLine.Count > 1)
         {
             var product = await productService.GetProductAsync(id);
 
-            Cart.AddToCart(product);
+            Cart.MinusCount(product);
         }
-
-        public async Task OnPostRemoveAsync(int id)
+        else
         {
             var product = await productService.GetProductAsync(id);
 
             Cart.RemoveFromCart(product);
         }
-
-        public async Task OnPostMinusAsync(int id)
-        {
-            var cartLine = Cart.Lines.Where(p => p.Product.Id == id).FirstOrDefault();
-
-            if (cartLine.Count > 1)
-            {
-                var product = await productService.GetProductAsync(id);
-
-                Cart.MinusCount(product);
-            }
-            else
-            {
-                var product = await productService.GetProductAsync(id);
-
-                Cart.RemoveFromCart(product);
-            }
-            
-        }
+        
     }
 }

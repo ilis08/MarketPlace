@@ -4,21 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoreAdminMVC.Services
-{
-    public interface IWeatherEndpoint
-    {
-        string TimeStamp { get; }
-    }
+namespace StoreAdminMVC.Services;
 
-    public class WeatherEndpoint : IWeatherEndpoint
+public interface IWeatherEndpoint
+{
+    string TimeStamp { get; }
+}
+
+public class WeatherEndpoint : IWeatherEndpoint
+{
+    public string TimeStamp
     {
-        public string TimeStamp
+        get
         {
-            get
-            {
-                return DateTime.Now.ToShortTimeString();
-            }
+            return DateTime.Now.ToShortTimeString();
         }
     }
 }

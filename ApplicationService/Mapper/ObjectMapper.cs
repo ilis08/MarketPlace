@@ -1,31 +1,30 @@
 ﻿using AutoMapper;
 
-namespace ApplicationService.Mapper
+namespace ApplicationService.Mapper;
+
+public static class ObjectMapper
 {
-    public static class ObjectMapper
+    private static readonly Lazy<IMapper> Lazy = new Lazy<IMapper>(() =>
+
     {
-        private static readonly Lazy<IMapper> Lazy = new Lazy<IMapper>(() =>
+
+        var config = new MapperConfiguration(cfg =>
 
         {
 
-            var config = new MapperConfiguration(cfg =>
+            // This line ensures that internal properties are also mapped over.
 
-            {
+            cfg.ShouldMapProperty = p => p.GetMethod.IsPublic || p.GetMethod.IsAssembly;
 
-                // This line ensures that internal properties are also mapped over.
-
-                cfg.ShouldMapProperty = p => p.GetMethod.IsPublic || p.GetMethod.IsAssembly;
-
-                cfg.AddProfile<AutoMappings>();
-
-            });
-
-            var mapper = config.CreateMapper();
-
-            return mapper;
+            cfg.AddProfile<AutoMappings>();
 
         });
 
-        public static IMapper Mapper => Lazy.Value;
-    }
+        var mapper = config.CreateMapper();
+
+        return mapper;
+
+    });
+
+    public static IMapper Mapper => Lazy.Value;
 }

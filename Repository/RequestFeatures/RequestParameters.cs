@@ -4,26 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.RequestFeatures
+namespace Repository.RequestFeatures;
+
+public class RequestParameters
 {
-    public class RequestParameters
+    const int maxPageSize = 50;
+
+    public int PageNumber { get; set; } = 1;
+
+    private int pageSize = 4;
+
+    public int PageSize
     {
-        const int maxPageSize = 50;
-
-        public int PageNumber { get; set; } = 1;
-
-        private int pageSize = 4;
-
-        public int PageSize
+        get
         {
-            get
-            {
-                return pageSize;
-            }
-            set
-            {
-                pageSize = (value > maxPageSize) ? maxPageSize : value;
-            }
+            return pageSize;
+        }
+        set
+        {
+            pageSize = (value > maxPageSize) ? maxPageSize : value;
         }
     }
 }
