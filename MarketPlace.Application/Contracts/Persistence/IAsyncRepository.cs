@@ -10,11 +10,9 @@ namespace MarketPlace.Application.Contracts.Persistence;
 public interface IAsyncRepository<T> where T : class
 {
     Task<List<T>> FindAllAsync();
-    IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
     Task<List<T>> FindByConditionAsync(Expression<Func<T, bool>> expression);
-    Task<T> FindByIdAsync<T>(long id) where T : class;
+    Task<T> FindByIdAsync(long id);
     Task AddAsync(T entity);
     Task UpdateAsync(T entity);
     Task DeleteAsync(T entity);
-    Task SaveChangesAsync();
 }

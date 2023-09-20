@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MarketPlace.Domain.Entitites;
 
-public class Review : AuditableEntity<Guid>
+public class Review : AuditableEntity
 {
+    public Guid Id { get; set; }
     [Required]
     public RatingEnum Rating { get; set; }
     [MinLength(1)]

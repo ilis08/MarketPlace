@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MarketPlace.Domain.Entitites;
 
-public class Order : AuditableEntity<Guid>
+public class Order : AuditableEntity
 {
+    public Guid Id { get; set; }
     [Required]
     public PaymentType PaymentType { get; set; }
     public bool IsCompleted { get; set; }

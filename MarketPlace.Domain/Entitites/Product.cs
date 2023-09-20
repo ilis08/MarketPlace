@@ -3,8 +3,9 @@ using MarketPlace.Domain.Common;
 
 namespace MarketPlace.Domain.Entitites;
 
-public class Product : AuditableEntity<Guid>
+public class Product : AuditableEntity
 {
+    public Guid Id { get; set; }
     [Required]
     [StringLength(100)]
     public string? ProductName { get; set; }

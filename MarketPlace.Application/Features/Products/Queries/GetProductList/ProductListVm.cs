@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace MarketPlace.Application.Features.Products;
+namespace MarketPlace.Application.Features.Products.Queries.GetProductList;
 
 public class ProductListVm
 {

@@ -3,18 +3,11 @@ using MarketPlace.Domain.Common;
 
 namespace MarketPlace.Domain.Entitites;
 
-public class Category : AuditableEntity<long>
+public class Category : AuditableEntity
 {
-    [Required]
-    [MinLength(2)]
-    [MaxLength(20)]
+    public long Id { get; set; }
     public string Title { get; set; }
-    [Required]
-    [MinLength(5)]
-    [MaxLength(100)]
-    public string? Description { get; set; }
-    [Required]
+    public string Description { get; set; }
     public string Image { get; set; }
-
     public virtual ICollection<Product>? Products { get; set; }
 }

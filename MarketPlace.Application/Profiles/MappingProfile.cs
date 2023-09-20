@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MarketPlace.Application.Features.Products;
+using MarketPlace.Application.Features.Products.Queries.GetProductList;
 using MarketPlace.Domain.Entitites;
 using System;
 using System.Collections.Generic;
