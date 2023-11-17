@@ -2,17 +2,14 @@
 using MarketPlace.Application.Contracts.Persistence;
 using MarketPlace.Domain.Entitites;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace MarketPlace.Application.Features.Products.Queries.GetProductList;
 
 public class GetProductListQueryHandler : IRequestHandler<GetProductListQuery,
     List<ProductListVm>>
 {
+    private readonly ILogger<GetProductListQueryHandler> logger;
     private readonly IAsyncRepository<Product> productRepository;
     private readonly IMapper mapper;
 

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationService", "ApplicationService\ApplicationService.csproj", "{CC3541FC-7C97-4C93-A2F0-73B7BBA33BB0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{291A6E32-0D72-4712-AE5C-C4D3399E7972}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace.Api", "WebAPI\MarketPlace.Api.csproj", "{291A6E32-0D72-4712-AE5C-C4D3399E7972}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{02BB0766-8595-4F21-A1A6-E155BF3D5487}"
 EndProject
@@ -39,9 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace.Domain", "Marke
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace.Application", "MarketPlace.Application\MarketPlace.Application.csproj", "{70FCF583-8771-4C3B-BBCE-8741A447F995}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Persistence", "MarketPlace.Persistence\MarketPlace.Persistence.csproj", "{045DC5ED-5E6C-45A7-91A6-31142E54E72B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace.Persistence", "MarketPlace.Persistence\MarketPlace.Persistence.csproj", "{045DC5ED-5E6C-45A7-91A6-31142E54E72B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Infrastructure", "MarketPlace.Infrastructure\MarketPlace.Infrastructure.csproj", "{5CF84359-2612-4206-96EA-DC93F4B95399}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace.Infrastructure", "MarketPlace.Infrastructure\MarketPlace.Infrastructure.csproj", "{5CF84359-2612-4206-96EA-DC93F4B95399}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

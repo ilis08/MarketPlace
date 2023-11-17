@@ -1,8 +1,6 @@
-﻿using ApplicationService.Contracts;
-using ApplicationService.DTOs;
-using Microsoft.AspNetCore.Authorization;
+﻿using MarketPlace.Application.Features.Products.Queries.GetProductList;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Filters;
 
 namespace WebAPI.Controllers;
 
@@ -14,15 +12,12 @@ namespace WebAPI.Controllers;
 [ApiController]
 public class CategoryController : HomeController
 {
-    private readonly ICategoryManagementService categoryService;
-    private readonly ILogger<CategoryController> logger;
+    private readonly IMediator mediator;
 
-    public CategoryController(ICategoryManagementService _service, ILogger<CategoryController> _logger)
+    public CategoryController(IMediator _mediator)
     {
-        categoryService = _service;
-        logger = _logger;
+        mediator = _mediator;
     }
-
 
     /// <summary>
     /// Returns all Categories if query==null, or if query!=null return Categories which contains 'query' 
@@ -30,33 +25,24 @@ public class CategoryController : HomeController
     /// <param name="query"></param>
     /// <returns></returns>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<CategoryDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [Route("[action]")]
     public async Task<IActionResult> Get(string query)
     {
-        var result = await categoryService.GetAsync(query);
+        var dtos = await mediator.Send(new GetProductListQuery());
 
-        if (result.Any())
-        {
-            logger.Log(LogLevel.Information, "Succesfully getting list of categories");
-            return Ok(result);
-        }
-        else
-        {
-            logger.Log(LogLevel.Error, "Cannot load a categories");
-            return NoContent();
-        }
+        return Ok(dtos);
     }
 
-    [HttpGet("[action]/{id:int}", Name = "CategoryById")]
-    public async Task<IActionResult> GetById(int id)
-    {
-        var result = await categoryService.GetByIdAsync(id);
 
-        logger.Log(LogLevel.Information, "Succesfully getting a category");
-        return Ok(result);
-    }
+    /*
+
+[HttpGet("[action]/{id:int}", Name = "CategoryById")]
+public async Task<IActionResult> GetById(int id)
+{
+
+}
 
     [Authorize("Admin, Market")]
     [Route("[action]")]
@@ -64,9 +50,7 @@ public class CategoryController : HomeController
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> Save([FromForm]CategoryDTO category)
     {
-        var categoryToReturn = await categoryService.SaveAsync(category);
 
-        return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
     }
 
     [Authorize("Admin, Market")]
@@ -75,20 +59,15 @@ public class CategoryController : HomeController
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> Update([FromBody] CategoryDTO category)
     {
-        var categoryToReturn = await categoryService.UpdateAsync(category);
 
-        return CreatedAtRoute("CategoryById", new { id = categoryToReturn.Id }, categoryToReturn);
-    }
+
 
     [Authorize("Admin, Market")]
     [Route("[action]/{id:int}")]
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
-        await categoryService.DeleteAsync(id);
 
-        logger.Log(LogLevel.Information,"Category was deleted");
-
-        return Ok("Category was deleted succesfully");
-    }     
+    }
+        }*/
 }

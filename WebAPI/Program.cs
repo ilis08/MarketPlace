@@ -1,89 +1,26 @@
-using Repository.Extensions;
-using WebAPI.Extensions;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using MarketPlace.Api;
+using Serilog;
 
 namespace WebAPI;
 public class Program
 {
-    public static void Main(string [] args)
+    public static void Main(string[] args)
     {
+        Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
+
+        Log.Information("MarketPlace API starting.");
+
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Logging.AddConsole().AddDebug();
+        builder.Host.UseSerilog((context, loggerConfiguration) => loggerConfiguration
+            .WriteTo.Console()
+            .ReadFrom.Configuration(context.Configuration));
 
-        #region Swagger
+        var app = builder
+            .ConfigureServices()
+            .ConfigurePipeline();
 
-        builder.Services.ConfigureSwagger();
-
-        #endregion
-
-        #region Database
-
-        builder.Services.ConfigureDatabaseContext(builder.Configuration);
-
-        #endregion
-
-        #region ApplicationService
-        builder.Services.ConfigureCategoryService();
-        builder.Services.ConfigureProductService();
-        builder.Services.ConfigureOrderService();
-        builder.Services.ConfigureTokenService();
-        #endregion
-
-        #region Repository
-        builder.Services.ConfigureRepository();
-
-        builder.Services.ConfigureProductImageService();
-        #endregion
-
-        builder.Services.ConfigureBlobService(builder.Configuration);
-
-        builder.Services.AddIdentity();
-
-        builder.Services.AddAuthentication(builder.Configuration);
-
-        builder.Services.ConfigureCors();
-
-        builder.Services.AddHealthChecks();
-
-        builder.Services.ConfigureValidationFilterAttribute();
-
-        builder.Services.AddControllers().AddNewtonsoftJson(x =>
-              x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-
-
-        var app = builder.Build();
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-        else
-        {
-            app.UseHsts();
-        }
-
-        var logger = app.Services.GetRequiredService<ILogger<Program>>();
-
-        app.ConfigureExceptionHandler(logger);
-
-        app.UseRouting();
-
-        app.UseCors("CorsPolicy");
-
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        app.UseSwagger();
-
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "IlisStore V1");
-        });
-
-        app.MapHealthChecks("/healthcheck");
-        app.MapControllers();
+        app.UseSerilogRequestLogging();
 
         app.Run();
     }

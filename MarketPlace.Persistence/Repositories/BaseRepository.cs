@@ -1,10 +1,6 @@
 ﻿using MarketPlace.Application.Contracts.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarketPlace.Persistence.Repositories
 {
@@ -14,19 +10,10 @@ namespace MarketPlace.Persistence.Repositories
 
         public BaseRepository(MarketPlaceDbContext _dbContext)
             => dbContext = _dbContext;
-        public Task AddAsync(T entity)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task DeleteAsync(T entity)
+        public async Task<List<T>> FindAllAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<T>> FindAllAsync()
-        {
-            throw new NotImplementedException();
+            return await dbContext.Set<T>().ToListAsync();
         }
 
         public Task<List<T>> FindByConditionAsync(Expression<Func<T, bool>> expression)
@@ -34,14 +21,29 @@ namespace MarketPlace.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<T> FindByIdAsync(long id)
+        public async Task<T> FindByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            return await dbContext.Set<T>().FindAsync(id);
         }
 
-        public Task UpdateAsync(T entity)
+        public virtual async Task<T> AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            await dbContext.Set<T>().AddAsync(entity);
+            await dbContext.SaveChangesAsync();
+
+            return entity;
+        }
+
+        public async Task UpdateAsync(T entity)
+        {
+            dbContext.Entry(entity).State = EntityState.Modified;
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            dbContext.Set<T>().Remove(entity);
+            await dbContext.SaveChangesAsync();
         }
     }
 }
