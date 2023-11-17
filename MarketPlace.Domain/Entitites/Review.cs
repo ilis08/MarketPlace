@@ -14,9 +14,6 @@ public class Review : AuditableEntity
     [Required]
     public long ProductId { get; set; }
     public Product Product { get; set; }
-    [Required]
-    public long UserId { get; set; }
-    public ApplicationUser User { get; set; }
 }
 
 public enum RatingEnum

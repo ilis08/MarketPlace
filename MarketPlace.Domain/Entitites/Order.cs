@@ -10,9 +10,6 @@ public class Order : AuditableEntity
     public PaymentType PaymentType { get; set; }
     public bool IsCompleted { get; set; }
     public double TotalPrice { get; set; }
-    [Required]
-    public long UserId { get; set; }
-    public ApplicationUser User { get; set; }
     public virtual ICollection<OrderDetailProduct>? OrderDetailProduct { get; set; }
 }
 

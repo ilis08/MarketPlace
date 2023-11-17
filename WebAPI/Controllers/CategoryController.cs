@@ -1,4 +1,7 @@
-﻿using MarketPlace.Application.Features.Products.Queries.GetProductList;
+﻿using MarketPlace.Application.Features.Categories.Commands.CreateCategory;
+using MarketPlace.Application.Features.Categories.Commands.DeleteCategory;
+using MarketPlace.Application.Features.Categories.Commands.UpdateCategory;
+using MarketPlace.Application.Features.Categories.Queries.GetCategoryList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,55 +22,46 @@ public class CategoryController : HomeController
         mediator = _mediator;
     }
 
-    /// <summary>
-    /// Returns all Categories if query==null, or if query!=null return Categories which contains 'query' 
-    /// </summary>
-    /// <param name="query"></param>
-    /// <returns></returns>
     [HttpGet]
-
     [ProducesResponseType(StatusCodes.Status200OK)]
     [Route("[action]")]
-    public async Task<IActionResult> Get(string query)
+    public async Task<ActionResult<List<CategoryListVm>>> Get()
     {
-        var dtos = await mediator.Send(new GetProductListQuery());
+        var dtos = await mediator.Send(new GetCategoryListQuery());
 
         return Ok(dtos);
     }
 
-
-    /*
-
-[HttpGet("[action]/{id:int}", Name = "CategoryById")]
-public async Task<IActionResult> GetById(int id)
-{
-
-}
-
-    [Authorize("Admin, Market")]
-    [Route("[action]")]
     [HttpPost]
-    [ServiceFilter(typeof(ValidationFilterAttribute))]
-    public async Task<IActionResult> Save([FromForm]CategoryDTO category)
-    {
-
-    }
-
-    [Authorize("Admin, Market")]
     [Route("[action]")]
-    [HttpPut]
-    [ServiceFilter(typeof(ValidationFilterAttribute))]
-    public async Task<IActionResult> Update([FromBody] CategoryDTO category)
+    public async Task<ActionResult<CreateCategoryCommandResponse>> Create([FromForm] CreateCategoryCommand createCategoryCommand)
     {
+        var response = await mediator.Send(createCategoryCommand);
 
-
-
-    [Authorize("Admin, Market")]
-    [Route("[action]/{id:int}")]
-    [HttpDelete]
-    public async Task<IActionResult> Delete(int id)
-    {
-
+        return Ok(response);
     }
-        }*/
+
+
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Route("[action]")]
+    public async Task<IActionResult> Update([FromBody] UpdateCategoryCommand updateCategoryCommand)
+    {
+        var response = await mediator.Send(updateCategoryCommand);
+
+        return NoContent();
+    }
+
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Route("[action]/{id:int}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        var deleteEventCommand = new DeleteCategoryCommand() { Id = id };
+        await mediator.Send(deleteEventCommand);
+
+        return NoContent();
+    }
 }

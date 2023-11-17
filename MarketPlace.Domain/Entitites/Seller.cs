@@ -25,8 +25,5 @@ public class Seller : AuditableEntity
     public string Url { get; set; }
     [Required]
     public bool IsActive { get; set; } = true;
-    [Required]
-    public long UserId { get; set; }
-    public ApplicationUser User { get; set; }
     public virtual ICollection<Product>? Products { get; set; }
 }

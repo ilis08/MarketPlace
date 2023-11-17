@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using WebAPI.Models;
 
 namespace WebAPI.Controllers;
 
@@ -11,6 +9,6 @@ public class HomeController : Controller
     [HttpGet]
     public IActionResult Version()
     {
-        return Ok("REST-API e-Store. Version 1.0");
+        return Ok("Market Place API. Version 1.0");
     }
 }

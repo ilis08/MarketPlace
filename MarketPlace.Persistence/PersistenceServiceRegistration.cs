@@ -13,7 +13,7 @@ namespace MarketPlace.Persistence
         {
             services.AddDbContext<MarketPlaceDbContext>(opts =>
             {
-                opts.UseSqlServer(configuration.GetConnectionString("MarketPlaceDb"),
+                opts.UseSqlServer(configuration.GetConnectionString("MarketPlaceDB"),
                 sqlServerOptionsAction: sqlOptions =>
                 {
                     sqlOptions.EnableRetryOnFailure(3);
