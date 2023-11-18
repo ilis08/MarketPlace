@@ -2,6 +2,7 @@
 using MarketPlace.Application;
 using MarketPlace.Infrastructure;
 using MarketPlace.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using WebAPI;
 
@@ -69,4 +70,24 @@ public static class StartupExtensions
             c.IncludeXmlComments(filePath);
         });
     }
+
+    public static async Task ResetDatabaseAsync(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        try
+        {
+            var context = scope.ServiceProvider.GetService<MarketPlaceDbContext>();
+            if (context != null)
+            {
+                await context.Database.EnsureDeletedAsync();
+                await context.Database.MigrateAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
+            logger.LogError(ex, "An error occurred while migrating the database.");
+        }
+    }
 }
+
