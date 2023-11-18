@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MarketPlace.Domain.Common;
+﻿using MarketPlace.Domain.Common;
+using System.ComponentModel.DataAnnotations;
 
 namespace MarketPlace.Domain.Entitites;
 
 public class Product : AuditableEntity
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
     [Required]
     [StringLength(100)]
     public string? ProductName { get; set; }

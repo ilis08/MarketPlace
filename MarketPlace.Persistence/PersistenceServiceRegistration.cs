@@ -4,28 +4,27 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MarketPlace.Persistence
+namespace MarketPlace.Persistence;
+
+public static class PersistenceServiceRegistration
 {
-    public static class PersistenceServiceRegistration
+    public static IServiceCollection AddPersistenceServices(this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddPersistenceServices(this IServiceCollection services,
-            IConfiguration configuration)
+        services.AddDbContext<MarketPlaceDbContext>(opts =>
         {
-            services.AddDbContext<MarketPlaceDbContext>(opts =>
+            opts.UseSqlServer(configuration.GetConnectionString("MarketPlaceDB"),
+            sqlServerOptionsAction: sqlOptions =>
             {
-                opts.UseSqlServer(configuration.GetConnectionString("MarketPlaceDB"),
-                sqlServerOptionsAction: sqlOptions =>
-                {
-                    sqlOptions.EnableRetryOnFailure(3);
-                });
+                sqlOptions.EnableRetryOnFailure(3);
             });
+        });
 
-            services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
+        services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
 
-            return services;
-        }
+        return services;
     }
 }

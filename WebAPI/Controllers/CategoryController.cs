@@ -48,7 +48,7 @@ public class CategoryController : HomeController
     [Route("[action]")]
     public async Task<IActionResult> Update([FromBody] UpdateCategoryCommand updateCategoryCommand)
     {
-        var response = await mediator.Send(updateCategoryCommand);
+        await mediator.Send(updateCategoryCommand);
 
         return NoContent();
     }

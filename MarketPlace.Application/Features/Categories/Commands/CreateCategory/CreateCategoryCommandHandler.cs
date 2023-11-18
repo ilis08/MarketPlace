@@ -1,51 +1,52 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Contracts.Persistence;
 using MarketPlace.Domain.Entitites;
+using MediatR;
 
-namespace MarketPlace.Application.Features.Categories.Commands.CreateCategory
+namespace MarketPlace.Application.Features.Categories.Commands.CreateCategory;
+
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand,
+CreateCategoryCommandResponse>
 {
-    public class CreateCategoryCommandHandler
+    private readonly IAsyncRepository<Category> categoryRepository;
+    private readonly IMapper mapper;
+
+    public CreateCategoryCommandHandler(IMapper _mapper, IAsyncRepository<Category> _categoryRepository)
     {
-        private readonly IAsyncRepository<Category> categoryRepository;
-        private readonly IMapper mapper;
+        mapper = _mapper;
+        categoryRepository = _categoryRepository;
+    }
 
-        public CreateCategoryCommandHandler(IMapper _mapper, IAsyncRepository<Category> _categoryRepository)
+    public async Task<CreateCategoryCommandResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    {
+        var createCategoryCommandResponse = new CreateCategoryCommandResponse();
+
+        var validator = new CreateCategoryCommandValidator();
+        var validationResult = await validator.ValidateAsync(request);
+
+        if (validationResult.Errors.Count > 0)
         {
-            mapper = _mapper;
-            categoryRepository = _categoryRepository;
+            createCategoryCommandResponse.Success = false;
+            createCategoryCommandResponse.ValidationErrors = new List<string>();
+            foreach (var error in validationResult.Errors)
+            {
+                createCategoryCommandResponse.ValidationErrors.Add(error.ErrorMessage);
+            }
+        }
+        if (createCategoryCommandResponse.Success)
+        {
+            var category = new Category()
+            {
+                Title = request.Title,
+                Description = request.Description,
+                Image = request.Image,
+            };
+            category = await categoryRepository.AddAsync(category);
+
+            createCategoryCommandResponse.Category = mapper.Map<CreateCategoryDto>(category);
         }
 
-        public async Task<CreateCategoryCommandResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
-        {
-            var createCategoryCommandResponse = new CreateCategoryCommandResponse();
-
-            var validator = new CreateCategoryCommandValidator();
-            var validationResult = await validator.ValidateAsync(request);
-
-            if (validationResult.Errors.Count > 0)
-            {
-                createCategoryCommandResponse.Success = false;
-                createCategoryCommandResponse.ValidationErrors = new List<string>();
-                foreach (var error in validationResult.Errors)
-                {
-                    createCategoryCommandResponse.ValidationErrors.Add(error.ErrorMessage);
-                }
-            }
-            if (createCategoryCommandResponse.Success)
-            {
-                var category = new Category()
-                {
-                    Title = request.Title,
-                    Description = request.Description,
-                    Image = request.Image,
-                };
-                category = await categoryRepository.AddAsync(category);
-
-                createCategoryCommandResponse.Category = mapper.Map<CreateCategoryDto>(category);
-            }
-
-            return createCategoryCommandResponse;
-        }
+        return createCategoryCommandResponse;
     }
 }
 

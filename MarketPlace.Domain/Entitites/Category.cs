@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MarketPlace.Domain.Common;
+﻿using MarketPlace.Domain.Common;
 
 namespace MarketPlace.Domain.Entitites;
 

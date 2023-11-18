@@ -1,9 +1,8 @@
 ﻿using MarketPlace.Application.Models.Mail;
 
-namespace MarketPlace.Application.Contracts.Infrastructure
+namespace MarketPlace.Application.Contracts.Infrastructure;
+
+public interface IEmailService
 {
-    public interface IEmailService
-    {
-        Task<bool> SendEmail(Email email);
-    }
+    Task<bool> SendEmail(Email email);
 }

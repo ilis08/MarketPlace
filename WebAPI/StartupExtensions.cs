@@ -5,69 +5,68 @@ using MarketPlace.Persistence;
 using Microsoft.OpenApi.Models;
 using WebAPI;
 
-namespace MarketPlace.Api
+namespace MarketPlace.Api;
+
+public static class StartupExtensions
 {
-    public static class StartupExtensions
+    public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
-        public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
+        builder.Services.ConfigureSwagger();
+
+        builder.Services.AddApplicationServices();
+        builder.Services.AddInfrastructureServices(builder.Configuration);
+        builder.Services.AddPersistenceServices(builder.Configuration);
+
+        builder.Services.AddControllers().AddNewtonsoftJson(x =>
+          x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+        builder.Services.AddCors(options =>
         {
-            builder.Services.ConfigureSwagger();
+            options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        });
 
-            builder.Services.AddApplicationServices();
-            builder.Services.AddInfrastructureServices(builder.Configuration);
-            builder.Services.AddPersistenceServices(builder.Configuration);
+        return builder.Build();
+    }
 
-            builder.Services.AddControllers().AddNewtonsoftJson(x =>
-              x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+    public static WebApplication ConfigurePipeline(this WebApplication app)
+    {
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
 
-            builder.Services.AddCors(options =>
+            app.UseSwaggerUI(c =>
             {
-                options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Market Share API");
             });
-
-            return builder.Build();
+            app.UseDeveloperExceptionPage();
         }
-
-        public static WebApplication ConfigurePipeline(this WebApplication app)
+        else
         {
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Market Share API");
-                });
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
-
-            var logger = app.Services.GetRequiredService<ILogger<Program>>();
-
-            app.UseHttpsRedirection();
-            app.UseRouting();
-
-            app.UseCustomExceptionHandler();
-
-            app.UseCors("Open");
-
-            app.MapControllers();
-
-            return app;
+            app.UseHsts();
         }
 
-        public static void ConfigureSwagger(this IServiceCollection services)
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+        app.UseHttpsRedirection();
+        app.UseRouting();
+
+        app.UseCustomExceptionHandler();
+
+        app.UseCors("Open");
+
+        app.MapControllers();
+
+        return app;
+    }
+
+    public static void ConfigureSwagger(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(c =>
         {
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Market Place API", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Market Place API", Version = "v1" });
 
-                var filePath = Path.Combine(System.AppContext.BaseDirectory, "WebAPI.xml");
-                c.IncludeXmlComments(filePath);
-            });
-        }
+            var filePath = Path.Combine(System.AppContext.BaseDirectory, "WebAPI.xml");
+            c.IncludeXmlComments(filePath);
+        });
     }
 }

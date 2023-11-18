@@ -1,6 +1,5 @@
 ﻿using MarketPlace.Application.Contracts.Persistence;
 using MarketPlace.Domain.Entitites;
-using Microsoft.EntityFrameworkCore;
 
 namespace MarketPlace.Persistence.Repositories;
 
