@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace MarketPlace.Application.Features.Categories.Commands.CreateCategory;
+namespace MarketPlace.Application.Features.Website.Categories.Commands.UpdateCategory;
 
-public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
+public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCommand>
 {
-    public CreateCategoryCommandValidator()
+    public UpdateCategoryCommandValidator()
     {
         RuleFor(c => c.Title)
              .NotEmpty().WithMessage("{PropertyName} is required.")

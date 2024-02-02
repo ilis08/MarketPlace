@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MarketPlace.Application.Features.Products.Queries.GetProductList;
+namespace MarketPlace.Application.Features.Website.Products.Queries.GetProductList;
 
 public class ProductListVm
 {

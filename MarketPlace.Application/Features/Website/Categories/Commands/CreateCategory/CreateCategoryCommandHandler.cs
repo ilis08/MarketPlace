@@ -3,7 +3,7 @@ using MarketPlace.Application.Contracts.Persistence;
 using MarketPlace.Domain.Entitites;
 using MediatR;
 
-namespace MarketPlace.Application.Features.Categories.Commands.CreateCategory;
+namespace MarketPlace.Application.Features.Website.Categories.Commands.CreateCategory;
 
 public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand,
 CreateCategoryCommandResponse>

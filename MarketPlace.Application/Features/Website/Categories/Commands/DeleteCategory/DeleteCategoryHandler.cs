@@ -3,7 +3,7 @@ using MarketPlace.Application.Exceptions;
 using MarketPlace.Domain.Entitites;
 using MediatR;
 
-namespace MarketPlace.Application.Features.Categories.Commands.DeleteCategory;
+namespace MarketPlace.Application.Features.Website.Categories.Commands.DeleteCategory;
 
 public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand>
 {

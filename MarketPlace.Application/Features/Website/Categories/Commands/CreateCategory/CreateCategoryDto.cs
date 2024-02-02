@@ -1,4 +1,4 @@
-﻿namespace MarketPlace.Application.Features.Categories.Commands.CreateCategory;
+﻿namespace MarketPlace.Application.Features.Website.Categories.Commands.CreateCategory;
 
 public class CreateCategoryDto
 {

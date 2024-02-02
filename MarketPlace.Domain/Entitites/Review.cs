@@ -13,7 +13,7 @@ public class Review : AuditableEntity
     public string? Comment { get; set; }
     [Required]
     public long ProductId { get; set; }
-    public Product Product { get; set; }
+    public Product Product { get; set; } = default!;
 }
 
 public enum RatingEnum

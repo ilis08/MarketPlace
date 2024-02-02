@@ -8,7 +8,7 @@ namespace MarketPlace.Domain.Entitites
     public class SpecificationType : AuditableEntity
     {
         public long Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
         public virtual ICollection<Specification>? Specifications { get; set; }
         public virtual ICollection<Category>? Categories { get; set; }
     }

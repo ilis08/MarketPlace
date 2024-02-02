@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace MarketPlace.Application.Features.Categories.Commands.UpdateCategory;
+namespace MarketPlace.Application.Features.Website.Categories.Commands.UpdateCategory;
 
 public class UpdateCategoryCommand : IRequest
 {

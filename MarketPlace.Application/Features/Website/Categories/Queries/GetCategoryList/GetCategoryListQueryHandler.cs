@@ -4,7 +4,7 @@ using MarketPlace.Domain.Entitites;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace MarketPlace.Application.Features.Categories.Queries.GetCategoryList;
+namespace MarketPlace.Application.Features.Website.Categories.Queries.GetCategoryList;
 
 public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery,
     List<CategoryListVm>>
@@ -13,10 +13,11 @@ public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery,
     private readonly IAsyncRepository<Category> categoryRepository;
     private readonly IMapper mapper;
 
-    public GetCategoryListQueryHandler(IAsyncRepository<Category> categoryRepository, IMapper mapper)
+    public GetCategoryListQueryHandler(IAsyncRepository<Category> categoryRepository, IMapper mapper, ILogger<GetCategoryListQueryHandler> logger)
     {
         this.categoryRepository = categoryRepository;
         this.mapper = mapper;
+        this.logger = logger;
     }
 
     public async Task<List<CategoryListVm>> Handle(GetCategoryListQuery request,

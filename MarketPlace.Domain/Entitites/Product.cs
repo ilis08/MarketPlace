@@ -21,9 +21,9 @@ public class Product : AuditableEntity
     public string? Image { get; set; }
     [Required]
     public long CategoryId { get; set; }
-    public Category Category { get; set; }
+    public Category Category { get; set; } = default!;
     public long SellerId { get; set; }
-    public Seller Seller { get; set; }
+    public Seller Seller { get; set; } = default!;
     public virtual ICollection<Review>? Reviews { get; set; }
     public virtual ICollection<OrderDetailProduct>? OrderDetails { get; set; }
     public virtual ICollection<Specification>? Specifications { get; set; }

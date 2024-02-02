@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Products\Commands\CreateProduct\" />
+    <Folder Include="Features\AdminDashboard\" />
+    <Folder Include="Features\Website\Products\Commands\CreateProduct\" />
   </ItemGroup>
 
 </Project>
