@@ -14,6 +14,7 @@ public class MarketPlaceDbContext : DbContext
     public DbSet<Category>? Categories { get; set; }
     public DbSet<SpecificationType>? SpecificationTypes { get; set; }
     public DbSet<Specification>? Specifications { get; set; }
+    public DbSet<Image>? Images { get; set; }
     public DbSet<Order>? Orders { get; set; }
     public DbSet<OrderDetailProduct>? OrderDetailProducts { get; set; }
     public DbSet<Seller>? Sellers { get; set; }
