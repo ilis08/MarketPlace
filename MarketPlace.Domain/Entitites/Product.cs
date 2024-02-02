@@ -26,4 +26,5 @@ public class Product : AuditableEntity
     public Seller Seller { get; set; }
     public virtual ICollection<Review>? Reviews { get; set; }
     public virtual ICollection<OrderDetailProduct>? OrderDetails { get; set; }
+    public virtual ICollection<Specification>? Specifications { get; set; }
 }

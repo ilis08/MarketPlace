@@ -11,4 +11,6 @@ public class Category : AuditableEntity
     public string Description { get; set; } = default!;
     public string Image { get; set; } = default!;
     public virtual ICollection<Product>? Products { get; set; }
+    public virtual ICollection<Category>? ChildrenCategories { get; set; }
+    public virtual ICollection<SpecificationType>? SpecificationTypes { get; set; }
 }
