@@ -4,7 +4,7 @@ using Serilog;
 namespace WebAPI;
 public class Program
 {
-    public static async void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 

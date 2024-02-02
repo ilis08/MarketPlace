@@ -1,4 +1,6 @@
-﻿namespace MarketPlace.Domain.Entitites
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace MarketPlace.Domain.Entitites
 {
     public class ApplicationUser : IdentityUser<long>
     {
