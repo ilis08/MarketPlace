@@ -1,5 +1,6 @@
 ﻿using MarketPlace.Domain.Common;
 using MarketPlace.Domain.Entitites;
+using MarketPlace.Domain.Entitites.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -8,7 +9,9 @@ namespace MarketPlace.Persistence;
 
 public class MarketPlaceDbContext : DbContext
 {
-    public DbSet<ApplicationUser> Users { get; set; }
+    public DbSet<Admin>? Admins { get; set; }
+    public DbSet<Customer>? Customers { get; set; }
+    public DbSet<Seller>? Sellers { get; set; }
     public DbSet<Product>? Products { get; set; }
     public DbSet<Review>? Reviews { get; set; }
     public DbSet<Category>? Categories { get; set; }
@@ -17,7 +20,6 @@ public class MarketPlaceDbContext : DbContext
     public DbSet<Image>? Images { get; set; }
     public DbSet<Order>? Orders { get; set; }
     public DbSet<OrderDetailProduct>? OrderDetailProducts { get; set; }
-    public DbSet<Seller>? Sellers { get; set; }
 
     public MarketPlaceDbContext(DbContextOptions<MarketPlaceDbContext> options)
         : base(options)

@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using MarketPlace.Domain.Entitites;
 using Microsoft.EntityFrameworkCore;
-using MarketPlace.Domain.Entitites;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MarketPlace.Persistence.Configurations;
 
@@ -8,16 +8,35 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder
-        .HasMany(p => p.Reviews)
-        .WithOne(r => r.Product)
-        .HasForeignKey(r => r.ProductId)
-        .OnDelete(DeleteBehavior.Restrict);
+        builder.Property(c => c.ProductName)
+            .IsRequired()
+            .HasMaxLength(250);
+
+        builder.Property(c => c.Description)
+            .IsRequired()
+            .HasMaxLength(10000);
+
+        builder.Property(c => c.Price)
+            .IsRequired()
+            .HasColumnType("decimal(18,2)");
+
+        builder.Property(c => c.Quantity)
+            .IsRequired()
+            .HasMaxLength(10000);
 
         builder
-        .HasMany(p => p.OrderDetails)
-        .WithOne(r => r.Product)
-        .HasForeignKey(r => r.ProductId)
-        .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(x => x.Image)
+            .WithMany(x => x.Products)
+            .HasForeignKey(x => x.LogoImageId);
+
+        builder
+            .HasOne(x => x.Category)
+            .WithMany(x => x.Products)
+            .HasForeignKey(x => x.CategoryId);
+
+        builder
+            .HasOne(x => x.Seller)
+            .WithMany(x => x.Products)
+            .HasForeignKey(x => x.SellerId);
     }
 }

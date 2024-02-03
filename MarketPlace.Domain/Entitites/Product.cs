@@ -1,14 +1,15 @@
 ﻿using MarketPlace.Domain.Common;
+using MarketPlace.Domain.Entitites.Users;
 
 namespace MarketPlace.Domain.Entitites;
 
 public class Product : AuditableEntity
 {
     public long Id { get; set; }
-    public string? ProductName { get; set; }
-    public string? Description { get; set; }
+    public string ProductName { get; set; } = default!;
+    public string Description { get; set; } = default!;
     public DateTime? Release { get; set; }
-    public double Price { get; set; }
+    public decimal Price { get; set; }
     public int Quantity { get; set; }
     public long LogoImageId { get; set; }
     public Image Image { get; set; } = default!;
@@ -17,7 +18,7 @@ public class Product : AuditableEntity
     public long SellerId { get; set; }
     public Seller Seller { get; set; } = default!;
     public virtual ICollection<Review>? Reviews { get; set; }
-    public virtual ICollection<OrderDetailProduct>? OrderDetails { get; set; }
+    public virtual ICollection<OrderDetailProduct>? OrderDetailProducts { get; set; }
     public virtual ICollection<Specification>? Specifications { get; set; }
     public virtual ICollection<Image>? Images { get; set; }
 }

@@ -9,9 +9,16 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
     public void Configure(EntityTypeBuilder<Order> builder)
     {
         builder
-        .HasMany(p => p.OrderDetailProduct)
-        .WithOne(r => r.Order)
-        .HasForeignKey(r => r.OrderId)
-        .OnDelete(DeleteBehavior.Restrict);
+            .Property(x => x.PaymentType)
+            .IsRequired();
+
+        builder
+            .Property(x => x.OrderStatus)
+            .IsRequired();
+
+        builder
+            .Property(x => x.TotalPrice)
+            .IsRequired()
+            .HasColumnType("decimal(18,2)");
     }
 }

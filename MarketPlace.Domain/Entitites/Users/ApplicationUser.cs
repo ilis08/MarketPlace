@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace MarketPlace.Domain.Entitites
+namespace MarketPlace.Domain.Entitites.Users
 {
-    public class ApplicationUser : IdentityUser<long>
+    public abstract class ApplicationUser : IdentityUser<long>
     {
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;

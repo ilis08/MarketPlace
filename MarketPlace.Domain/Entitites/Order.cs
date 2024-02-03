@@ -1,16 +1,23 @@
 ﻿using MarketPlace.Domain.Common;
-using System.ComponentModel.DataAnnotations;
 
 namespace MarketPlace.Domain.Entitites;
 
 public class Order : AuditableEntity
 {
     public Guid Id { get; set; }
-    [Required]
     public PaymentType PaymentType { get; set; }
-    public bool IsCompleted { get; set; }
-    public double TotalPrice { get; set; }
-    public virtual ICollection<OrderDetailProduct>? OrderDetailProduct { get; set; }
+    public OrderStatus OrderStatus { get; set; }
+    public decimal TotalPrice { get; set; }
+    public virtual ICollection<OrderDetailProduct>? OrderDetailProducts { get; set; }
+}
+
+public enum OrderStatus
+{
+    Pending,
+    Approved,
+    Delivery,
+    Done,
+    Cancelled
 }
 
 public enum PaymentType

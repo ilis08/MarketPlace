@@ -10,13 +10,15 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         builder.Property(c => c.Title)
             .IsRequired()
-            .HasMaxLength(150);
+            .HasMaxLength(200);
 
         builder.Property(c => c.Description)
-            .IsRequired()
-            .HasMaxLength(4000);
+        .IsRequired()
+            .HasMaxLength(10000);
 
-        builder.Property(c => c.Image)
-            .IsRequired();
+        builder
+            .HasOne(s => s.Image)
+            .WithMany(g => g.Categories)
+            .HasForeignKey(s => s.ImageId);
     }
 }
