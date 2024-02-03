@@ -1,6 +1,6 @@
 ﻿using MarketPlace.Application.Responses;
 
-namespace MarketPlace.Application.Features.Website.Categories.Commands.CreateCategory;
+namespace MarketPlace.Application.Features.AdminDashboard.Categories.Commands.CreateCategory;
 
 public class CreateCategoryCommandResponse : BaseResponse
 {

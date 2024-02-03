@@ -1,5 +1,5 @@
 ﻿using MarketPlace.Application.Contracts.Persistence;
-using MarketPlace.Domain.Entitites.Order;
+using MarketPlace.Domain.Entitites.OrderNS;
 
 namespace MarketPlace.Persistence.Repositories;
 

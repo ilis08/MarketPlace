@@ -1,6 +1,6 @@
-﻿using MarketPlace.Application.Features.Website.Categories.Commands.CreateCategory;
-using MarketPlace.Application.Features.Website.Categories.Commands.DeleteCategory;
-using MarketPlace.Application.Features.Website.Categories.Commands.UpdateCategory;
+﻿using MarketPlace.Application.Features.AdminDashboard.Categories.Commands.CreateCategory;
+using MarketPlace.Application.Features.AdminDashboard.Categories.Commands.DeleteCategory;
+using MarketPlace.Application.Features.AdminDashboard.Categories.Commands.UpdateCategory;
 using MarketPlace.Application.Features.Website.Categories.Queries.GetCategoryList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

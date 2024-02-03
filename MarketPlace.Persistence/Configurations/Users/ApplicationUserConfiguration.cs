@@ -1,4 +1,4 @@
-﻿using MarketPlace.Domain.Entitites.Users;
+﻿using MarketPlace.Domain.Entitites.UsersNS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
