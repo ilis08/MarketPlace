@@ -1,4 +1,4 @@
-﻿namespace MarketPlace.Domain.Entitites.Users;
+﻿namespace MarketPlace.Domain.Entitites.UsersNS;
 
 public class Seller : ApplicationUser
 {

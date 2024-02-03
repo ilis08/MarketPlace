@@ -1,4 +1,4 @@
-﻿using MarketPlace.Domain.Entitites;
+﻿using MarketPlace.Domain.Entitites.OrderNS;
 
 namespace MarketPlace.Application.Contracts.Persistence;
 

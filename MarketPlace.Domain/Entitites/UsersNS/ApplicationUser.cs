@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace MarketPlace.Domain.Entitites.Users
+namespace MarketPlace.Domain.Entitites.UsersNS
 {
     public abstract class ApplicationUser : IdentityUser<long>
     {

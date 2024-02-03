@@ -1,8 +1,8 @@
-﻿using MarketPlace.Domain.Entitites;
+﻿using MarketPlace.Domain.Entitites.OrderNS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MarketPlace.Persistence.Configurations;
+namespace MarketPlace.Persistence.Configurations.OrderNS;
 
 public class OrderDetailProductConfiguration : IEntityTypeConfiguration<OrderDetailProduct>
 {

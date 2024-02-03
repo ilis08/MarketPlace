@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Contracts.Persistence;
 using MarketPlace.Application.Exceptions;
-using MarketPlace.Application.Features.Categories.Commands.UpdateCategory;
 using MarketPlace.Domain.Entitites;
 using MediatR;
 

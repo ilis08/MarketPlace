@@ -1,6 +1,7 @@
 ﻿using MarketPlace.Domain.Common;
 using MarketPlace.Domain.Entitites;
-using MarketPlace.Domain.Entitites.Users;
+using MarketPlace.Domain.Entitites.OrderNS;
+using MarketPlace.Domain.Entitites.UsersNS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -20,6 +21,7 @@ public class MarketPlaceDbContext : DbContext
     public DbSet<Image>? Images { get; set; }
     public DbSet<Order>? Orders { get; set; }
     public DbSet<OrderDetailProduct>? OrderDetailProducts { get; set; }
+    public DbSet<OrderUserInformation>? OrderUserInformations { get; set; }
 
     public MarketPlaceDbContext(DbContextOptions<MarketPlaceDbContext> options)
         : base(options)

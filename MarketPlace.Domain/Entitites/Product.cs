@@ -1,5 +1,6 @@
 ﻿using MarketPlace.Domain.Common;
-using MarketPlace.Domain.Entitites.Users;
+using MarketPlace.Domain.Entitites.OrderNS;
+using MarketPlace.Domain.Entitites.UsersNS;
 
 namespace MarketPlace.Domain.Entitites;
 

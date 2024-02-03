@@ -1,6 +1,6 @@
 ﻿using MarketPlace.Domain.Common;
 
-namespace MarketPlace.Domain.Entitites;
+namespace MarketPlace.Domain.Entitites.OrderNS;
 
 public class OrderDetailProduct : AuditableEntity
 {
