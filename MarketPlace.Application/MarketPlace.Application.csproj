@@ -20,8 +20,4 @@
     <ProjectReference Include="..\MarketPlace.Domain\MarketPlace.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Website\Products\Commands\CreateProduct\" />
-  </ItemGroup>
-
 </Project>

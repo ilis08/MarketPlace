@@ -6,9 +6,9 @@ namespace MarketPlace.Application.Features.AdminDashboard.Categories.Commands.Cr
 public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
 {
     private readonly IImageValidation imageValidation;
-    public CreateCategoryCommandValidator(IImageValidation imageValidation)
+    public CreateCategoryCommandValidator(IImageValidation _imageValidation)
     {
-        this.imageValidation = imageValidation;
+        imageValidation = _imageValidation;
 
         RuleFor(c => c.Title)
              .NotEmpty().WithMessage("{PropertyName} is required.")

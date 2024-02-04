@@ -47,15 +47,11 @@ CreateCategoryCommandResponse>
         {
             var imageUrl = await imageService.UploadImage(request.Image);
 
-            var category = new Category()
+            var category = mapper.Map<Category>(request);
+
+            category.Image = new Image
             {
-                Title = request.Title,
-                Description = request.Description,
-                ParentCategoryId = request.ParentCategoryId,
-                Image = new Image
-                {
-                    Url = imageUrl,
-                }
+                Url = imageUrl,
             };
 
             category = await categoryRepository.AddAsync(category);

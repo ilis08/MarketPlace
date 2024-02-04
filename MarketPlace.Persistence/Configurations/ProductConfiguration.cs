@@ -30,6 +30,10 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasForeignKey(x => x.LogoImageId);
 
         builder
+            .HasMany(x => x.Images)
+            .WithMany(x => x.Products);
+
+        builder
             .HasOne(x => x.Category)
             .WithMany(x => x.Products)
             .HasForeignKey(x => x.CategoryId);
