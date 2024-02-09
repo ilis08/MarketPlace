@@ -26,7 +26,7 @@ public class GetProductListQueryHandler : IRequestHandler<GetProductListQuery,
     public async Task<List<ProductListVm>> Handle(GetProductListQuery request,
         CancellationToken cancellationToken)
     {
-        var allProducts = (await productRepository.FindAllAsync()).OrderBy(x => x.Release);
+        var allProducts = (await productRepository.FindAllAsync()).OrderBy(x => x.ReleaseDate);
 
         return mapper.Map<List<ProductListVm>>(allProducts);
     }
